@@ -28,12 +28,17 @@
 
 package com.team5.grocerygeniusmockup.Model;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.team5.grocerygeniusmockup.UI.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.
@@ -115,8 +120,15 @@ class FirebaseArray implements ChildEventListener {
              */
             index = getIndexForKey(previousChildKey) + 1;
         }
+
         /* Update the local array */
         mSnapshots.add(index, snapshot);
+
+        /* Sort shops as appropriate. */
+        if (snapshot.getValue(Shop.class) != null) {
+            shopSort();
+        }
+
         /* Notify the FirebaseListAdapter that the underlying array has changed */
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
     }
@@ -129,6 +141,11 @@ class FirebaseArray implements ChildEventListener {
 
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
+
+        /* Sort shops as appropriate. */
+        if (snapshot.getValue(Shop.class) != null) {
+            shopSort();
+        }
 
         /* Notify the FirebaseListAdapter that the underlying array has changed.
          */
@@ -144,6 +161,11 @@ class FirebaseArray implements ChildEventListener {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
 
+        /* Sort shops as appropriate. */
+        if (snapshot.getValue(Shop.class) != null) {
+            shopSort();
+        }
+
         /* Notify the FirebaseListAdapter that the underlying array has changed. */
 
         notifyChangedListeners(OnChangedListener.EventType.Removed, index);
@@ -158,6 +180,12 @@ class FirebaseArray implements ChildEventListener {
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         /* Add the child at that index */
         mSnapshots.add(newIndex, snapshot);
+
+        /* Sort shops as appropriate. */
+        if (snapshot.getValue(Shop.class) != null) {
+            shopSort();
+        }
+
         /* Notify the FirebaseListAdapter that the underlying array has changed */
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
@@ -175,6 +203,26 @@ class FirebaseArray implements ChildEventListener {
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
+        }
+    }
+
+    public void shopSort() {
+        boolean swaps = true;
+        while (swaps) {
+            swaps = false;
+            for (int i = 0; i < mSnapshots.size() - 1; i++) {
+                Shop thisShop = mSnapshots.get(i).getValue(Shop.class);
+                Shop nextShop = mSnapshots.get(i+1).getValue(Shop.class);
+
+                if (thisShop.getFrequency() > nextShop.getFrequency()) {
+                    Collections.swap(mSnapshots, i, i+1);
+                    swaps = true;
+                } else if (thisShop.getFrequency() == nextShop.getFrequency() && thisShop.getName()
+                        .compareTo(nextShop.getName()) > 0) {
+                    Collections.swap(mSnapshots, i, i+1);
+                    swaps = true;
+                }
+            }
         }
     }
 }
