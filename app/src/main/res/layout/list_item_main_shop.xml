@@ -13,8 +13,19 @@
     android:paddingStart="@dimen/padding_List">
 
     <TextView
-        android:id="@+id/text_view_list_name"
+        android:id="@+id/text_view_shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/button_add_item_to_shop"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
