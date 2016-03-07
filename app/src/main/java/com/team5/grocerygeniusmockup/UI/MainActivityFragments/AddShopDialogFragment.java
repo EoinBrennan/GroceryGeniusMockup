@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
@@ -27,6 +28,7 @@ import com.team5.grocerygeniusmockup.Utilities.Constants;
 public class AddShopDialogFragment extends DialogFragment {
 
     EditText mEditTextShopName;
+    Spinner mSpinnerFrequency;
 
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
@@ -65,6 +67,8 @@ public class AddShopDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_add_shop, null);
         mEditTextShopName = (EditText) rootView.findViewById(R.id.edit_text_shop_name);
+        mSpinnerFrequency = (Spinner) rootView.findViewById(R.id.frequency_spinner);
+        mSpinnerFrequency.setSelection(3);
 
         /**
          * Call addShoppingList() when user taps "Done" keyboard action
@@ -102,9 +106,11 @@ public class AddShopDialogFragment extends DialogFragment {
         // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
         String userEnteredName = mEditTextShopName.getText().toString();
 
+        int frequencySelected = mSpinnerFrequency.getSelectedItemPosition();
+
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Shop newShop = new Shop(userEnteredName, 2);
+            Shop newShop = new Shop(userEnteredName, frequencySelected);
 
             /* Fetch User ID and set up Firebase address. */
 
