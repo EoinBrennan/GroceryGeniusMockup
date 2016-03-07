@@ -9,8 +9,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.team5.grocerygeniusmockup.Model.FirebaseListAdapter;
@@ -68,12 +70,21 @@ public class ShoppingListFragment extends Fragment {
 
         final Firebase rootRef = new Firebase(FIREBASE_MY_NODE_URL);
         mShopListAdapter = new FirebaseListAdapter<Shop>(getActivity(),
-                Shop.class, R.layout.single_active_list, rootRef) {
+                Shop.class, R.layout.list_item_main_shop, rootRef) {
             @Override
             protected void populateView(View v, Shop model) {
                 super.populateView(v, model);
-                TextView listNameView = (TextView) v.findViewById(R.id.text_view_list_name);
-                listNameView.setText(model.getName());
+                TextView shopNameView = (TextView) v.findViewById(R.id.text_view_shop_name);
+                shopNameView.setText(model.getName());
+
+                Button addItemBtn = (Button) v.findViewById(R.id.button_add_item_to_shop);
+                final Shop thisShop = model;
+
+                addItemBtn.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Toast.makeText(getActivity(), "Frequency of " + thisShop.getFrequency(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         };
         mListView.setAdapter(mShopListAdapter);
