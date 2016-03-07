@@ -59,6 +59,7 @@ public class ShoppingListFragment extends Fragment {
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
 
         /**
          * Initialize UI elements
@@ -68,7 +69,7 @@ public class ShoppingListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_shoppinglists, container, false);
         mListView = (ListView) rootView.findViewById(R.id.list_view_shopping_lists);
 
-        final Firebase rootRef = new Firebase(FIREBASE_MY_NODE_URL);
+        final Firebase rootRef = new Firebase(FIREBASE_MY_URL_SHOPS);
         mShopListAdapter = new FirebaseListAdapter<Shop>(getActivity(),
                 Shop.class, R.layout.list_item_main_shop, rootRef) {
             @Override

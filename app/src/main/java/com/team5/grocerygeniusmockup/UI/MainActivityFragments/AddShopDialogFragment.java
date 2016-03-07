@@ -113,7 +113,7 @@ public class AddShopDialogFragment extends DialogFragment {
             String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
 
             // Get the reference to the root node in Firebase
-            Firebase shopRef = new Firebase(FIREBASE_MY_NODE_URL);
+            Firebase shopRef = new Firebase(FIREBASE_MY_URL_SHOPS);
 
             /* Create a unique key for a new node and fetch that key. */
             Firebase newShopRef = shopRef.push();
