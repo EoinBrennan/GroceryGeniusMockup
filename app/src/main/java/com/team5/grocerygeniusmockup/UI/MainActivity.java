@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.settings_new_shop) {
+            showAddShopDialog();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-    public void showAddShopDialog(View view) {
+    public void showAddShopDialog() {
         DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
         dialog.show(MainActivity.this.getFragmentManager(), "AddShopDialogFragment");
     }
