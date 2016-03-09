@@ -3,9 +3,12 @@ package com.team5.grocerygeniusmockup.UI;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -105,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
+
     /* Calling permissions and setting up Loader for auto-complete list. */
 
     private void populateAutoComplete() {
@@ -178,9 +182,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 showProgress(false);
             }
+
+            //tests for connectivity
+            private boolean isNetworkAvailable() {
+                ConnectivityManager connectivityManager
+                        = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+            }
+
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
                 Log.e(LOG_TAG, "Error authenticating user.");
+
+                //if device is not connected to the network, print statement
+                if(!isNetworkAvailable()){
+                    Toast.makeText(getApplicationContext(), "Please connect to internet and try again", Toast.LENGTH_LONG).show();
+                }
 
                 /* If login fails, and the user isn't sent to the main activity, the  */
                 showProgress(false);
