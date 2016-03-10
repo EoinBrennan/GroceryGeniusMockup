@@ -138,8 +138,8 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         }
 
         T model = mSnapshots.getItem(position).getValue(mModelClass);
-
         // Call out to subclass to marshall this model into the provided view
+
         populateView(view, model, position);
         return view;
     }
@@ -155,7 +155,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      *
      * @param v         The view to populate
      * @param model     The object containing the data used to populate the view
-     * @param position  The position in the list of the view being populated
+     * @param position     The position of the object populating the view
      */
     protected void populateView(View v, T model, int position) {
         populateView(v, model);

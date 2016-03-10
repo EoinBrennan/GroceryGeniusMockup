@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GroceryGenius</string>
-    
+
     <!-- Shopping list strings-->
 
     <string name="title_activity_main">Your GroceryGenius</string>
@@ -8,7 +8,10 @@
     <string name="action_new_shop">Add New Shop</string>
     <string name="section_format">The Pantry is very empty...</string>
     <string name="hint_add_shop">Create a shop (e.g. Aldi)</string>
+    <string name="hint_add_item">What do you need? (e.g. Milk)</string>
+    <string name="quantity">How many do you want?</string>
     <string name="positive_button_create">Create</string>
+    <string name="positive_button_add_item">Add Item</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

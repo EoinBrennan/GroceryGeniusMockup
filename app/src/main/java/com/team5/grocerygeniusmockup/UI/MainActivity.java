@@ -22,6 +22,10 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
@@ -41,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+
+    /* Fetch the User's ID. */
+
+    SharedPreferences mPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     public void showAddShopDialog() {
