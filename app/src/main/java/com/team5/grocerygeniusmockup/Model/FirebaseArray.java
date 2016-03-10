@@ -125,9 +125,9 @@ class FirebaseArray implements ChildEventListener {
         mSnapshots.add(index, snapshot);
 
         /* Sort shops as appropriate. */
-        if (snapshot.getValue(Shop.class) != null) {
+        /*if (snapshot.getValue(Shop.class) != null) {
             shopSort();
-        }
+        }*/
 
         /* Notify the FirebaseListAdapter that the underlying array has changed */
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
@@ -142,10 +142,10 @@ class FirebaseArray implements ChildEventListener {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
 
-        /* Sort shops as appropriate. */
+        /* Sort shops as appropriate.
         if (snapshot.getValue(Shop.class) != null) {
             shopSort();
-        }
+        } */
 
         /* Notify the FirebaseListAdapter that the underlying array has changed.
          */
@@ -161,10 +161,10 @@ class FirebaseArray implements ChildEventListener {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
 
-        /* Sort shops as appropriate. */
+        /* Sort shops as appropriate.
         if (snapshot.getValue(Shop.class) != null) {
             shopSort();
-        }
+        } */
 
         /* Notify the FirebaseListAdapter that the underlying array has changed. */
 
@@ -181,10 +181,10 @@ class FirebaseArray implements ChildEventListener {
         /* Add the child at that index */
         mSnapshots.add(newIndex, snapshot);
 
-        /* Sort shops as appropriate. */
+        /* Sort shops as appropriate.
         if (snapshot.getValue(Shop.class) != null) {
             shopSort();
-        }
+        } */
 
         /* Notify the FirebaseListAdapter that the underlying array has changed */
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
@@ -207,6 +207,7 @@ class FirebaseArray implements ChildEventListener {
     }
 
     public void shopSort() {
+        /*
         boolean swaps = true;
         while (swaps) {
             swaps = false;
@@ -224,6 +225,7 @@ class FirebaseArray implements ChildEventListener {
                 }
             }
         }
+        */
     }
 }
 

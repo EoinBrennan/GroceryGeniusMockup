@@ -17,40 +17,48 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.team5.grocerygeniusmockup.Model.Item;
 import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
-public class AddShopDialogFragment extends DialogFragment {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AddItemDialogFragment extends DialogFragment {
 
-    EditText mEditTextShopName;
-    Spinner mSpinnerFrequency;
+    EditText mEditTextItemName;
+    NumberPicker mNumberPickerQuantity;
+    String shop;
 
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
 
-    public AddShopDialogFragment() {
-        // Required empty public constructor
+    public AddItemDialogFragment() {
     }
 
     /**
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created
      */
-    public static AddShopDialogFragment newInstance() {
-        AddShopDialogFragment addShopDialogFragment = new AddShopDialogFragment();
+    public static AddItemDialogFragment newInstance(String shopName) {
+        AddItemDialogFragment addItemDialogFragment = new AddItemDialogFragment();
         Bundle bundle = new Bundle();
-        addShopDialogFragment.setArguments(bundle);
-        return addShopDialogFragment;
+        bundle.putString("shopName", shopName);
+        addItemDialogFragment.setArguments(bundle);
+        return addItemDialogFragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shop = getArguments().getString("shopName", "Default");
     }
 
     @Override
@@ -61,23 +69,27 @@ public class AddShopDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        //shop = savedInstanceState.getString("shopName");
+
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.dialog_add_shop, null);
-        mEditTextShopName = (EditText) rootView.findViewById(R.id.edit_text_shop_name);
-        mSpinnerFrequency = (Spinner) rootView.findViewById(R.id.frequency_spinner);
-        mSpinnerFrequency.setSelection(3);
+        View rootView = inflater.inflate(R.layout.dialog_add_item, null);
+        mEditTextItemName = (EditText) rootView.findViewById(R.id.edit_text_item_name);
+        mNumberPickerQuantity = (NumberPicker) rootView.findViewById(R.id.itemQuantityNumberPicker);
+        mNumberPickerQuantity.setMinValue(1);
+        mNumberPickerQuantity.setMaxValue(100);
+        mNumberPickerQuantity.setValue(1);
 
         /**
          * Call addShoppingList() when user taps "Done" keyboard action
          */
-        mEditTextShopName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEditTextItemName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    addShop();
+                    addItem();
                 }
                 return true;
             }
@@ -87,10 +99,10 @@ public class AddShopDialogFragment extends DialogFragment {
         /* Pass null as the parent view because its going in the dialog layout*/
         builder.setView(rootView)
                 /* Add action buttons */
-                .setPositiveButton(R.string.positive_button_create, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.positive_button_add_item, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        addShop();
+                        addItem();
                     }
                 });
 
@@ -100,34 +112,35 @@ public class AddShopDialogFragment extends DialogFragment {
     /**
      * Add new active list
      */
-    public void addShop() {
+    public void addItem() {
 
         // Get the string that the user entered into the EditText and make an object with it
         // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
-        String userEnteredName = mEditTextShopName.getText().toString();
+        String userEnteredName = mEditTextItemName.getText().toString();
 
-        int frequencySelected = mSpinnerFrequency.getSelectedItemPosition();
+        int frequencySelected = mNumberPickerQuantity.getValue();
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Shop newShop = new Shop(userEnteredName, frequencySelected);
+            Item newItem = new Item(userEnteredName, shop, frequencySelected);
 
             /* Fetch User ID and set up Firebase address. */
 
             mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
-            String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
+            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS;
 
             // Get the reference to the root node in Firebase
-            Firebase shopRef = new Firebase(FIREBASE_MY_URL_SHOPS);
+            Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
 
             /* Create a unique key for a new node and fetch that key. */
-            Firebase newShopRef = shopRef.push();
+            Firebase newItemRef = itemRef.push();
 
-            final String shopID = newShopRef.getKey();
+            final String itemID = newItemRef.getKey();
 
-            newShopRef.setValue(newShop);
+            newItemRef.setValue(newItem);
         }
 
     }
+
 }
