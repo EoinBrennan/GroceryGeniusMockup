@@ -28,6 +28,12 @@
     <!-- Frequencies of Shop Visits -->
 
     <string name="frequency_shop_visit_prompt">How often do you go...</string>
+    <string name="question1">Question 1:</string>
+    <string name="question1_value">Please select your favourite shop(s)</string>
+    <string name="aldi">Aldi</string>
+    <string name="lidl">Lidl</string>
+    <string name="tesco">Tesco</string>
+    <string name="other">Other</string>
 
     <string-array name="frequency_shop_visit">
         <item>Several times every day</item>
