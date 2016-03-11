@@ -51,6 +51,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private boolean EoinTestMode = false;
+
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
     /**
@@ -72,6 +74,55 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if (EoinTestMode) {
+            final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL_ROOT);
+
+            myFirebaseRef.authWithPassword("black.leonhart@gmail.com", "password", new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    SharedPreferences.Editor editor = mPrefs.edit();
+
+                    editor.putString("UserID", authData.getUid());
+                    editor.commit();
+
+                    Intent logInIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(logInIntent);
+
+                    showProgress(false);
+                }
+
+                //tests for connectivity
+                private boolean isNetworkAvailable() {
+                    ConnectivityManager connectivityManager
+                            = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+                }
+
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    Log.e(LOG_TAG, "Error authenticating user.");
+
+                    //if device is not connected to the network, print statement
+                    if (!isNetworkAvailable()) {
+                        Toast.makeText(getApplicationContext(), "Please connect to internet and try again", Toast.LENGTH_LONG).show();
+                    }
+
+                /* If login fails, and the user isn't sent to the main activity, the  */
+                    showProgress(false);
+
+                    String errMess = "Error!";
+
+                    if (!firebaseError.getDetails().equals("")) {
+                        mErrorMessage.setText(firebaseError.getDetails());
+                    } else {
+                        mErrorMessage.setText("An error has occured, ensure that you ahve the right email and password");
+                    }
+                }
+            });
+        }
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email_input_login);
@@ -106,6 +157,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mErrorMessage = (TextView) findViewById(R.id.error_text_view_login);
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
 
 
@@ -196,7 +248,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Log.e(LOG_TAG, "Error authenticating user.");
 
                 //if device is not connected to the network, print statement
-                if(!isNetworkAvailable()){
+                if (!isNetworkAvailable()) {
                     Toast.makeText(getApplicationContext(), "Please connect to internet and try again", Toast.LENGTH_LONG).show();
                 }
 
