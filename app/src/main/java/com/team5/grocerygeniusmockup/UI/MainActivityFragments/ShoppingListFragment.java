@@ -115,7 +115,8 @@ public class ShoppingListFragment extends Fragment {
                 ListView itemListView = (ListView) v.findViewById(R.id.item_list_view);
                 final ListView itemListViewRef = itemListView;
 
-                String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS;
+                String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShop.getName() + Constants.FIREBASE_NODENAME_ITEMS;
+
                 final Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
 
                 mItemListAdapter = new FirebaseListAdapter<Item>(getActivity(),

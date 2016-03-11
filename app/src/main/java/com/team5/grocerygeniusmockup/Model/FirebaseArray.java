@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.FirebaseException;
 import com.firebase.client.Query;
 import com.team5.grocerygeniusmockup.UI.MainActivity;
 
@@ -45,7 +46,8 @@ import java.util.Collections;
  */
 class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
-        enum EventType { Added, Changed, Removed, Moved }
+        enum EventType {Added, Changed, Removed, Moved}
+
         void onChanged(EventType type, int index, int oldIndex);
     }
 
@@ -71,13 +73,14 @@ class FirebaseArray implements ChildEventListener {
         return mSnapshots.size();
 
     }
+
     public DataSnapshot getItem(int index) {
         return mSnapshots.get(index);
     }
 
     /**
-     *  This method searches through the mSnapshots array for the object with the given key
-     *  and returns the index of the object in the array.
+     * This method searches through the mSnapshots array for the object with the given key
+     * and returns the index of the object in the array.
      */
     private int getIndexForKey(String key) {
         int index = 0;
@@ -124,10 +127,7 @@ class FirebaseArray implements ChildEventListener {
         /* Update the local array */
         mSnapshots.add(index, snapshot);
 
-        /* Sort shops as appropriate. */
-        /*if (snapshot.getValue(Shop.class) != null) {
-            shopSort();
-        }*/
+        sortAA();
 
         /* Notify the FirebaseListAdapter that the underlying array has changed */
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
@@ -142,10 +142,8 @@ class FirebaseArray implements ChildEventListener {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
 
-        /* Sort shops as appropriate.
-        if (snapshot.getValue(Shop.class) != null) {
-            shopSort();
-        } */
+        sortAA();
+
 
         /* Notify the FirebaseListAdapter that the underlying array has changed.
          */
@@ -161,10 +159,8 @@ class FirebaseArray implements ChildEventListener {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
 
-        /* Sort shops as appropriate.
-        if (snapshot.getValue(Shop.class) != null) {
-            shopSort();
-        } */
+        sortAA();
+
 
         /* Notify the FirebaseListAdapter that the underlying array has changed. */
 
@@ -181,10 +177,8 @@ class FirebaseArray implements ChildEventListener {
         /* Add the child at that index */
         mSnapshots.add(newIndex, snapshot);
 
-        /* Sort shops as appropriate.
-        if (snapshot.getValue(Shop.class) != null) {
-            shopSort();
-        } */
+        sortAA();
+
 
         /* Notify the FirebaseListAdapter that the underlying array has changed */
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
@@ -197,35 +191,57 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
+
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
+
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
     }
 
-    public void shopSort() {
-        /*
-        boolean swaps = true;
-        while (swaps) {
-            swaps = false;
-            for (int i = 0; i < mSnapshots.size() - 1; i++) {
-                Shop thisShop = mSnapshots.get(i).getValue(Shop.class);
-                Shop nextShop = mSnapshots.get(i+1).getValue(Shop.class);
+    public void sortAA() {
+        try {
+            boolean swaps = true;
+            while (swaps) {
+                swaps = false;
+                for (int i = 0; i < mSnapshots.size() - 1; i++) {
+                    Shop thisShop = mSnapshots.get(i).getValue(Shop.class);
+                    Shop nextShop = mSnapshots.get(i + 1).getValue(Shop.class);
 
-                if (thisShop.getFrequency() > nextShop.getFrequency()) {
-                    Collections.swap(mSnapshots, i, i+1);
-                    swaps = true;
-                } else if (thisShop.getFrequency() == nextShop.getFrequency() && thisShop.getName()
-                        .compareTo(nextShop.getName()) > 0) {
-                    Collections.swap(mSnapshots, i, i+1);
-                    swaps = true;
+                    if (thisShop.getFrequency() > nextShop.getFrequency()) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    } else if (thisShop.getFrequency() == nextShop.getFrequency() && thisShop.getName()
+                            .compareTo(nextShop.getName()) > 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    }
                 }
             }
+        } catch (FirebaseException e) {
+            Log.i("FirebaseArray", "not a shop");
         }
-        */
+
+        try {
+            boolean swaps = true;
+            while (swaps) {
+                swaps = false;
+                for (int i = 0; i < mSnapshots.size() - 1; i++) {
+                    Item thisItem = mSnapshots.get(i).getValue(Item.class);
+                    Item nextItem = mSnapshots.get(i + 1).getValue(Item.class);
+
+                    if (thisItem.getName().compareTo(nextItem.getName()) > 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    }
+                }
+            }
+        } catch (FirebaseException e) {
+            Log.i("FirebaseArray", "not an item");
+        }
     }
 }
 

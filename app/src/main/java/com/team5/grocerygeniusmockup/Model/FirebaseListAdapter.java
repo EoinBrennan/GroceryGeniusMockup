@@ -45,7 +45,7 @@ import com.firebase.client.Query;
  * class type. Extend this class and provide an implementation of <code>populateView</code>, which will be given an
  * instance of your list item mLayout and an instance your class that holds your data. Simply populate the view however
  * you like and this class will handle updating the list as the data changes.
- *
+ * <p/>
  * <blockquote><pre>
  * {@code
  *     Firebase ref = new Firebase("https://<yourapp>.firebaseio.com");
@@ -99,6 +99,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             }
         });
     }
+
     /**
      * @param activity    The activity containing the ListView
      * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
@@ -122,9 +123,13 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public T getItem(int i) { return mSnapshots.getItem(i).getValue(mModelClass); }
+    public T getItem(int i) {
+        return mSnapshots.getItem(i).getValue(mModelClass);
+    }
 
-    public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
+    public Firebase getRef(int position) {
+        return mSnapshots.getItem(position).getRef();
+    }
 
     @Override
     public long getItemId(int i) {
@@ -140,9 +145,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
         T model = mSnapshots.getItem(position).getValue(mModelClass);
         // Call out to subclass to marshall this model into the provided view
-        Log.i("FirebaseAdapter", "Model" + mModelClass.getSimpleName());
 
         populateView(view, model, position);
+
         return view;
     }
 
@@ -150,14 +155,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * Each time the data at the given Firebase location changes, this method will be called for each item that needs
      * to be displayed. The first two arguments correspond to the mLayout and mModelClass given to the constructor of
      * this class. The third argument is the item's position in the list.
-     * <p>
+     * <p/>
      * Your implementation should populate the view using the data contained in the model.
      * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object)} method
      * but not both.
      *
-     * @param v         The view to populate
-     * @param model     The object containing the data used to populate the view
-     * @param position     The position of the object populating the view
+     * @param v        The view to populate
+     * @param model    The object containing the data used to populate the view
+     * @param position The position of the object populating the view
      */
     protected void populateView(View v, T model, int position) {
         populateView(v, model);
@@ -165,14 +170,13 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     /**
      * This is a backwards compatible version of populateView.
-     * <p>
+     * <p/>
      * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object, int)} method
      * but not both.
      *
+     * @param v     The view to populate
+     * @param model The object containing the data used to populate the view
      * @see FirebaseListAdapter#populateView(View, Object, int)
-     *
-     * @param v         The view to populate
-     * @param model     The object containing the data used to populate the view
      */
     protected void populateView(View v, T model) {
 
