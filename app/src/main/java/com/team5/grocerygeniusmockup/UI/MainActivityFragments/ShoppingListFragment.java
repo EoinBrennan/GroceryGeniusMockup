@@ -92,6 +92,7 @@ public class ShoppingListFragment extends Fragment {
 
         final Firebase rootRef = new Firebase(FIREBASE_MY_URL_SHOPS);
 
+
         mShopListAdapter = new FirebaseListAdapter<Shop>(getActivity(),
                 Shop.class, R.layout.list_item_main_shop, rootRef) {
             @Override
@@ -110,7 +111,9 @@ public class ShoppingListFragment extends Fragment {
                     }
                 });
 
+                final View viewRef = v;
                 ListView itemListView = (ListView) v.findViewById(R.id.item_list_view);
+                final ListView itemListViewRef = itemListView;
 
                 String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS;
                 final Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
@@ -120,80 +123,30 @@ public class ShoppingListFragment extends Fragment {
                     @Override
                     protected void populateView(View v, Item model) {
                         super.populateView(v, model);
+
                         TextView itemName = (TextView) v.findViewById(R.id.text_view_item_name);
                         itemName.setText(model.getName());
                         int valCheck = this.getCount();
+                        Log.i("ItemListPopView", "" + valCheck);
 
-                        SharedPreferences.Editor editor = mPrefs.edit();
+                        /* Handles the re-sizing which occurs when items change, as the nested
+                         * list adapter can't notify the parent on it's own.
+                         */
 
-                        if (mPrefs.getInt("Items", -1) > -1) {
-                            editor.remove("Items");
-                            editor.commit();
-                        }
+                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) itemListViewRef.getLayoutParams();
+                        lp.height = 155 * valCheck;
+                        itemListViewRef.setLayoutParams(lp);
 
-                        editor.putInt("Items", valCheck);
-                        editor.commit();
-                        Log.w("ItemListPopView", "" + valCheck);
+                        AbsListView.LayoutParams llp = (AbsListView.LayoutParams) viewRef.getLayoutParams();
+                        llp.height = AbsListView.LayoutParams.WRAP_CONTENT;
+                        viewRef.setLayoutParams(llp);
                     }
                 };
                 itemListView.setAdapter(mItemListAdapter);
-
-                int rows = mPrefs.getInt("Items", 1);
-                Log.w("ShopAdapter", "" + rows);
-
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) itemListView.getLayoutParams();
-                lp.height = 160 * rows;
-                itemListView.setLayoutParams(lp);
-
-                final View viewRef = v;
-
-                itemRef.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        int rows = mPrefs.getInt("Items", 0);
-                        AbsListView.LayoutParams llp = (AbsListView.LayoutParams) viewRef.getLayoutParams();
-                        llp.height = 150 + 180 * rows;
-                        viewRef.setLayoutParams(llp);
-
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        int rows = mPrefs.getInt("Items", 0);
-                        AbsListView.LayoutParams llp = (AbsListView.LayoutParams) viewRef.getLayoutParams();
-                        llp.height = 150 + 160 * rows;
-                        viewRef.setLayoutParams(llp);
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        int rows = mPrefs.getInt("Items", 0);
-                        AbsListView.LayoutParams llp = (AbsListView.LayoutParams) viewRef.getLayoutParams();
-                        llp.height = 150 + 160 * rows;
-                        viewRef.setLayoutParams(llp);
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                        int rows = mPrefs.getInt("Items", 0);
-                        AbsListView.LayoutParams llp = (AbsListView.LayoutParams) viewRef.getLayoutParams();
-                        llp.height = 150 + 160 * rows;
-                        viewRef.setLayoutParams(llp);
-
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-
-                    }
-                });
-
             }
         };
         mListView.setAdapter(mShopListAdapter);
-        Log.w("initScreenOfFrag", "here");
+        Log.i("initScreenOfFrag", "here");
 
         return rootView;
     }

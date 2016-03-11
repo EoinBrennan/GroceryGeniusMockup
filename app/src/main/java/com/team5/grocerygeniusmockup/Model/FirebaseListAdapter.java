@@ -29,6 +29,7 @@
 package com.team5.grocerygeniusmockup.Model;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -139,6 +140,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
         T model = mSnapshots.getItem(position).getValue(mModelClass);
         // Call out to subclass to marshall this model into the provided view
+        Log.i("FirebaseAdapter", "Model" + mModelClass.getSimpleName());
 
         populateView(view, model, position);
         return view;
