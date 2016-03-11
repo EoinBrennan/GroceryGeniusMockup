@@ -34,7 +34,7 @@ public class AddItemDialogFragment extends DialogFragment {
 
     EditText mEditTextItemName;
     NumberPicker mNumberPickerQuantity;
-    String shop;
+    String shopName;
 
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
@@ -58,7 +58,7 @@ public class AddItemDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shop = getArguments().getString("shopName", "Default");
+        shopName = getArguments().getString("shopName", "Default");
     }
 
     @Override
@@ -122,13 +122,13 @@ public class AddItemDialogFragment extends DialogFragment {
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Item newItem = new Item(userEnteredName, shop, frequencySelected);
+            Item newItem = new Item(userEnteredName, shopName, frequencySelected);
 
             /* Fetch User ID and set up Firebase address. */
 
             mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
-            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS;
+            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopName + Constants.FIREBASE_NODENAME_ITEMS;
 
             // Get the reference to the root node in Firebase
             Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
