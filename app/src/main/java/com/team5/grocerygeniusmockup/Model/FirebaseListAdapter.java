@@ -65,10 +65,10 @@ import com.firebase.client.Query;
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
-    private final Class<T> mModelClass;
+    public final Class<T> mModelClass;
     protected int mLayout;
     protected Activity mActivity;
-    FirebaseArray mSnapshots;
+    public FirebaseArray mSnapshots;
 
 
     /**

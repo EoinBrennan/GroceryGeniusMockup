@@ -25,6 +25,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.team5.grocerygeniusmockup.Model.FirebaseItemListAdapter;
 import com.team5.grocerygeniusmockup.Model.FirebaseListAdapter;
 import com.team5.grocerygeniusmockup.Model.Item;
 import com.team5.grocerygeniusmockup.Model.Shop;
@@ -119,16 +120,25 @@ public class ShoppingListFragment extends Fragment {
 
                 final Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
 
-                mItemListAdapter = new FirebaseListAdapter<Item>(getActivity(),
+                mItemListAdapter = new FirebaseItemListAdapter<Item>(getActivity(),
                         Item.class, R.layout.list_item_main_items, itemRef) {
                     @Override
-                    protected void populateView(View v, Item model) {
+                    protected void populateView(View v, Item model, String key) {
                         super.populateView(v, model);
 
                         TextView itemName = (TextView) v.findViewById(R.id.text_view_item_name);
                         itemName.setText(model.getName());
                         int valCheck = this.getCount();
                         Log.i("ItemListPopView", "" + valCheck);
+
+                        Button removeBtn = (Button) v.findViewById(R.id.remove_item_button);
+                        final String thisKey = key;
+
+                        removeBtn.setOnClickListener(new View.OnClickListener() {
+                            public void onClick(View v) {
+                                itemRef.child(thisKey).removeValue();
+                            }
+                        });
 
                         /* Handles the re-sizing which occurs when items change, as the nested
                          * list adapter can't notify the parent on it's own.
