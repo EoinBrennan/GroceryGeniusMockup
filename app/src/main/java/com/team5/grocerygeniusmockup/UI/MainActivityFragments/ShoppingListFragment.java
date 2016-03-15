@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -25,13 +26,18 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.team5.grocerygeniusmockup.Model.FirebaseArray;
 import com.team5.grocerygeniusmockup.Model.FirebaseItemListAdapter;
 import com.team5.grocerygeniusmockup.Model.FirebaseListAdapter;
 import com.team5.grocerygeniusmockup.Model.Item;
+import com.team5.grocerygeniusmockup.Model.NumStore;
+import com.team5.grocerygeniusmockup.Model.Section;
 import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivity;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +45,7 @@ import com.team5.grocerygeniusmockup.Utilities.Constants;
 public class ShoppingListFragment extends Fragment {
     ListView mListView;
     FirebaseListAdapter<Shop> mShopListAdapter;
+    FirebaseListAdapter<Section> mSectionListAdapter;
     FirebaseListAdapter<Item> mItemListAdapter;
 
     /* Fetch the User's ID. */
@@ -48,6 +55,11 @@ public class ShoppingListFragment extends Fragment {
     /* Firebase address for this user's node. */
 
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+
+    /* Section stuff */
+
+    ArrayList<String> sectionKeys;
+    ArrayList<String> sectionNames;
 
     public ShoppingListFragment() {
         // Required empty public constructor
@@ -97,63 +109,108 @@ public class ShoppingListFragment extends Fragment {
         mShopListAdapter = new FirebaseListAdapter<Shop>(getActivity(),
                 Shop.class, R.layout.list_item_main_shop, rootRef) {
             @Override
-            protected void populateView(View v, Shop model) {
+            protected void populateView(View v, Shop model, int position) {
                 super.populateView(v, model);
+                final String shopKey = this.getItemKey(position);
+
                 TextView shopNameView = (TextView) v.findViewById(R.id.text_view_shop_name);
                 shopNameView.setText(model.getName());
 
-                Button addItemBtn = (Button) v.findViewById(R.id.button_add_item_to_shop);
+                Button addSecBtn = (Button) v.findViewById(R.id.button_add_section_to_shop);
+
                 final Shop thisShop = model;
 
-                addItemBtn.setOnClickListener(new View.OnClickListener() {
+                addSecBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName());
-                        dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");
+                        /*DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName(), shopKey);
+                        dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");*/
                     }
                 });
 
                 final View viewRef = v;
-                ListView itemListView = (ListView) v.findViewById(R.id.item_list_view);
-                final ListView itemListViewRef = itemListView;
+                ListView secListView = (ListView) v.findViewById(R.id.section_list_view);
+                final ListView secListViewRef = secListView;
 
-                String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShop.getName() + Constants.FIREBASE_NODENAME_ITEMS;
+                /* Section stuff */
 
-                final Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
+                String FIREBASE_MY_URL_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
+                final Firebase secRef = new Firebase(FIREBASE_MY_URL_SECTIONS);
 
-                mItemListAdapter = new FirebaseItemListAdapter<Item>(getActivity(),
-                        Item.class, R.layout.list_item_main_items, itemRef) {
+                mSectionListAdapter = new FirebaseListAdapter<Section>(getActivity(), Section.class,
+                        R.layout.list_item_main_section, secRef) {
+
                     @Override
-                    protected void populateView(View v, Item model, String key) {
+                    protected void populateView(View v, Section model, int position) {
                         super.populateView(v, model);
+                        final String secKey = this.getItemKey(position);
 
-                        TextView itemName = (TextView) v.findViewById(R.id.text_view_item_name);
-                        itemName.setText(model.getName());
-                        int valCheck = this.getCount();
-                        Log.i("ItemListPopView", "" + valCheck);
+                        TextView secNameView = (TextView) v.findViewById(R.id.text_view_section_name);
+                        secNameView.setText(model.getName());
 
-                        Button removeBtn = (Button) v.findViewById(R.id.remove_item_button);
-                        final String thisKey = key;
+                        Button addItemBtn = (Button) v.findViewById(R.id.button_add_item_to_section);
 
-                        removeBtn.setOnClickListener(new View.OnClickListener() {
+                        final Section thisSec = model;
+
+                        addItemBtn.setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
-                                itemRef.child(thisKey).removeValue();
+                                DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName(), shopKey, thisSec.getName(), secKey);
+                                dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");
                             }
                         });
+
+                        String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + secKey;
+                        final Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
+
+                        final View secViewRef = v;
+                        ListView itemListView = (ListView) v.findViewById(R.id.item_list_view);
+                        final ListView itemListViewRef = itemListView;
+                        final int numSecs = this.getCount();
+
+                        mItemListAdapter = new FirebaseItemListAdapter<Item>(getActivity(),
+                                Item.class, R.layout.list_item_main_items, itemRef) {
+                            @Override
+                            protected void populateView(View v, Item model, String key) {
+                                super.populateView(v, model);
+
+                                TextView itemName = (TextView) v.findViewById(R.id.text_view_item_name);
+                                itemName.setText(model.getName());
+                                int valCheck = this.getCount();
+                                Log.i("ItemListPopView", "" + valCheck);
+
+                                ImageButton removeBtn = (ImageButton) v.findViewById(R.id.remove_item_button);
+                                final String thisKey = key;
+
+                                removeBtn.setOnClickListener(new View.OnClickListener() {
+                                    public void onClick(View v) {
+                                        itemRef.child(thisKey).removeValue();
+                                    }
+                                });
 
                         /* Handles the re-sizing which occurs when items change, as the nested
                          * list adapter can't notify the parent on it's own.
                          */
 
-                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) itemListViewRef.getLayoutParams();
-                        lp.height = 155 * valCheck;
-                        itemListViewRef.setLayoutParams(lp);
+                                RelativeLayout.LayoutParams itemLP = (RelativeLayout.LayoutParams) itemListViewRef.getLayoutParams();
+                                itemLP.height = 200 * valCheck;
+                                itemListViewRef.setLayoutParams(itemLP);
 
-                        AbsListView.LayoutParams llp = (AbsListView.LayoutParams) viewRef.getLayoutParams();
-                        llp.height = AbsListView.LayoutParams.WRAP_CONTENT;
-                        viewRef.setLayoutParams(llp);
+                                AbsListView.LayoutParams secLP  = (AbsListView.LayoutParams) secViewRef.getLayoutParams();
+                                secLP.height = AbsListView.LayoutParams.WRAP_CONTENT;
+                                secViewRef.setLayoutParams(secLP);
+
+                                RelativeLayout.LayoutParams secListLP = (RelativeLayout.LayoutParams) secListViewRef.getLayoutParams();
+                                secListLP.height = 200 + 200 * valCheck;
+                                secListViewRef.setLayoutParams(secListLP);
+
+                                AbsListView.LayoutParams shopLP = (AbsListView.LayoutParams) viewRef.getLayoutParams();
+                                shopLP.height = AbsListView.LayoutParams.WRAP_CONTENT;
+                                viewRef.setLayoutParams(shopLP);
+                            }
+                        };
+                        itemListView.setAdapter(mItemListAdapter);
                     }
                 };
-                itemListView.setAdapter(mItemListAdapter);
+                secListView.setAdapter(mSectionListAdapter);
             }
         };
         mListView.setAdapter(mShopListAdapter);

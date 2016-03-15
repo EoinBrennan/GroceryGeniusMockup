@@ -127,6 +127,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         return mSnapshots.getItem(i).getValue(mModelClass);
     }
 
+    public String getItemKey(int i) {
+        return mSnapshots.getItem(i).getKey();
+    }
+
     public Firebase getRef(int position) {
         return mSnapshots.getItem(position).getRef();
     }

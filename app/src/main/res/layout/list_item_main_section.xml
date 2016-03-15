@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    android:background="@android:color/darker_gray"
+    android:background="@android:color/black"
     android:clickable="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
@@ -13,7 +13,7 @@
     android:paddingStart="@dimen/padding_List">
 
     <RelativeLayout
-        android:id="@+id/shop_header"
+        android:id="@+id/section_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -21,10 +21,11 @@
         android:layout_alignParentStart="true">
 
         <TextView
-            android:id="@+id/text_view_shop_name"
+            android:id="@+id/text_view_section_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shop"
+            android:text="Section"
+            android:textColor="@android:color/white"
             android:layout_margin="@dimen/fab_margin" />
 
         <Button
@@ -32,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
-            android:id="@+id/button_add_section_to_shop"
+            android:id="@+id/button_add_item_to_section"
             android:layout_marginRight="12dp"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
@@ -42,9 +43,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="15dp"
-        android:id="@+id/section_list_view"
+        android:id="@+id/item_list_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/shop_header" />
+        android:layout_below="@+id/section_header" />
 
 </RelativeLayout>

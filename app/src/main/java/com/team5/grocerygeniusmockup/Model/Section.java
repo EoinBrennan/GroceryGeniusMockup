@@ -15,17 +15,16 @@ import java.util.HashMap;
  * that becomes a long timestamp of the moment it reaches the Firebase database when it gets there.
  */
 
-public class Item {
+public class Section {
     private String name;
     private String shop;
-    private String section;
-    private int quantity;
+    private int order;
     private HashMap<String, Object> timestampCreated;
     private HashMap<String, Object> timestampLastChanged;
 
     /* Empty constructor required for Firebase serialisation. */
 
-    public Item() {
+    public Section() {
     }
 
     /**
@@ -33,15 +32,13 @@ public class Item {
      *
      * @param name     The name of item, e.g. Milk
      * @param shop     The name of the shop the user wants to buy the item in.
-     * @param section  The name of the section of the shp the item can be found.
-     * @param quantity The amount of the item the user wants.
+     * @param order    Where does this section appear in the shop.
      */
 
-    public Item(String name, String shop, String section, int quantity) {
+    public Section(String name, String shop, int order) {
         this.name = name;
         this.shop = shop;
-        this.section = section;
-        this.quantity = quantity;
+        this.order = order;
         this.timestampCreated = timestampCreated;
 
         HashMap<String, Object> timestampLastChangedObj = new HashMap<String, Object>();
@@ -57,12 +54,8 @@ public class Item {
         return shop;
     }
 
-    public String getSection() {
-        return section;
-    }
-
-    public int getQuantity() {
-        return quantity;
+    public int getOrder() {
+        return order;
     }
 
     public HashMap<String, Object> getTimestampCreated() {
