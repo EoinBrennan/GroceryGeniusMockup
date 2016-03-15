@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -133,7 +134,7 @@ public class ShoppingListFragment extends Fragment {
                         int valCheck = this.getCount();
                         Log.i("ItemListPopView", "" + valCheck);
 
-                        Button removeBtn = (Button) v.findViewById(R.id.remove_item_button);
+                        ImageButton removeBtn = (ImageButton) v.findViewById(R.id.remove_item_button);
                         final String thisKey = key;
 
                         removeBtn.setOnClickListener(new View.OnClickListener() {
