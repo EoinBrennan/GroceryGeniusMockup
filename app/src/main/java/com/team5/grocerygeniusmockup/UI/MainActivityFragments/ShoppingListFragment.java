@@ -97,18 +97,21 @@ public class ShoppingListFragment extends Fragment {
         mShopListAdapter = new FirebaseListAdapter<Shop>(getActivity(),
                 Shop.class, R.layout.list_item_main_shop, rootRef) {
             @Override
-            protected void populateView(View v, Shop model) {
+            protected void populateView(View v, Shop model, int position) {
                 super.populateView(v, model);
+                final String shopKey = this.getItemKey(position);
+
                 TextView shopNameView = (TextView) v.findViewById(R.id.text_view_shop_name);
                 shopNameView.setText(model.getName());
 
                 Button addItemBtn = (Button) v.findViewById(R.id.button_add_item_to_shop);
-                final Shop thisShop = model;
 
                 addItemBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName());
+                        DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(shopKey);
                         dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");
+
+                        Toast.makeText(getActivity(), shopKey, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -116,8 +119,7 @@ public class ShoppingListFragment extends Fragment {
                 ListView itemListView = (ListView) v.findViewById(R.id.item_list_view);
                 final ListView itemListViewRef = itemListView;
 
-                String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShop.getName() + Constants.FIREBASE_NODENAME_ITEMS;
-
+                String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey;
                 final Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
 
                 mItemListAdapter = new FirebaseItemListAdapter<Item>(getActivity(),

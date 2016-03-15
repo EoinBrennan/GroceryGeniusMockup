@@ -34,7 +34,7 @@ public class AddItemDialogFragment extends DialogFragment {
 
     EditText mEditTextItemName;
     NumberPicker mNumberPickerQuantity;
-    String shopName;
+    String shopKey;
 
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
@@ -46,10 +46,10 @@ public class AddItemDialogFragment extends DialogFragment {
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created
      */
-    public static AddItemDialogFragment newInstance(String shopName) {
+    public static AddItemDialogFragment newInstance(String shopKey) {
         AddItemDialogFragment addItemDialogFragment = new AddItemDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("shopName", shopName);
+        bundle.putString("shopKey", shopKey);
         addItemDialogFragment.setArguments(bundle);
         return addItemDialogFragment;
     }
@@ -58,7 +58,7 @@ public class AddItemDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopName = getArguments().getString("shopName", "Default");
+        shopKey = getArguments().getString("shopKey", "Default");
     }
 
     @Override
@@ -122,13 +122,13 @@ public class AddItemDialogFragment extends DialogFragment {
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Item newItem = new Item(userEnteredName, shopName, frequencySelected);
+            Item newItem = new Item(userEnteredName, shopKey, frequencySelected);
 
             /* Fetch User ID and set up Firebase address. */
 
             mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
-            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopName + Constants.FIREBASE_NODENAME_ITEMS;
+            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey;
 
             // Get the reference to the root node in Firebase
             Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
