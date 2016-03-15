@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.team5.grocerygeniusmockup.Model.Section;
 import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
@@ -124,9 +125,18 @@ public class AddShopDialogFragment extends DialogFragment {
             /* Create a unique key for a new node and fetch that key. */
             Firebase newShopRef = shopRef.push();
 
-            final String shopID = newShopRef.getKey();
+            final String shopKey = newShopRef.getKey();
 
             newShopRef.setValue(newShop);
+
+            /* Add a default section */
+            Section defSection = new Section("Other", userEnteredName, 0);
+
+            String FIREBASE_MY_URL_SHOPSECTION = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
+            Firebase sectionRef = new Firebase(FIREBASE_MY_URL_SHOPSECTION);
+
+            Firebase defaultSecRef = sectionRef.push();
+            defaultSecRef.setValue(defSection);
         }
 
     }

@@ -22,10 +22,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.team5.grocerygeniusmockup.Model.FirebaseArray;
 import com.team5.grocerygeniusmockup.Model.Item;
+import com.team5.grocerygeniusmockup.Model.Section;
 import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +38,10 @@ public class AddItemDialogFragment extends DialogFragment {
 
     EditText mEditTextItemName;
     NumberPicker mNumberPickerQuantity;
+    String shopName;
     String shopKey;
+    String secName;
+    String secKey;
 
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
@@ -46,10 +53,13 @@ public class AddItemDialogFragment extends DialogFragment {
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created
      */
-    public static AddItemDialogFragment newInstance(String shopKey) {
+    public static AddItemDialogFragment newInstance(String shopName, String shopKey, String secName, String secKey) {
         AddItemDialogFragment addItemDialogFragment = new AddItemDialogFragment();
         Bundle bundle = new Bundle();
+        bundle.putString("shopName", shopName);
         bundle.putString("shopKey", shopKey);
+        bundle.putString("secName", secName);
+        bundle.putString("secKey", secKey);
         addItemDialogFragment.setArguments(bundle);
         return addItemDialogFragment;
     }
@@ -58,7 +68,13 @@ public class AddItemDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shopName = getArguments().getString("shopName", "Default");
         shopKey = getArguments().getString("shopKey", "Default");
+        secName = getArguments().getString("secName", "Default");
+        secKey = getArguments().getString("secKey", "Default");
+
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
     }
 
     @Override
@@ -122,13 +138,11 @@ public class AddItemDialogFragment extends DialogFragment {
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Item newItem = new Item(userEnteredName, shopKey, frequencySelected);
+            Item newItem = new Item(userEnteredName, shopName, secName, frequencySelected);
 
             /* Fetch User ID and set up Firebase address. */
 
-            mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
-            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey;
+            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + secKey;
 
             // Get the reference to the root node in Firebase
             Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);
@@ -140,7 +154,5 @@ public class AddItemDialogFragment extends DialogFragment {
 
             newItemRef.setValue(newItem);
         }
-
     }
-
 }

@@ -51,7 +51,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private boolean EoinTestMode = false;
+    private boolean EoinTestMode = true;
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 

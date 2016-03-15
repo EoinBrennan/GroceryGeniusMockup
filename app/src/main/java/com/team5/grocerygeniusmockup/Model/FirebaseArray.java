@@ -44,7 +44,7 @@ import java.util.Collections;
 /**
  * This class implements an array-like collection on top of a Firebase location.
  */
-class FirebaseArray implements ChildEventListener {
+public class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
         enum EventType {Added, Changed, Removed, Moved}
 

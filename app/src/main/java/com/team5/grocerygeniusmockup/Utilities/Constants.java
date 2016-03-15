@@ -17,6 +17,7 @@ public final class Constants {
     public static final String FIREBASE_PROPERTY_SHOP_FREQUENCY = "frequency";
 
     public static final String FIREBASE_NODENAME_SHOPS = "shops";
+    public static final String FIREBASE_NODENAME_SECTIONS = "sections";
     public static final String FIREBASE_NODENAME_ITEMS = "items";
 
     /**
