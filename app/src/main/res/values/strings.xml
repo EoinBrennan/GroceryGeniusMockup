@@ -45,6 +45,7 @@
     <string name="question3">Part 3</string>
     <string name="question3_part1">Please enter each section of</string>
     <string name="question3_part2">of the shop you visit</string>
+    <string name="action_new_list">Create new list</string>
 
 
     <string-array name="frequency_shop_visit">
@@ -56,4 +57,6 @@
         <item>Every month</item>
         <item>Very infrequently</item>
     </string-array>
+    <string name="title_activity_quiz">QuizActivity</string>
+    <string name="next">Next</string>
 </resources>
