@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,6 +30,7 @@ import com.firebase.client.ValueEventListener;
 import com.team5.grocerygeniusmockup.Model.FirebaseArray;
 import com.team5.grocerygeniusmockup.Model.FirebaseItemListAdapter;
 import com.team5.grocerygeniusmockup.Model.FirebaseListAdapter;
+import com.team5.grocerygeniusmockup.Model.FirebaseThreeLayerExpandableAdapter;
 import com.team5.grocerygeniusmockup.Model.Item;
 import com.team5.grocerygeniusmockup.Model.NumStore;
 import com.team5.grocerygeniusmockup.Model.Section;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
  */
 public class ShoppingListFragment extends Fragment {
     ListView mListView;
+    ExpandableListView mExListView;
     FirebaseListAdapter<Shop> mShopListAdapter;
     FirebaseListAdapter<Section> mSectionListAdapter;
     FirebaseListAdapter<Item> mItemListAdapter;
@@ -101,6 +104,11 @@ public class ShoppingListFragment extends Fragment {
         /* The list of shops. */
         View rootView = inflater.inflate(R.layout.fragment_shoppinglists, container, false);
 
+        mExListView = (ExpandableListView) rootView.findViewById(R.id.parent_level);
+        mExListView.setAdapter(new FirebaseThreeLayerExpandableAdapter(getActivity(), mExListView, FIREBASE_MY_NODE_URL));
+
+
+        /*
         mListView = (ListView) rootView.findViewById(R.id.list_view_shopping_lists);
 
         final Firebase rootRef = new Firebase(FIREBASE_MY_URL_SHOPS);
@@ -123,7 +131,7 @@ public class ShoppingListFragment extends Fragment {
                 addSecBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         /*DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName(), shopKey);
-                        dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");*/
+                        dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");
                     }
                 });
 
@@ -131,7 +139,7 @@ public class ShoppingListFragment extends Fragment {
                 ListView secListView = (ListView) v.findViewById(R.id.section_list_view);
                 final ListView secListViewRef = secListView;
 
-                /* Section stuff */
+                /* Section stuff
 
                 String FIREBASE_MY_URL_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
                 final Firebase secRef = new Firebase(FIREBASE_MY_URL_SECTIONS);
@@ -188,7 +196,7 @@ public class ShoppingListFragment extends Fragment {
 
                         /* Handles the re-sizing which occurs when items change, as the nested
                          * list adapter can't notify the parent on it's own.
-                         */
+
 
                                 RelativeLayout.LayoutParams itemLP = (RelativeLayout.LayoutParams) itemListViewRef.getLayoutParams();
                                 itemLP.height = 200 * valCheck;
@@ -215,7 +223,7 @@ public class ShoppingListFragment extends Fragment {
         };
         mListView.setAdapter(mShopListAdapter);
         Log.i("initScreenOfFrag", "here");
-
+        */
         return rootView;
     }
 
