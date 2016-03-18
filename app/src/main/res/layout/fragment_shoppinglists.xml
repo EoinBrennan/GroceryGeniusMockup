@@ -13,12 +13,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/list_view_shopping_lists"
-            android:layout_width="match_parent"
+        <ExpandableListView
+            android:id="@+id/parent_level"
             android:layout_height="0dp"
+            android:layout_width="fill_parent"
             android:layout_weight="1"
-            android:scrollbars="none" />
+            android:groupIndicator="@null">
+        </ExpandableListView>
 
         <!-- This accounts for the lost spcae due th the header bar. -->
         <Space
