@@ -314,16 +314,16 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
         TextView shopNameView = (TextView) convertView.findViewById(R.id.text_view_shop_name);
         shopNameView.setText(model.getName());
 
-        Button addSecBtn = (Button) convertView.findViewById(R.id.button_add_section_to_shop);
+       /* Button addSecBtn = (Button) convertView.findViewById(R.id.button_add_section_to_shop);
 
         final Shop thisShop = model;
 
         addSecBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                        /*DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName(), shopKey);
-                        dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");*/
+                        //DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName(), shopKey);
+                        //dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");
             }
-        });
+        });*/
 
         return convertView;
 

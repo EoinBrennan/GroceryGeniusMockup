@@ -35,8 +35,7 @@
     <string name="question1_part1">How many shops do you visit </string>
     <string name="question1_part2">at least once a month?</string>
     <string name="question_2">Part 2</string>
-    <string name="question2_part1">Please select how often you</string>
-    <string name="question2_part2">visit each shop</string>
+    <string name="question2_part1">What shops do you visit?</string>
     <string name="aldi">Aldi</string>
     <string name="lidl">Lidl</string>
     <string name="tesco">Tesco</string>
@@ -59,4 +58,5 @@
     </string-array>
     <string name="title_activity_quiz">QuizActivity</string>
     <string name="next">Next</string>
+    <string name="title_activity_quiz_2">Quiz2Activity</string>
 </resources>
