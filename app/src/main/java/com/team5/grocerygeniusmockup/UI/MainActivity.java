@@ -2,10 +2,7 @@ package com.team5.grocerygeniusmockup.UI;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,14 +20,10 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
-import com.team5.grocerygeniusmockup.Utilities.Constants;
+import com.team5.grocerygeniusmockup.UI.QuizActivities.QuizActivity;
 
 /**
  * Represents the home screen of the app which has a {@link ViewPager} with

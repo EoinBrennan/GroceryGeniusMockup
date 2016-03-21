@@ -45,13 +45,22 @@
                 android:value=".UI.LoginActivity" />
         </activity>
         <activity
-            android:name=".UI.QuizActivity"
+            android:name=".UI.QuizActivities.QuizActivity"
             android:label="@string/title_activity_quiz"
             android:parentActivityName=".UI.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UI.MainActivity" />
+        </activity>
+        <activity
+            android:name=".UI.QuizActivities.Quiz2Activity"
+            android:label="@string/title_activity_quiz_2"
+            android:parentActivityName=".UI.QuizActivities.QuizActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".UI.QuizActivities.QuizActivity" />
         </activity>
     </application>
 
