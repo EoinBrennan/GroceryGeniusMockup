@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
+import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
 import com.team5.grocerygeniusmockup.UI.QuizActivities.QuizActivity;
 
 /**
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createNewListDialog(){
-        Intent logInIntent = new Intent(MainActivity.this, QuizActivity.class);
+        Intent logInIntent = new Intent(MainActivity.this, Quiz2Activity.class);
         startActivity(logInIntent);
     }
 
