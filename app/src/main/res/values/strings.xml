@@ -35,7 +35,7 @@
     <string name="question1_part1">How many shops do you visit </string>
     <string name="question1_part2">at least once a month?</string>
     <string name="question_2">Part 2</string>
-    <string name="question2_part1">What shops do you visit?</string>
+    <string name="question2_part1">What shop(s) will you visit?</string>
     <string name="aldi">Aldi</string>
     <string name="lidl">Lidl</string>
     <string name="tesco">Tesco</string>
