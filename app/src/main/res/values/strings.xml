@@ -31,19 +31,12 @@
     <!-- Frequencies of Shop Visits -->
 
     <string name="frequency_shop_visit_prompt">How often do you go...</string>
-    <string name="question1">Part 1:</string>
-    <string name="question1_part1">How many shops do you visit </string>
-    <string name="question1_part2">at least once a month?</string>
-    <string name="question_2">Part 2</string>
-    <string name="question2_part1">What shop(s) will you visit?</string>
+    <string name="question1">What shop(s) will you visit?</string>
     <string name="aldi">Aldi</string>
     <string name="lidl">Lidl</string>
     <string name="tesco">Tesco</string>
     <string name="other">Other</string>
     <string name="enter_number">Enter a number</string>
-    <string name="question3">Part 3</string>
-    <string name="question3_part1">Please enter each section of</string>
-    <string name="question3_part2">of the shop you visit</string>
     <string name="action_new_list">Create new list</string>
 
 
@@ -59,4 +52,6 @@
     <string name="title_activity_quiz">QuizActivity</string>
     <string name="next">Next</string>
     <string name="title_activity_quiz_2">Quiz2Activity</string>
+    <string name="add_new_shop">Add new shop</string>
+    <string name="enter_shop_name">Enter shop name to add</string>
 </resources>
