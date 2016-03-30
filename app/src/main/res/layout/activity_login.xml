@@ -91,6 +91,17 @@
                 android:textColor="@android:color/white"
                 android:background="@color/primary"/>
 
+            <Button
+                android:id="@+id/create_new_account"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_create_account"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@color/primary"/>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

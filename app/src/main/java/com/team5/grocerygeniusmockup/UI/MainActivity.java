@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.settings_new_shop) {
             showAddShopDialog();
-        }else if(id ==R.id.settings_new_list){
-            createNewListDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -98,11 +96,6 @@ public class MainActivity extends AppCompatActivity {
     public void showAddShopDialog() {
         DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
         dialog.show(MainActivity.this.getFragmentManager(), "AddShopDialogFragment");
-    }
-
-    public void createNewListDialog(){
-        Intent logInIntent = new Intent(MainActivity.this, Quiz2Activity.class);
-        startActivity(logInIntent);
     }
 
     /**
