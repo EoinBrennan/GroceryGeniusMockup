@@ -39,6 +39,8 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.team5.grocerygeniusmockup.R;
+import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz1Activity;
+import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
 import java.util.ArrayList;
@@ -51,7 +53,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private boolean EoinTestMode = true;
+    private boolean EoinTestMode = false;
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
@@ -151,6 +153,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 LogIn();
+            }
+        });
+
+        Button mCreateNewAccount = (Button) findViewById(R.id.create_new_account);
+        mCreateNewAccount.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent logInIntent = new Intent(LoginActivity.this, Quiz1Activity.class);
+                startActivity(logInIntent);
             }
         });
 

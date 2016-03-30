@@ -21,9 +21,9 @@ import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragm
 import java.util.ArrayList;
 import java.util.List;
 
-public class Quiz2Activity extends ListActivity {
+public class Quiz3Activity extends ListActivity {
 
-    String listItem[] = {"First shop","Second shop","third shop"};
+    String sections[] = {"Dairy","Meat","Bread"};
 
     ArrayAdapter<String> myAdapter;
     EditText et;
@@ -33,18 +33,18 @@ public class Quiz2Activity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.quiz2);
+        setContentView(R.layout.activity_shop_sections);
         et = (EditText)findViewById(R.id.enterShopName);
 
         List values = new ArrayList();
-        for (int i = 0; i < listItem.length; i++) {
-            values.add(listItem[i]);
+        for (int i = 0; i < sections.length; i++) {
+            values.add(sections[i]);
         }
 
-        //*
+        /*fix this!!!
         myAdapter = new ArrayAdapter<String>(
                 this,
-                android.R.layout.simple_list_item_checked,
+                R.layout.list_item_shop_order,
                 values
         );
         //*/
@@ -73,21 +73,7 @@ public class Quiz2Activity extends ListActivity {
 
                         adapter.notifyDataSetChanged();
                     }
-                }
-        );
-
-        Button next = (Button) findViewById(R.id.next_button);
-
-        next.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View view) {
-
-
-                        Intent logInIntent = new Intent(Quiz2Activity.this, Quiz3Activity.class);
-                        startActivity(logInIntent);
-                    }
-                }
-        );
+                });
     }
 
     @Override

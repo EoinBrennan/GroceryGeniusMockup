@@ -44,15 +44,32 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UI.LoginActivity" />
         </activity>
-
         <activity
-            android:name=".UI.QuizActivities.Quiz2Activity"
-            android:label="@string/title_activity_quiz_2"
-            android:parentActivityName=".UI.MainActivity"
+            android:name=".UI.QuizActivities.Quiz1Activity"
+            android:label="@string/title_activity_quiz1"
+            android:parentActivityName=".UI.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".UI.MainActivity" />
+                android:value=".UI.LoginActivity" />
+        </activity>
+        <activity
+            android:name=".UI.QuizActivities.Quiz2Activity"
+            android:label="@string/title_activity_quiz_2"
+            android:parentActivityName=".UI.QuizActivities.Quiz1Activity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".UI.QuizActivities.Quiz1Activity" />
+        </activity>
+        <activity
+            android:name=".UI.QuizActivities.Quiz3Activity"
+            android:label="@string/title_activity_quiz3"
+            android:parentActivityName=".UI.QuizActivities.Quiz2Activity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity" />
         </activity>
     </application>
 
