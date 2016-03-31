@@ -29,6 +29,7 @@
 package com.team5.grocerygeniusmockup.Model;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -36,10 +37,12 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.team5.grocerygeniusmockup.R;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddSectionDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
@@ -314,16 +317,17 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
         TextView shopNameView = (TextView) convertView.findViewById(R.id.text_view_shop_name);
         shopNameView.setText(model.getName());
 
-       /* Button addSecBtn = (Button) convertView.findViewById(R.id.button_add_section_to_shop);
+       ImageButton addSecBtn = (ImageButton) convertView.findViewById(R.id.button_add_section_to_shop);
 
         final Shop thisShop = model;
+        final String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
 
         addSecBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                        //DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(thisShop.getName(), shopKey);
-                        //dialog.show(getActivity().getFragmentManager(), "AddItemDialogFragment");
+                        DialogFragment dialog = (DialogFragment) AddSectionDialogFragment.newInstance(thisShop.getName(), thisShopKey);
+                        dialog.show(mActivity.getFragmentManager(), "AddSectionDialogFragment");
             }
-        });*/
+        });
 
         return convertView;
 
