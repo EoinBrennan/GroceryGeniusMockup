@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
-//import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
+import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
 
 /**
  * Represents the home screen of the app which has a {@link ViewPager} with
@@ -65,9 +65,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.settings_new_shop) {
             showAddShopDialog();
-        }else if(id ==R.id.settings_new_list){
-            createNewListDialog();
         }
+        
         return super.onOptionsItemSelected(item);
     }
 
@@ -98,11 +97,6 @@ public class MainActivity extends AppCompatActivity {
     public void showAddShopDialog() {
         DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
         dialog.show(MainActivity.this.getFragmentManager(), "AddShopDialogFragment");
-    }
-
-    public void createNewListDialog(){
-        //Intent logInIntent = new Intent(MainActivity.this, Quiz2Activity.class);
-        //startActivity(logInIntent);
     }
 
     /**
