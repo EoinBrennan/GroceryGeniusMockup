@@ -8,8 +8,10 @@
     <string name="action_new_shop">Add New Shop</string>
     <string name="section_format">The Pantry is very empty...</string>
     <string name="hint_add_shop">Create a shop (e.g. Aldi)</string>
+    <string name="hint_add_section">Create a section in the shop (e.g. Dairy, Produce)</string>
     <string name="hint_add_item">What do you need? (e.g. Milk)</string>
     <string name="quantity">How many do you want?</string>
+    <string name="section_order">Where in the order of sections you visit in the shop is this?</string>
     <string name="positive_button_create">Create</string>
     <string name="positive_button_add_item">Add Item</string>
 
@@ -54,12 +56,17 @@
     <string name="title_activity_quiz_2">Quiz2Activity</string>
     <string name="add_new_shop">Add new shop</string>
     <string name="enter_shop_name">Enter shop name to add</string>
-    <string name="action_create_account">Create new account</string>
-    <string name="hint_enter_your_email">Enter your email</string>
-    <string name="hint_enter_your_password">Enter your password</string>
-    <string name="hint_confirm_password">Confirm Your Password</string>
-    <string name="prompt_confirm_password">Confirm Password</string>
-    <string name="title_activity_quiz1">Quiz1Activity</string>
-    <string name="title_activity_quiz12">Quiz1Activity2</string>
-    <string name="title_activity_quiz3">Quiz3Activity</string>
+
+    <string-array name="section_order">
+        <item>1st</item>
+        <item>2nd</item>
+        <item>3rd</item>
+        <item>4th</item>
+        <item>5th</item>
+        <item>6th</item>
+        <item>7th</item>
+        <item>8th</item>
+        <item>9th</item>
+        <item>10th</item>
+    </string-array>
 </resources>
