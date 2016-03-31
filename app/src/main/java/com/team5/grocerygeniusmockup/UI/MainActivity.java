@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.settings_new_shop) {
             showAddShopDialog();
         }
+        
         return super.onOptionsItemSelected(item);
     }
 

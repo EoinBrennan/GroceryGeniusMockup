@@ -79,7 +79,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     protected int itemLayout;
     protected Activity mActivity;
     public SortedFirebaseArray mSectionSnapshots;
-    final public ArrayList<SortedFirebaseArray> mItemSnapshots = new ArrayList<SortedFirebaseArray>();
+    public ArrayList<SortedFirebaseArray> mItemSnapshots = new ArrayList<SortedFirebaseArray>();
     public String shopKey;
     public String shopName;
     SharedPreferences mPrefs;
@@ -93,8 +93,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         this.FIREBASE_MY_NODE_URL = FIREBASE_MY_NODE_URL;
         String MY_FIREBASE_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
 
-        Log.e("ShopKeySLA", shopKey);
-
+        Log.e("ShopKey", shopKey);
 
         final InternalExpandableListView thisMom = parent;
 
@@ -102,6 +101,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         this.shopName = shopName;
         mActivity = activity;
         mSectionSnapshots = new SortedFirebaseArray(new Firebase(MY_FIREBASE_SECTIONS));
+
         /**
          * Attaches a listener that is triggered by FirebaseArray whenever elements are
          * added, removed, moved or changed in the FirebaseArray.
@@ -114,7 +114,12 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                  * This listener triggers the BaseAdapter method notifyDataSetChanged.
                  * This notifies views reflecting the data set that they should refresh themselves.
                  */
-                notifyDataSetChanged();
+                Log.e("SecSnapsChangeListener", "size of SSnaps" + mSectionSnapshots.getCount());
+                for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
+                    Log.e("SecSnapsChangeListerner", i + "th element in mSSnaps is: " + mSectionSnapshots.getItem(i).getValue(Section.class).getName() + " & key is: " + mSectionSnapshots.getItem(i).getKey());
+                }
+
+                //notifyDataSetChanged();
 
                 generateItems();
 
@@ -126,30 +131,42 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     }
 
     public void generateItems() {
-        Log.e("GenItems", "" + mSectionSnapshots.getCount());
+        Log.e("GenItems", "SecSnaps size: " + mSectionSnapshots.getCount());
 
         for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
             String sectionKey = mSectionSnapshots.getItem(i).getKey();
-            Log.e("GenItemLoop1", sectionKey);
+            Log.e("GenItems", "Current section Key: " + sectionKey);
 
             String FIREBASE_THIS_SECTIONS_ITEMS = FIREBASE_MY_NODE_URL + "/" +
                     Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + sectionKey;
-            Log.e("GenItemLoop2", FIREBASE_THIS_SECTIONS_ITEMS);
+            Log.e("GenItems", "URL for items in this section: " + FIREBASE_THIS_SECTIONS_ITEMS);
 
             final SortedFirebaseArray thisItem = new SortedFirebaseArray(new Firebase(FIREBASE_THIS_SECTIONS_ITEMS));
-            Log.e("GenItemLoop3", thisItem.toString());
+            Log.e("GenItems", "SortedFirebaseArray reference: " + thisItem.toString());
 
             final int z = i;
-            Log.e("GenItemLoop4", "" + z);
+            Log.e("GenItems", "Which section in this shop?: " + (z + 1) + "th");
 
             thisItem.setOnChangedListener(
                     new SortedFirebaseArray.OnChangedListener() {
                         @Override
                         public void onChanged(EventType type, int index, int oldIndex) {
-                            notifyDataSetChanged();
-                            mItemSnapshots.add(z, thisItem);
 
-                            Log.e("mItemSnapshot", mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
+                            try {
+                                mItemSnapshots.set(z, thisItem);
+                            } catch (IndexOutOfBoundsException e) {
+                                mItemSnapshots.add(z, thisItem);
+                            }
+
+                            Log.e("ItemInSectionListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
+                            Log.e("ItemInSectionListener", "How many sections have item listeners:" + mItemSnapshots.size());
+                            for (int j = 0; j < mItemSnapshots.size(); j++) {
+                                Log.e("ItemInSectionListener", "How many items in the " + j + "th section: " + mItemSnapshots.get(j).getCount());
+                                for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
+                                    Log.e("ItemInSectionListener", k + "th item in the " + j + "th section: " +  mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                }
+                            }
+                            notifyDataSetChanged();
                         }
                     }
             );
@@ -174,10 +191,13 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        if (mItemSnapshots.size() != 0) {
+        Log.e("getChildrenCount", "group position: " + groupPosition);
+        if (mItemSnapshots.size() != 0 && groupPosition < mItemSnapshots.size()) {
+            Log.e("ChildrenCount", "value: " + mItemSnapshots.get(groupPosition).getCount());
             return mItemSnapshots.get(groupPosition).getCount();
         } else {
-            return 1;
+            Log.e("getChildrenCount", "empty Item Snap");
+            return 0;
         }
     }
 
@@ -189,6 +209,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
     @Override
     public int getGroupCount() {
+        Log.e("getGroupCount", "" + mSectionSnapshots.getCount());
         return mSectionSnapshots.getCount();
     }
 
@@ -297,23 +318,23 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (mItemSnapshots.size() != 0) {
 
-            Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
+                Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
 
-            // Call out to subclass to marshall this model into the provided view
+                // Call out to subclass to marshall this model into the provided view
 
-            convertView = mActivity.getLayoutInflater().inflate(R.layout.list_item_main_items, parent, false);
+                convertView = mActivity.getLayoutInflater().inflate(R.layout.list_item_main_items, parent, false);
 
-            TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
-            itemNameView.setText(model.getName());
+                TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
+                itemNameView.setText(model.getName());
 
-            ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
+                ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
 
-            rmvItemBtn.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
-                }
-            });
-            return convertView;
+                rmvItemBtn.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
+                    }
+                });
+                return convertView;
         } else {
             TextView row = (TextView) convertView;
             if (row == null) {
