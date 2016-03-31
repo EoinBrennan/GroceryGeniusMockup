@@ -102,9 +102,10 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                  */
                 notifyDataSetChanged();
 
-                for (int i = 0; i < mSnapshots.getCount(); i++) {
+                /*for (int i = 0; i < mSnapshots.getCount(); i++) {
                     thisDad.expandGroup(i);
-                }
+                }*/
+                thisDad.expandGroup(0);
             }
         });
     }

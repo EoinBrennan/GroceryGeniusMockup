@@ -51,11 +51,6 @@
         <item>Every month</item>
         <item>Very infrequently</item>
     </string-array>
-    <string name="title_activity_quiz">QuizActivity</string>
-    <string name="next">Next</string>
-    <string name="title_activity_quiz_2">Quiz2Activity</string>
-    <string name="add_new_shop">Add new shop</string>
-    <string name="enter_shop_name">Enter shop name to add</string>
 
     <string-array name="section_order">
         <item>1st</item>
@@ -69,4 +64,18 @@
         <item>9th</item>
         <item>10th</item>
     </string-array>
+
+    <string name="title_activity_quiz">QuizActivity</string>
+    <string name="next">Next</string>
+    <string name="title_activity_quiz_2">Quiz2Activity</string>
+    <string name="add_new_shop">Add new shop</string>
+    <string name="enter_shop_name">Enter shop name to add</string>
+    <string name="action_create_account">Create new account</string>
+    <string name="hint_enter_your_email">Enter your email</string>
+    <string name="hint_enter_your_password">Enter your password</string>
+    <string name="hint_confirm_password">Confirm Your Password</string>
+    <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="title_activity_quiz1">Quiz1Activity</string>
+    <string name="title_activity_quiz12">Quiz1Activity2</string>
+    <string name="title_activity_quiz3">Quiz3Activity</string>
 </resources>
