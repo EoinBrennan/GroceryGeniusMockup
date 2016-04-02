@@ -11,8 +11,4 @@
         android:orderInCategory="1"
         android:title="@string/action_new_shop"
         app:showAsAction="never" />
-    <item android:id="@+id/settings_new_list"
-        android:orderInCategory="50"
-        android:title="@string/action_new_list"
-        app:showAsAction="never"/>
 </menu>

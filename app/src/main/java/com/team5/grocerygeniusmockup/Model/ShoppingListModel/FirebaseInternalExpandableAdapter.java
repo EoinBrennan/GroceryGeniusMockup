@@ -26,26 +26,31 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.team5.grocerygeniusmockup.Model.Item;
+import com.team5.grocerygeniusmockup.Model.Section;
+import com.team5.grocerygeniusmockup.Model.Shop;
+import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
@@ -110,6 +115,12 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         mSectionSnapshots.setOnChangedListener(new SortedFirebaseArray.OnChangedListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
+                Log.e("SecSnapsChangeListener", "Index changed: " + index);
+
+                if (type == EventType.Added) {
+                    mItemSnapshots.add(index, null);
+                }
+
                 /**
                  * This listener triggers the BaseAdapter method notifyDataSetChanged.
                  * This notifies views reflecting the data set that they should refresh themselves.
@@ -155,18 +166,34 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                             try {
                                 mItemSnapshots.set(z, thisItem);
                             } catch (IndexOutOfBoundsException e) {
-                                mItemSnapshots.add(z, thisItem);
-                            }
-
-                            Log.e("ItemInSectionListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
-                            Log.e("ItemInSectionListener", "How many sections have item listeners:" + mItemSnapshots.size());
-                            for (int j = 0; j < mItemSnapshots.size(); j++) {
-                                Log.e("ItemInSectionListener", "How many items in the " + j + "th section: " + mItemSnapshots.get(j).getCount());
-                                for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
-                                    Log.e("ItemInSectionListener", k + "th item in the " + j + "th section: " +  mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                try {
+                                    mItemSnapshots.add(z, thisItem);
+                                } catch (IndexOutOfBoundsException e1) {
+                                    /*for (int i = 0; i < z; i++) {
+                                        try {
+                                            mItemSnapshots.get(i);
+                                        } catch (IndexOutOfBoundsException e2) {
+                                            mItemSnapshots.add(i, null);
+                                        }
+                                    }*/
                                 }
                             }
-                            notifyDataSetChanged();
+
+                            try {
+                                Log.e("ItemInSectionListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
+                                Log.e("ItemInSectionListener", "How many sections have item listeners:" + mItemSnapshots.size());
+                                for (int j = 0; j < mItemSnapshots.size(); j++) {
+                                    if (mItemSnapshots.get(j) != null) {
+                                        Log.e("ItemInSectionListener", "How many items in the " + j + "th section: " + mItemSnapshots.get(j).getCount());
+                                        for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
+                                            Log.e("ItemInSectionListener", k + "th item in the " + j + "th section: " + mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                        }
+                                    }
+                                }
+                                notifyDataSetChanged();
+                            } catch (IndexOutOfBoundsException e) {
+                                Log.e("ItemInSectionListener", "This item doesn't exist yet.");
+                            }
                         }
                     }
             );
@@ -192,7 +219,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     @Override
     public int getChildrenCount(int groupPosition) {
         Log.e("getChildrenCount", "group position: " + groupPosition);
-        if (mItemSnapshots.size() != 0 && groupPosition < mItemSnapshots.size()) {
+        if (mItemSnapshots.size() != 0 && mItemSnapshots.get(groupPosition) != null && groupPosition < mItemSnapshots.size()) {
             Log.e("ChildrenCount", "value: " + mItemSnapshots.get(groupPosition).getCount());
             return mItemSnapshots.get(groupPosition).getCount();
         } else {
@@ -315,33 +342,47 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
 
     @Override
-    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        if (mItemSnapshots.size() != 0) {
+    public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild, View convertView, ViewGroup parent) {
+        if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.get(groupPosition).getCount() != 0 ) {
 
-                Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
+            Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
 
-                // Call out to subclass to marshall this model into the provided view
+            // Call out to subclass to marshall this model into the provided view
 
-                convertView = mActivity.getLayoutInflater().inflate(R.layout.list_item_main_items, parent, false);
+            convertView = mActivity.getLayoutInflater().inflate(R.layout.list_item_main_items, parent, false);
+            final View thisView = convertView;
+            final ViewGroup thisParent = parent;
 
-                TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
-                itemNameView.setText(model.getName());
+            TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
+            itemNameView.setText(model.getName());
 
-                ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
+            ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
 
-                rmvItemBtn.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
+            rmvItemBtn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    try {
                         mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
+                        generateItems();
+                    } catch (IndexOutOfBoundsException e) {
+
                     }
-                });
-                return convertView;
+                }
+            });
+            return convertView;
         } else {
-            TextView row = (TextView) convertView;
+            TextView row;
+            try {
+                row = (TextView) convertView;
+            } catch (ClassCastException e) {
+                convertView = null;
+                row = (TextView) convertView;
+            }
+
             if (row == null) {
                 row = new TextView(mActivity);
             }
 
-            if (mItemSnapshots.size() != 0) {
+            if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.size() != 0) {
                 row.setText(mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class).getName());
             } else {
                 row.setText("Loading");
@@ -385,6 +426,42 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_section_name);
         itemNameView.setText(model.getName());
 
+        final Button secMenuBtn = (Button) convertView.findViewById(R.id.section_options_button);
+
+        secMenuBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(mActivity, secMenuBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.menu_section_options, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        switch (id) {
+                            case R.id.option_delete_section:
+                                String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
+                                mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
+                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
+                                itemRef.removeValue();
+                                mItemSnapshots.remove(groupPosition);
+                                generateItems();
+                                break;
+                            default:
+                                Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show();//showing popup menu
+            }
+        });//closing the setOnClickListener method
+
         Button addItemBtn = (Button) convertView.findViewById(R.id.button_add_item_to_section);
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
@@ -422,7 +499,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
      *
      * @param v     The view to populate
      * @param model The object containing the data used to populate the view
-     populateView(View, Object, int)
+     *              populateView(View, Object, int)
      */
     protected void populateView(View v, Shop model) {
 

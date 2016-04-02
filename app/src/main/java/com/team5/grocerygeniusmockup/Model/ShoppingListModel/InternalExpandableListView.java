@@ -1,4 +1,4 @@
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import android.content.Context;
 import android.widget.ExpandableListView;

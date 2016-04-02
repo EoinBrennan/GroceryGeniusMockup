@@ -1,10 +1,8 @@
 package com.team5.grocerygeniusmockup.UI.MainActivityFragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.DialogFragment;
@@ -13,23 +11,16 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.team5.grocerygeniusmockup.Model.FirebaseArray;
 import com.team5.grocerygeniusmockup.Model.Item;
-import com.team5.grocerygeniusmockup.Model.Section;
-import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.

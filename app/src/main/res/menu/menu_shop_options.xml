@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/visit_more_often"
+        android:title="@string/option_visit_more_often"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/visit_less_shop"
+        android:title="@string/option_visit_less_often"
+        android:orderInCategory="2" />
+    <item
+        android:id="@+id/option_delete_shop"
+        android:title="@string/option_delete_shop"
+        android:orderInCategory="3" />
+    <item
+        android:id="@+id/rename_shop"
+        android:title="@string/option_rename_shop"
+        android:orderInCategory="4" />
+    <item
+        android:id="@+id/add_different_shop"
+        android:title="@string/add_new_shop"
+        android:orderInCategory="5" />
+
+
+</menu>

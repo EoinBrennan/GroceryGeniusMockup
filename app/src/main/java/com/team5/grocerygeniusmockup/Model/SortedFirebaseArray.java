@@ -76,6 +76,12 @@ public class SortedFirebaseArray implements ChildEventListener {
         return mSnapshots.get(index);
     }
 
+    public void removeItem(int index) {
+        if (index < mSnapshots.size()) {
+            mSnapshots.remove(index);
+        }
+    }
+
     /**
      * This method searches through the mSnapshots array for the object with the given key
      * and returns the index of the object in the array.
@@ -214,6 +220,31 @@ public class SortedFirebaseArray implements ChildEventListener {
                         swaps = true;
                     } else if (thisShop.getFrequency() == nextShop.getFrequency() && thisShop.getName()
                             .compareTo(nextShop.getName()) > 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    }
+                }
+            }
+        } catch (FirebaseException e) {
+            Log.i("FirebaseArray", "not a shop");
+        }
+
+        try {
+            boolean swaps = true;
+            while (swaps) {
+                swaps = false;
+                for (int i = 0; i < mSnapshots.size() - 1; i++) {
+                    Section thisSec = mSnapshots.get(i).getValue(Section.class);
+                    Section nextSec = mSnapshots.get(i + 1).getValue(Section.class);
+
+                    if (thisSec.getOrder() > nextSec.getOrder() && nextSec.getOrder() != 0 && thisSec.getOrder() != 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    } else if (thisSec.getOrder() == 0 && nextSec.getOrder() != 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    } else if (thisSec.getOrder() == nextSec.getOrder() && thisSec.getName()
+                            .compareTo(nextSec.getName()) > 0) {
                         Collections.swap(mSnapshots, i, i + 1);
                         swaps = true;
                     }
