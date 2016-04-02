@@ -32,17 +32,20 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddSectionDialogFragment;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
@@ -125,7 +128,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 1;//mTitles[groupPosition].length;
+        return 1;
     }
 
     /**
@@ -318,7 +321,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
         TextView shopNameView = (TextView) convertView.findViewById(R.id.text_view_shop_name);
         shopNameView.setText(model.getName());
 
-       ImageButton addSecBtn = (ImageButton) convertView.findViewById(R.id.button_add_section_to_shop);
+        ImageButton addSecBtn = (ImageButton) convertView.findViewById(R.id.button_add_section_to_shop);
 
         final Shop thisShop = model;
         final String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
@@ -330,11 +333,43 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
             }
         });
 
+        final Button shopMenuBtn = (Button) convertView.findViewById(R.id.shop_options_button);
+
+        shopMenuBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(mActivity, shopMenuBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.menu_shop_options, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        switch (id) {
+                            case R.id.option_delete_shop: String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
+                                mSnapshots.getItem(groupPosition).getRef().removeValue();
+                                Firebase secRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + thisShopKey);
+                                secRef.removeValue();
+                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
+                                itemRef.removeValue();
+                                break;
+                            case R.id.add_different_shop: DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
+                                dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
+                                break;
+                            default: Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show();//showing popup menu
+            }
+        });//closing the setOnClickListener method
         return convertView;
-
-        //populateView(convertView, model, groupPosition);
-
-        //return convertView;
     }
 
     /**

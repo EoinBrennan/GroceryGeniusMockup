@@ -78,4 +78,10 @@
     <string name="title_activity_quiz1">Quiz1Activity</string>
     <string name="title_activity_quiz12">Quiz1Activity2</string>
     <string name="title_activity_quiz3">Quiz3Activity</string>
+
+    <!-- Shop Menu -->
+    <string name="option_visit_more_often">Visit This Shop More Often</string>
+    <string name="option_visit_less_often">Visit This Shop Less Often</string>
+    <string name="option_delete_shop">Remove this Shop</string>
+    <string name="option_rename_shop">Change Shop Name</string>
 </resources>

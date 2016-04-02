@@ -228,6 +228,31 @@ public class SortedFirebaseArray implements ChildEventListener {
             while (swaps) {
                 swaps = false;
                 for (int i = 0; i < mSnapshots.size() - 1; i++) {
+                    Section thisSec = mSnapshots.get(i).getValue(Section.class);
+                    Section nextSec = mSnapshots.get(i + 1).getValue(Section.class);
+
+                    if (thisSec.getOrder() > nextSec.getOrder() && nextSec.getOrder() != 0 && thisSec.getOrder() != 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    } else if (thisSec.getOrder() == 0 && nextSec.getOrder() != 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    } else if (thisSec.getOrder() == nextSec.getOrder() && thisSec.getName()
+                            .compareTo(nextSec.getName()) > 0) {
+                        Collections.swap(mSnapshots, i, i + 1);
+                        swaps = true;
+                    }
+                }
+            }
+        } catch (FirebaseException e) {
+            Log.i("FirebaseArray", "not a shop");
+        }
+
+        try {
+            boolean swaps = true;
+            while (swaps) {
+                swaps = false;
+                for (int i = 0; i < mSnapshots.size() - 1; i++) {
                     Item thisItem = mSnapshots.get(i).getValue(Item.class);
                     Item nextItem = mSnapshots.get(i + 1).getValue(Item.class);
 
