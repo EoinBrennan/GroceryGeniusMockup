@@ -155,18 +155,32 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                             try {
                                 mItemSnapshots.set(z, thisItem);
                             } catch (IndexOutOfBoundsException e) {
-                                mItemSnapshots.add(z, thisItem);
-                            }
-
-                            Log.e("ItemInSectionListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
-                            Log.e("ItemInSectionListener", "How many sections have item listeners:" + mItemSnapshots.size());
-                            for (int j = 0; j < mItemSnapshots.size(); j++) {
-                                Log.e("ItemInSectionListener", "How many items in the " + j + "th section: " + mItemSnapshots.get(j).getCount());
-                                for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
-                                    Log.e("ItemInSectionListener", k + "th item in the " + j + "th section: " +  mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                try {
+                                    mItemSnapshots.add(z, thisItem);
+                                } catch (IndexOutOfBoundsException e1) {
+                                    for (int i = 0; i < z; i++) {
+                                        try {
+                                            mItemSnapshots.get(i);
+                                        } catch (IndexOutOfBoundsException e2) {
+                                            mItemSnapshots.add(i, thisItem);
+                                        }
+                                    }
                                 }
                             }
-                            notifyDataSetChanged();
+
+                            try {
+                                Log.e("ItemInSectionListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
+                                Log.e("ItemInSectionListener", "How many sections have item listeners:" + mItemSnapshots.size());
+                                for (int j = 0; j < mItemSnapshots.size(); j++) {
+                                    Log.e("ItemInSectionListener", "How many items in the " + j + "th section: " + mItemSnapshots.get(j).getCount());
+                                    for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
+                                        Log.e("ItemInSectionListener", k + "th item in the " + j + "th section: " + mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                    }
+                                }
+                                notifyDataSetChanged();
+                            } catch (IndexOutOfBoundsException e) {
+                                Log.e("ItemInSectionListener", "This item doesn't exist yet.");
+                            }
                         }
                     }
             );
