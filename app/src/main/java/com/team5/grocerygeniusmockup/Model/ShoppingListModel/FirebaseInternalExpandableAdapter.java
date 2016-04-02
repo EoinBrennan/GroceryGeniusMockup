@@ -26,28 +26,35 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.team5.grocerygeniusmockup.Model.Item;
+import com.team5.grocerygeniusmockup.Model.Section;
+import com.team5.grocerygeniusmockup.Model.Shop;
+import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
-import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddSectionDialogFragment;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
+
+import java.util.ArrayList;
 
 /**
  * This class is a generic way of backing an Android ListView with a Firebase location.
@@ -70,52 +77,135 @@ import com.firebase.client.Firebase;
  *     listView.setListAdapter(adapter);
  * }
  * </pre></blockquote>
- *
  */
-public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapter {
+public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter {
 
-    protected int mLayout;
+    protected int secLayout;
+    protected int itemLayout;
     protected Activity mActivity;
-    public SortedFirebaseArray mSnapshots;
+    public SortedFirebaseArray mSectionSnapshots;
+    public ArrayList<SortedFirebaseArray> mItemSnapshots = new ArrayList<SortedFirebaseArray>();
+    public String shopKey;
+    public String shopName;
+    SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL;
 
     /**
-     * @param activity    The activity containing the ListView
+     * @param activity The activity containing the ListView
      */
-    public FirebaseThreeLayerExpandableAdapter(Activity activity, ExpandableListView parent, String FIREBASE_MY_NODE_URL) {
-
-        mLayout = R.layout.list_item_main_shop;
-        mActivity = activity;
-        final ExpandableListView thisDad = parent;
+    public FirebaseInternalExpandableAdapter(Activity activity, InternalExpandableListView parent, String shopName, String shopKey, String FIREBASE_MY_NODE_URL) {
 
         this.FIREBASE_MY_NODE_URL = FIREBASE_MY_NODE_URL;
-        String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
+        String MY_FIREBASE_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
 
-        mSnapshots = new SortedFirebaseArray(new Firebase(FIREBASE_MY_URL_SHOPS));
+        Log.e("ShopKey", shopKey);
+
+        final InternalExpandableListView thisMom = parent;
+
+        this.shopKey = shopKey;
+        this.shopName = shopName;
+        mActivity = activity;
+        mSectionSnapshots = new SortedFirebaseArray(new Firebase(MY_FIREBASE_SECTIONS));
+
         /**
          * Attaches a listener that is triggered by FirebaseArray whenever elements are
          * added, removed, moved or changed in the FirebaseArray.
          */
-        mSnapshots.setOnChangedListener(new SortedFirebaseArray.OnChangedListener() {
+
+        mSectionSnapshots.setOnChangedListener(new SortedFirebaseArray.OnChangedListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
+                Log.e("SecSnapsChangeListener", "Index changed: " + index);
+
+                if (type == EventType.Added) {
+                    mItemSnapshots.add(index, null);
+                }
+
                 /**
                  * This listener triggers the BaseAdapter method notifyDataSetChanged.
                  * This notifies views reflecting the data set that they should refresh themselves.
                  */
-                notifyDataSetChanged();
+                Log.e("SecSnapsChangeListener", "size of SSnaps" + mSectionSnapshots.getCount());
+                for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
+                    Log.e("SecSnapsChangeListerner", i + "th element in mSSnaps is: " + mSectionSnapshots.getItem(i).getValue(Section.class).getName() + " & key is: " + mSectionSnapshots.getItem(i).getKey());
+                }
 
-                /*for (int i = 0; i < mSnapshots.getCount(); i++) {
-                    thisDad.expandGroup(i);
-                }*/
-                thisDad.expandGroup(0);
+                //notifyDataSetChanged();
+
+                generateItems();
+
+                for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
+                    thisMom.expandGroup(i);
+                }
             }
         });
     }
 
+    public void generateItems() {
+        Log.e("GenItems", "SecSnaps size: " + mSectionSnapshots.getCount());
+
+        for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
+            String sectionKey = mSectionSnapshots.getItem(i).getKey();
+            Log.e("GenItems", "Current section Key: " + sectionKey);
+
+            String FIREBASE_THIS_SECTIONS_ITEMS = FIREBASE_MY_NODE_URL + "/" +
+                    Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + sectionKey;
+            Log.e("GenItems", "URL for items in this section: " + FIREBASE_THIS_SECTIONS_ITEMS);
+
+            final SortedFirebaseArray thisItem = new SortedFirebaseArray(new Firebase(FIREBASE_THIS_SECTIONS_ITEMS));
+            Log.e("GenItems", "SortedFirebaseArray reference: " + thisItem.toString());
+
+            final int z = i;
+            Log.e("GenItems", "Which section in this shop?: " + (z + 1) + "th");
+
+            thisItem.setOnChangedListener(
+                    new SortedFirebaseArray.OnChangedListener() {
+                        @Override
+                        public void onChanged(EventType type, int index, int oldIndex) {
+
+                            try {
+                                mItemSnapshots.set(z, thisItem);
+                            } catch (IndexOutOfBoundsException e) {
+                                try {
+                                    mItemSnapshots.add(z, thisItem);
+                                } catch (IndexOutOfBoundsException e1) {
+                                    /*for (int i = 0; i < z; i++) {
+                                        try {
+                                            mItemSnapshots.get(i);
+                                        } catch (IndexOutOfBoundsException e2) {
+                                            mItemSnapshots.add(i, null);
+                                        }
+                                    }*/
+                                }
+                            }
+
+                            try {
+                                Log.e("ItemInSectionListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
+                                Log.e("ItemInSectionListener", "How many sections have item listeners:" + mItemSnapshots.size());
+                                for (int j = 0; j < mItemSnapshots.size(); j++) {
+                                    if (mItemSnapshots.get(j) != null) {
+                                        Log.e("ItemInSectionListener", "How many items in the " + j + "th section: " + mItemSnapshots.get(j).getCount());
+                                        for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
+                                            Log.e("ItemInSectionListener", k + "th item in the " + j + "th section: " + mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                        }
+                                    }
+                                }
+                                notifyDataSetChanged();
+                            } catch (IndexOutOfBoundsException e) {
+                                Log.e("ItemInSectionListener", "This item doesn't exist yet.");
+                            }
+                        }
+                    }
+            );
+        }
+    }
+
     public void cleanup() {
         // We're being destroyed, let go of our mListener and forget about all of the mModels
-        mSnapshots.cleanup();
+        mSectionSnapshots.cleanup();
+        for (int i = 0; i < mItemSnapshots.size(); i++) {
+            mItemSnapshots.get(i).cleanup();
+        }
     }
 
     /**
@@ -128,7 +218,14 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 1;
+        Log.e("getChildrenCount", "group position: " + groupPosition);
+        if (mItemSnapshots.size() != 0 && mItemSnapshots.get(groupPosition) != null && groupPosition < mItemSnapshots.size()) {
+            Log.e("ChildrenCount", "value: " + mItemSnapshots.get(groupPosition).getCount());
+            return mItemSnapshots.get(groupPosition).getCount();
+        } else {
+            Log.e("getChildrenCount", "empty Item Snap");
+            return 0;
+        }
     }
 
     /**
@@ -139,7 +236,8 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public int getGroupCount() {
-        return mSnapshots.getCount();
+        Log.e("getGroupCount", "" + mSectionSnapshots.getCount());
+        return mSectionSnapshots.getCount();
     }
 
     /**
@@ -153,27 +251,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        /*String shopKey = getItemKey(groupPosition);
-
-        String MY_FIREBASE_SHOP_SECTIONS = Constants.FIREBASE_URL_MINE + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
-
-        SortedFirebaseArray mSectionSnapshots = new SortedFirebaseArray(new Firebase(MY_FIREBASE_SHOP_SECTIONS));
-
-        mSectionSnapshots.setOnChangedListener(new SortedFirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                /**
-                 * This listener triggers the BaseAdapter method notifyDataSetChanged.
-                 * This notifies views reflecting the data set that they should refresh themselves.
-
-
-                notifyDataSetChanged();
-            }
-        });
-
-        return mSectionSnapshots.getItem(childPosition).getValue(Section.class); */
-
-        return null;
+        return mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
     }
 
     /**
@@ -185,15 +263,15 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public Object getGroup(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getValue(Shop.class);
+        return mSectionSnapshots.getItem(groupPosition).getValue(Section.class);
     }
 
-    public String getItemKey(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getKey();
+    public String getSectionKey(int groupPosition) {
+        return mSectionSnapshots.getItem(groupPosition).getKey();
     }
 
     public Firebase getRef(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getRef();
+        return mSectionSnapshots.getItem(groupPosition).getRef();
     }
 
     /**
@@ -208,7 +286,6 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
      * @return the ID associated with the child
      */
 
-
     @Override
     public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
@@ -218,6 +295,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
      * Gets the ID for the group at the given position. This group ID must be
      * unique across groups. The combined ID (see getCombinedGroupId(long)}) must be unique across ALL items
      * (groups and all children).
+     *
      * @param groupPosition the position of the group for which the ID is wanted
      * @return the ID associated with the group
      */
@@ -225,7 +303,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
     @Override
     public long getGroupId(int groupPosition) {
         // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
-        return mSnapshots.getItem(groupPosition).getKey().hashCode();
+        return mSectionSnapshots.getItem(groupPosition).getKey().hashCode();
     }
 
     /*
@@ -264,25 +342,56 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String shopKey = getItemKey(groupPosition);
-        String shopName = mSnapshots.getItem(groupPosition).getValue(Shop.class).getName();
+    public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild, View convertView, ViewGroup parent) {
+        if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.get(groupPosition).getCount() != 0 ) {
 
-        InternalExpandableListView SecondLevelExLV = (InternalExpandableListView) convertView;
+            Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
 
-        if(SecondLevelExLV == null) {
-            SecondLevelExLV = new InternalExpandableListView(mActivity);
+            // Call out to subclass to marshall this model into the provided view
+
+            convertView = mActivity.getLayoutInflater().inflate(R.layout.list_item_main_items, parent, false);
+            final View thisView = convertView;
+            final ViewGroup thisParent = parent;
+
+            TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
+            itemNameView.setText(model.getName());
+
+            ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
+
+            rmvItemBtn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    try {
+                        mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
+                        generateItems();
+                    } catch (IndexOutOfBoundsException e) {
+
+                    }
+                }
+            });
+            return convertView;
+        } else {
+            TextView row;
+            try {
+                row = (TextView) convertView;
+            } catch (ClassCastException e) {
+                convertView = null;
+                row = (TextView) convertView;
+            }
+
+            if (row == null) {
+                row = new TextView(mActivity);
+            }
+
+            if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.size() != 0) {
+                row.setText(mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class).getName());
+            } else {
+                row.setText("Loading");
+            }
+            row.setPadding(15, 5, 5, 5);
+            row.setBackgroundColor(Color.YELLOW);
+            row.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.FILL_PARENT, ListView.LayoutParams.FILL_PARENT));
+            return row;
         }
-
-        SecondLevelExLV.setAdapter(new FirebaseInternalExpandableAdapter(mActivity, SecondLevelExLV, shopName, shopKey, FIREBASE_MY_NODE_URL));
-
-        /* Expands all inner items.
-        for (int i = 0; i < sections; i++) {
-            SecondLevelExLV.expandGroup(i);
-        } */
-
-        SecondLevelExLV.setGroupIndicator(null);
-        return SecondLevelExLV;
     }
 
     /**
@@ -306,60 +415,43 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        /* if (convertView == null) {
-            convertView = mActivity.getLayoutInflater().inflate(mLayout, parent, false);
-        } */
-
-        Shop model = mSnapshots.getItem(groupPosition).getValue(Shop.class);
+        final Section model = mSectionSnapshots.getItem(groupPosition).getValue(Section.class);
 
         // Call out to subclass to marshall this model into the provided view
 
         if (convertView == null) {
-            convertView = mActivity.getLayoutInflater().inflate(mLayout, parent, false);
+            convertView = mActivity.getLayoutInflater().inflate(R.layout.list_item_main_section, parent, false);
         }
 
-        TextView shopNameView = (TextView) convertView.findViewById(R.id.text_view_shop_name);
-        shopNameView.setText(model.getName());
+        TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_section_name);
+        itemNameView.setText(model.getName());
 
-        ImageButton addSecBtn = (ImageButton) convertView.findViewById(R.id.button_add_section_to_shop);
+        final Button secMenuBtn = (Button) convertView.findViewById(R.id.section_options_button);
 
-        final Shop thisShop = model;
-        final String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
-
-        addSecBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                        DialogFragment dialog = (DialogFragment) AddSectionDialogFragment.newInstance(thisShop.getName(), thisShopKey);
-                        dialog.show(mActivity.getFragmentManager(), "AddSectionDialogFragment");
-            }
-        });
-
-        final Button shopMenuBtn = (Button) convertView.findViewById(R.id.shop_options_button);
-
-        shopMenuBtn.setOnClickListener(new View.OnClickListener() {
+        secMenuBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 //Creating the instance of PopupMenu
-                PopupMenu popup = new PopupMenu(mActivity, shopMenuBtn);
+                PopupMenu popup = new PopupMenu(mActivity, secMenuBtn);
                 //Inflating the Popup using xml file
-                popup.getMenuInflater().inflate(R.menu.menu_shop_options, popup.getMenu());
+                popup.getMenuInflater().inflate(R.menu.menu_section_options, popup.getMenu());
 
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
                         switch (id) {
-                            case R.id.option_delete_shop: String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
-                                mSnapshots.getItem(groupPosition).getRef().removeValue();
-                                Firebase secRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + thisShopKey);
-                                secRef.removeValue();
-                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
+                            case R.id.option_delete_section:
+                                String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
+                                mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
+                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
                                 itemRef.removeValue();
+                                mItemSnapshots.remove(groupPosition);
+                                generateItems();
                                 break;
-                            case R.id.add_different_shop: DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
-                                dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
-                                break;
-                            default: Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                            default:
+                                Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         return true;
@@ -369,6 +461,16 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                 popup.show();//showing popup menu
             }
         });//closing the setOnClickListener method
+
+        Button addItemBtn = (Button) convertView.findViewById(R.id.button_add_item_to_section);
+
+        addItemBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(shopName, shopKey, model.getName(), mSectionSnapshots.getItem(groupPosition).getKey());
+                dialog.show(mActivity.getFragmentManager(), "AddItemDialogFragment");
+            }
+        });
+
         return convertView;
     }
 
@@ -378,7 +480,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
      * this class. The third argument is the item's position in the list.
      * <p/>
      * Your implementation should populate the view using the data contained in the model.
-     * You should implement either this method or the other populateView(View, Object)} method
+     * You should implement either this method or the other  populateView(View, Object)} method
      * but not both.
      *
      * @param v        The view to populate
@@ -392,11 +494,12 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
     /**
      * This is a backwards compatible version of populateView.
      * <p/>
-     * You should implement either this method or the other  populateView(View, Object, int)} method
+     * You should implement either this method or the other populateView(View, Object, int)} method
      * but not both.
      *
      * @param v     The view to populate
      * @param model The object containing the data used to populate the view
+     *              populateView(View, Object, int)
      */
     protected void populateView(View v, Shop model) {
 

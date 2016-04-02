@@ -80,8 +80,16 @@
     <string name="title_activity_quiz3">Quiz3Activity</string>
 
     <!-- Shop Menu -->
+    <string name="options">Options</string>
+
     <string name="option_visit_more_often">Visit This Shop More Often</string>
     <string name="option_visit_less_often">Visit This Shop Less Often</string>
     <string name="option_delete_shop">Remove this Shop</string>
     <string name="option_rename_shop">Change Shop Name</string>
+
+    <!-- Section Menu -->
+    <string name="option_visit_earlier">I visit this section earlier.</string>
+    <string name="option_visit_later">I visit this section later.</string>
+    <string name="option_delete_section">Remove this Section</string>
+    <string name="option_rename_section">Change Section Name</string>
 </resources>

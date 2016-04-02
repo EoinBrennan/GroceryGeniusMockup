@@ -76,6 +76,12 @@ public class SortedFirebaseArray implements ChildEventListener {
         return mSnapshots.get(index);
     }
 
+    public void removeItem(int index) {
+        if (index < mSnapshots.size()) {
+            mSnapshots.remove(index);
+        }
+    }
+
     /**
      * This method searches through the mSnapshots array for the object with the given key
      * and returns the index of the object in the array.
