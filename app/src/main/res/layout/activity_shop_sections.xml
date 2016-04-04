@@ -9,7 +9,19 @@
         android:layout_height="50dp"
         android:id="@+id/textView5"
         android:layout_gravity="center_horizontal"
-        android:text="@string/question1"
+        android:text="@string/question_add_sections1"
+        android:inputType="text"
+        android:background="@color/colorPrimaryDark"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/question_add_section2"
         android:inputType="text"
         android:background="@color/colorPrimaryDark"
         android:textSize="20dp"
@@ -20,14 +32,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/enterShopName"
-        android:hint="@string/enter_shop_name"
-        android:gravity="center" />
+        android:hint="@string/hint_enter_shop_section"
+        android:gravity="center"
+        android:layout_marginTop="20dp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/add_new_shop"
+        android:text="@string/button_add_section"
         android:id="@+id/button_add_new_shop"
         android:layout_margin="10dip" />
 
