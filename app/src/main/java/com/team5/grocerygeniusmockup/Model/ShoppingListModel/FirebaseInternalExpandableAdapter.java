@@ -89,6 +89,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     public String shopName;
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL;
+    InternalExpandableListView parent;
 
     /**
      * @param activity The activity containing the ListView
@@ -100,6 +101,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
         Log.e("ShopKey", shopKey);
 
+        this.parent = parent;
         final InternalExpandableListView thisMom = parent;
 
         this.shopKey = shopKey;
@@ -343,7 +345,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
     @Override
     public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild, View convertView, ViewGroup parent) {
-        if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.get(groupPosition).getCount() != 0 ) {
+        if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.get(groupPosition).getCount() != 0) {
 
             Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
 
@@ -357,12 +359,22 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
             itemNameView.setText(model.getName());
 
             ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
-
+            final InternalExpandableListView thisMom = this.parent;
+            final boolean[] pressed = {false};
             rmvItemBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    Log.e("RemoveItemBtnClicked","Button pressed before?: " + pressed[0]);
                     try {
-                        mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
-                        generateItems();
+                        if (!pressed[0]) {
+                            Log.e("RemoveItemBtnClicked","Removing item " + childPosition + " from group " + groupPosition);
+                            mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
+                            pressed[0] = true;
+                            if (getChildrenCount(groupPosition) < 2) {
+                                Log.e("RemoveItemBtnClicked", "Closing group " + childPosition);
+                                thisMom.collapseGroup(groupPosition);
+                            }
+                            generateItems();
+                        }
                     } catch (IndexOutOfBoundsException e) {
 
                     }
