@@ -71,6 +71,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity" />
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="896a41c1c4d47780ecb869a4e9c725a4d693b6b2" />
     </application>
 
 </manifest>
