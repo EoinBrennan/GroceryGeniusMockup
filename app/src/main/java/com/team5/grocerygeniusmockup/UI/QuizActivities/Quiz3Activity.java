@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
@@ -41,19 +42,31 @@ public class Quiz3Activity extends ListActivity {
             values.add(sections[i]);
         }
 
-        /*fix this!!!
+        //*fix this!!!
         myAdapter = new ArrayAdapter<String>(
                 this,
                 R.layout.list_item_shop_order,
+                R.id.text_view_item_name,
                 values
         );
         //*/
 
-
-
         myList = (ListView)findViewById(android.R.id.list);
         myList.setAdapter(myAdapter);
 
+        //spinner setup
+        Spinner mySpinner = (Spinner) findViewById(R.id.spinner_shop_order);
+
+
+        /* Spinner Drop down elements
+        List<String> how_often = new ArrayList<String>();
+        mySpinner.add("Automobile");
+        mySpinner.add("Business Services");
+        categories.add("Computers");
+        categories.add("Education");
+        categories.add("Personal");
+        categories.add("Travel");
+        //*/
 
         //*
         Button addShop = (Button) findViewById(R.id.button_add_new_shop);
@@ -69,7 +82,7 @@ public class Quiz3Activity extends ListActivity {
                         myArrayList.add(device);
                         adapter.add(device);
                         et.setText("");
-                        et.setHint("Enter another shop name");
+                        et.setHint("Enter another section");
 
                         adapter.notifyDataSetChanged();
                     }
