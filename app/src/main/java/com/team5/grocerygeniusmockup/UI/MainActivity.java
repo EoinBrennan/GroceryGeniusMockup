@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.PantryFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
 import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
 
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = ShoppingListFragment.newInstance();
                     break;
                 case 1:
-                    fragment = PlaceholderFragment.newInstance();
+                    fragment = PantryFragment.newInstance();
                     break;
                 default:
                     fragment = PlaceholderFragment.newInstance();

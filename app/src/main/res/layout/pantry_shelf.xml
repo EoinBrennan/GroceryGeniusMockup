@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:background="@android:color/darker_gray"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:foreground="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/padding_List"
+    android:paddingStart="@dimen/padding_List">
+
+    <RelativeLayout
+        android:id="@+id/shelf_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/text_view_shelf_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shelf"
+            android:layout_margin="@dimen/fab_margin" />
+
+        <ImageButton
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add_icon_green"
+            android:background="@android:color/transparent"
+            android:id="@+id/button_add_item_to_shelf"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentRight="true"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/options"
+            android:id="@+id/shelf_options_button"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/button_add_item_to_shelf"
+            android:layout_toStartOf="@+id/button_add_item_to_shelf"
+            android:layout_marginRight="20dp"/>
+    </RelativeLayout>
+
+</RelativeLayout>
