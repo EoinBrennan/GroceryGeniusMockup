@@ -13,12 +13,12 @@ public final class Constants {
     public static final String FIREBASE_PROPERTY_TIMESTAMP = "timestamp";
     public static final String FIREBASE_PROPERTY_TIMESTAMP_CREATED = "timestampCreated";
     public static final String FIREBASE_PROPERTY_TIMESTAMP_CHANGED = "timestampLastChanged";
-    public static final String FIREBASE_PROPERTY_SHOP_NAME = "name";
-    public static final String FIREBASE_PROPERTY_SHOP_FREQUENCY = "frequency";
 
     public static final String FIREBASE_NODENAME_SHOPS = "shops";
     public static final String FIREBASE_NODENAME_SECTIONS = "sections";
     public static final String FIREBASE_NODENAME_ITEMS = "items";
+    public static final String FIREBASE_NODENAME_PANTRY_ITEMS = "pantry_items";
+    public static final String FIREBASE_NODENAME_SHELVES = "shelves";
 
     /**
      * Constants for Firebase URL

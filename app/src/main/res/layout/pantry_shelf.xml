@@ -13,7 +13,7 @@
     android:paddingStart="@dimen/padding_List">
 
     <RelativeLayout
-        android:id="@+id/shop_header"
+        android:id="@+id/shelf_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -21,10 +21,10 @@
         android:layout_alignParentStart="true">
 
         <TextView
-            android:id="@+id/text_view_shop_name"
+            android:id="@+id/text_view_shelf_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Shop"
+            android:text="Shelf"
             android:layout_margin="@dimen/fab_margin" />
 
         <ImageButton
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/add_icon_green"
             android:background="@android:color/transparent"
-            android:id="@+id/button_add_section_to_shop"
+            android:id="@+id/button_add_item_to_shelf"
             android:layout_marginRight="12dp"
             android:layout_alignParentRight="true"/>
 
@@ -42,10 +42,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/options"
-            android:id="@+id/shop_options_button"
+            android:id="@+id/shelf_options_button"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/button_add_section_to_shop"
-            android:layout_toStartOf="@+id/button_add_section_to_shop"
+            android:layout_toLeftOf="@+id/button_add_item_to_shelf"
+            android:layout_toStartOf="@+id/button_add_item_to_shelf"
             android:layout_marginRight="20dp"/>
     </RelativeLayout>
 
