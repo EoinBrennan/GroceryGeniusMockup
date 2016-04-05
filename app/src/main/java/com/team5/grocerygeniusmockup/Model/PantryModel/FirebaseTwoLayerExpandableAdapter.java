@@ -26,7 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.PantryModel;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -47,8 +47,10 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.team5.grocerygeniusmockup.Model.ShoppingListModel.InternalExpandableListView;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Section;
+import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
-import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddPantryItemDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
     public FirebaseTwoLayerExpandableAdapter(Activity activity, ExpandableListView parent, String FIREBASE_MY_NODE_URL) {
 
         shelfLayout = R.layout.pantry_shelf;
-        itemLayout = R.layout.list_item_main_items;
+        itemLayout = R.layout.pantry_item;
         mActivity = activity;
         final ExpandableListView thisDad = parent;
 
@@ -172,13 +174,13 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
                             }
 
                             try {
-                                Log.e("ItemInShelfListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(Item.class).getName());
+                                Log.e("ItemInShelfListener", "This item's name: " + mItemSnapshots.get(z).getItem(0).getValue(PantryItem.class).getName());
                                 Log.e("ItemInShelfListener", "How many shelves have item listeners:" + mItemSnapshots.size());
                                 for (int j = 0; j < mItemSnapshots.size(); j++) {
                                     if (mItemSnapshots.get(j) != null) {
                                         Log.e("ItemInShelfListener", "How many items in the " + j + "th shelf: " + mItemSnapshots.get(j).getCount());
                                         for (int k = 0; k < mItemSnapshots.get(j).getCount(); k++) {
-                                            Log.e("ItemInShelfListener", k + "th item in the " + j + "th shelf: " + mItemSnapshots.get(j).getItem(k).getValue(Item.class).getName());
+                                            Log.e("ItemInShelfListener", k + "th item in the " + j + "th shelf: " + mItemSnapshots.get(j).getItem(k).getValue(PantryItem.class).getName());
                                         }
                                     }
                                 }
@@ -243,7 +245,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
+        return mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(PantryItem.class);
     }
 
     /**
@@ -323,7 +325,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
     public View getChildView(final int groupPosition, final int childPosition, final boolean isLastChild, View convertView, ViewGroup parent) {
         if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.get(groupPosition).getCount() != 0) {
 
-            Item model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class);
+            PantryItem model = mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(PantryItem.class);
 
             // Call out to subclass to marshall this model into the provided view
 
@@ -331,23 +333,27 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
             final View thisView = convertView;
             final ViewGroup thisParent = parent;
 
-            TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
+            TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_p_item_name);
             itemNameView.setText(model.getName());
-            /*
-            ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
+
+            ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_p_item_button);
             final InternalExpandableListView thisMom = this.parent;
             final boolean[] pressed = {false};
             rmvItemBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Log.e("RemoveItemBtnClicked","Button pressed before?: " + pressed[0]);
+                    Log.e("RemovePItemBtnClicked","Button pressed before?: " + pressed[0]);
                     try {
                         if (!pressed[0]) {
-                            Log.e("RemoveItemBtnClicked","Removing item " + childPosition + " from group " + groupPosition);
+                            Log.e("RemovePItemBtnClicked","Removing item " + childPosition + " from group " + groupPosition);
                             mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
                             pressed[0] = true;
                             if (getChildrenCount(groupPosition) < 2) {
-                                Log.e("RemoveItemBtnClicked", "Closing group " + childPosition);
-                                thisMom.collapseGroup(groupPosition);
+                                Log.e("RemovePItemBtnClicked", "Closing group " + childPosition);
+                                try {
+                                    thisMom.collapseGroup(groupPosition);
+                                } catch (NullPointerException e) {
+
+                                }
                             }
                             generateItems();
                         }
@@ -355,7 +361,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
                     }
                 }
-            });*/
+            });
             return convertView;
         } else {
             TextView row;
@@ -371,7 +377,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
             }
 
             if (mItemSnapshots.get(groupPosition) != null && mItemSnapshots.size() != 0) {
-                row.setText(mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(Item.class).getName());
+                row.setText(mItemSnapshots.get(groupPosition).getItem(childPosition).getValue(PantryItem.class).getName());
             } else {
                 row.setText("Loading");
             }
@@ -413,27 +419,27 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
         TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_shelf_name);
         itemNameView.setText(model.getName());
-        /*
-        final Button secMenuBtn = (Button) convertView.findViewById(R.id.section_options_button);
 
-        secMenuBtn.setOnClickListener(new View.OnClickListener() {
+        final Button shelfMenuBtn = (Button) convertView.findViewById(R.id.shelf_options_button);
+
+        shelfMenuBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 //Creating the instance of PopupMenu
-                PopupMenu popup = new PopupMenu(mActivity, secMenuBtn);
+                PopupMenu popup = new PopupMenu(mActivity, shelfMenuBtn);
                 //Inflating the Popup using xml file
-                popup.getMenuInflater().inflate(R.menu.menu_section_options, popup.getMenu());
+                popup.getMenuInflater().inflate(R.menu.menu_shelf_options, popup.getMenu());
 
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
                         switch (id) {
-                            case R.id.option_delete_section:
-                                String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
-                                mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
-                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
+                            case R.id.option_delete_shelf:
+                                String thisShelfKey = mShelfSnapshots.getItem(groupPosition).getKey();
+                                mShelfSnapshots.getItem(groupPosition).getRef().removeValue();
+                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + thisShelfKey);
                                 itemRef.removeValue();
                                 mItemSnapshots.remove(groupPosition);
                                 generateItems();
@@ -448,17 +454,17 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
                 popup.show();//showing popup menu
             }
-        });//closing the setOnClickListener method
+        });//closing the setOnClickListener method */
 
-        Button addItemBtn = (Button) convertView.findViewById(R.id.button_add_item_to_section);
+        ImageButton addItemBtn = (ImageButton) convertView.findViewById(R.id.button_add_item_to_shelf);
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                DialogFragment dialog = (DialogFragment) AddItemDialogFragment.newInstance(shopName, shopKey, model.getName(), mSectionSnapshots.getItem(groupPosition).getKey());
-                dialog.show(mActivity.getFragmentManager(), "AddItemDialogFragment");
+                DialogFragment dialog = (DialogFragment) AddPantryItemDialogFragment.newInstance(model.getName(), mShelfSnapshots.getItem(groupPosition).getKey());
+                dialog.show(mActivity.getFragmentManager(), "AddPantryItemDialogFragment");
             }
         });
-        */
+
         return convertView;
     }
 

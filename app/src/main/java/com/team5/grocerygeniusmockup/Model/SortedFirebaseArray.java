@@ -35,6 +35,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.FirebaseException;
 import com.firebase.client.Query;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Item;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Section;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Shop;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,6 +76,7 @@ public class SortedFirebaseArray implements ChildEventListener {
     }
 
     public DataSnapshot getItem(int index) {
+
         return mSnapshots.get(index);
     }
 

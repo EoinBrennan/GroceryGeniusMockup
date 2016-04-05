@@ -19,44 +19,38 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Section;
+import com.team5.grocerygeniusmockup.Model.PantryModel.Shelf;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AddSectionDialogFragment extends DialogFragment {
+public class AddShelfDialogFragment extends DialogFragment {
 
-    EditText mEditTextSecName;
+    EditText mEditTextShelfName;
     Spinner mOrderSpinner;
-    String shopName;
-    String shopKey;
     SharedPreferences mPrefs;
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
 
-    public AddSectionDialogFragment() {
+    public AddShelfDialogFragment() {
     }
 
     /**
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created
      */
-    public static AddSectionDialogFragment newInstance(String shopName, String shopKey) {
-        AddSectionDialogFragment addSectionDialogFragment = new AddSectionDialogFragment();
+    public static AddShelfDialogFragment newInstance() {
+        AddShelfDialogFragment addShelfDialogFragment = new AddShelfDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("shopName", shopName);
-        bundle.putString("shopKey", shopKey);
-        addSectionDialogFragment.setArguments(bundle);
-        return addSectionDialogFragment;
+        addShelfDialogFragment.setArguments(bundle);
+        return addShelfDialogFragment;
     }
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopName = getArguments().getString("shopName", "Default");
-        shopKey = getArguments().getString("shopKey", "Default");
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
@@ -75,10 +69,10 @@ public class AddSectionDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.dialog_add_section, null);
-        mEditTextSecName = (EditText) rootView.findViewById(R.id.edit_text_section_name);
+        View rootView = inflater.inflate(R.layout.dialog_add_shelf, null);
+        mEditTextShelfName = (EditText) rootView.findViewById(R.id.edit_text_shelf_name);
 
-        mOrderSpinner = (Spinner) rootView.findViewById(R.id.section_order_spinner);
+        mOrderSpinner = (Spinner) rootView.findViewById(R.id.shelf_order_spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
@@ -91,11 +85,11 @@ public class AddSectionDialogFragment extends DialogFragment {
         /**
          * Call addShoppingList() when user taps "Done" keyboard action
          */
-        mEditTextSecName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEditTextShelfName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    addSection();
+                    addShelf();
                 }
                 return true;
             }
@@ -108,7 +102,7 @@ public class AddSectionDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.positive_button_add_item, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        addSection();
+                        addShelf();
                     }
                 });
 
@@ -118,31 +112,31 @@ public class AddSectionDialogFragment extends DialogFragment {
     /**
      * Add new active list
      */
-    public void addSection() {
+    public void addShelf() {
 
         // Get the string that the user entered into the EditText and make an object with it
         // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
-        String userEnteredName = mEditTextSecName.getText().toString();
+        String userEnteredName = mEditTextShelfName.getText().toString();
 
-        int OrderInShop = mOrderSpinner.getSelectedItemPosition() + 1;
+        int OrderInShelf = mOrderSpinner.getSelectedItemPosition() + 1;
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Section newSec = new Section(userEnteredName, shopName, OrderInShop);
+            Shelf newShelf = new Shelf(userEnteredName, OrderInShelf);
 
             /* Fetch User ID and set up Firebase address. */
 
-            String FIREBASE_MY_URL_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
+            String FIREBASE_MY_URL_SHELVES = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES;
 
             // Get the reference to the root node in Firebase
-            Firebase secRef = new Firebase(FIREBASE_MY_URL_SECTIONS);
+            Firebase shelfRef = new Firebase(FIREBASE_MY_URL_SHELVES);
 
             /* Create a unique key for a new node and fetch that key. */
-            Firebase newSecRef = secRef.push();
+            Firebase newShelfRef = shelfRef.push();
 
-            final String secID = newSecRef.getKey();
+            final String secID = newShelfRef.getKey();
 
-            newSecRef.setValue(newSec);
+            newShelfRef.setValue(newShelf);
         }
     }
 }

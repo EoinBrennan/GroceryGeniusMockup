@@ -1,4 +1,4 @@
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.ServerValue;
@@ -7,42 +7,41 @@ import com.team5.grocerygeniusmockup.Utilities.Constants;
 import java.util.HashMap;
 
 /**
- * Created by Eoin on 05/03/2016.
+ * Created by Eoin on 07/03/2016.
  *
- * Used to model shops the user visits.
+ * Used to items the user wants to but.
  *
  * Timestamps are stored as HashMap<String, Object>. The Object stored is a special dummy value
  * that becomes a long timestamp of the moment it reaches the Firebase database when it gets there.
  */
 
-public class Shop {
+public class Item {
     private String name;
-    private int frequency;
+    private String shop;
+    private String section;
+    private int quantity;
     private HashMap<String, Object> timestampCreated;
     private HashMap<String, Object> timestampLastChanged;
 
     /* Empty constructor required for Firebase serialisation. */
 
-    public Shop() {
+    public Item() {
     }
 
     /**
      * Use this constructor to create Shop objects
      *
-     * @param name The name of shop, e.g. Aldi.
-     * @param frequency The regularity the user visits the shop.
-     *                  0 = Multiple times everyday
-     *                  1 = Once a day
-     *                  2 = Two or three times a week
-     *                  3 = Once a week
-     *                  4 = Once a forthnight (every two weeks)
-     *                  5 = Once a month
-     *                  6 = Very infrequently
+     * @param name     The name of item, e.g. Milk
+     * @param shop     The name of the shop the user wants to buy the item in.
+     * @param section  The name of the section of the shp the item can be found.
+     * @param quantity The amount of the item the user wants.
      */
 
-    public Shop(String name, int frequency) {
+    public Item(String name, String shop, String section, int quantity) {
         this.name = name;
-        this.frequency = frequency;
+        this.shop = shop;
+        this.section = section;
+        this.quantity = quantity;
         this.timestampCreated = timestampCreated;
 
         HashMap<String, Object> timestampLastChangedObj = new HashMap<String, Object>();
@@ -54,8 +53,16 @@ public class Shop {
         return name;
     }
 
-    public int getFrequency() {
-        return frequency;
+    public String getShop() {
+        return shop;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public HashMap<String, Object> getTimestampCreated() {

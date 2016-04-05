@@ -1,4 +1,4 @@
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.ServerValue;
@@ -15,26 +15,29 @@ import java.util.HashMap;
  * that becomes a long timestamp of the moment it reaches the Firebase database when it gets there.
  */
 
-public class Shelf {
+public class Section {
     private String name;
+    private String shop;
     private int order;
     private HashMap<String, Object> timestampCreated;
     private HashMap<String, Object> timestampLastChanged;
 
     /* Empty constructor required for Firebase serialisation. */
 
-    public Shelf() {
+    public Section() {
     }
 
     /**
      * Use this constructor to create Shop objects
      *
      * @param name     The name of item, e.g. Milk
+     * @param shop     The name of the shop the user wants to buy the item in.
      * @param order    Where does this section appear in the shop.
      */
 
-    public Shelf(String name, int order) {
+    public Section(String name, String shop, int order) {
         this.name = name;
+        this.shop = shop;
         this.order = order;
         this.timestampCreated = timestampCreated;
 
@@ -45,6 +48,10 @@ public class Shelf {
 
     public String getName() {
         return name;
+    }
+
+    public String getShop() {
+        return shop;
     }
 
     public int getOrder() {

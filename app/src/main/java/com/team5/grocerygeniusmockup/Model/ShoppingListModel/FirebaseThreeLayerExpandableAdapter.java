@@ -41,7 +41,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddSectionDialogFragment;
@@ -70,7 +69,6 @@ import com.firebase.client.Firebase;
  *     listView.setListAdapter(adapter);
  * }
  * </pre></blockquote>
- *
  */
 public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapter {
 
@@ -80,7 +78,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
     String FIREBASE_MY_NODE_URL;
 
     /**
-     * @param activity    The activity containing the ListView
+     * @param activity The activity containing the ListView
      */
     public FirebaseThreeLayerExpandableAdapter(Activity activity, ExpandableListView parent, String FIREBASE_MY_NODE_URL) {
 
@@ -185,15 +183,27 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public Object getGroup(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getValue(Shop.class);
+        if (groupPosition < mSnapshots.getCount()) {
+            return mSnapshots.getItem(groupPosition).getValue(Shop.class);
+        } else {
+            return null;
+        }
     }
 
     public String getItemKey(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getKey();
+        if (groupPosition < mSnapshots.getCount()) {
+            return mSnapshots.getItem(groupPosition).getKey();
+        } else {
+            return "";
+        }
     }
 
     public Firebase getRef(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getRef();
+        if (groupPosition < mSnapshots.getCount()) {
+            return mSnapshots.getItem(groupPosition).getRef();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -218,6 +228,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
      * Gets the ID for the group at the given position. This group ID must be
      * unique across groups. The combined ID (see getCombinedGroupId(long)}) must be unique across ALL items
      * (groups and all children).
+     *
      * @param groupPosition the position of the group for which the ID is wanted
      * @return the ID associated with the group
      */
@@ -270,7 +281,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
         InternalExpandableListView SecondLevelExLV = (InternalExpandableListView) convertView;
 
-        if(SecondLevelExLV == null) {
+        if (SecondLevelExLV == null) {
             SecondLevelExLV = new InternalExpandableListView(mActivity);
         }
 
@@ -283,6 +294,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
         SecondLevelExLV.setGroupIndicator(null);
         return SecondLevelExLV;
+
     }
 
     /**
@@ -328,8 +340,8 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
         addSecBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                        DialogFragment dialog = (DialogFragment) AddSectionDialogFragment.newInstance(thisShop.getName(), thisShopKey);
-                        dialog.show(mActivity.getFragmentManager(), "AddSectionDialogFragment");
+                DialogFragment dialog = (DialogFragment) AddSectionDialogFragment.newInstance(thisShop.getName(), thisShopKey);
+                dialog.show(mActivity.getFragmentManager(), "AddSectionDialogFragment");
             }
         });
 
@@ -349,17 +361,20 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
                         switch (id) {
-                            case R.id.option_delete_shop: String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
+                            case R.id.option_delete_shop:
+                                String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
                                 mSnapshots.getItem(groupPosition).getRef().removeValue();
                                 Firebase secRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + thisShopKey);
                                 secRef.removeValue();
                                 Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
                                 itemRef.removeValue();
                                 break;
-                            case R.id.add_different_shop: DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
+                            case R.id.add_different_shop:
+                                DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
                                 dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
                                 break;
-                            default: Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                            default:
+                                Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         return true;

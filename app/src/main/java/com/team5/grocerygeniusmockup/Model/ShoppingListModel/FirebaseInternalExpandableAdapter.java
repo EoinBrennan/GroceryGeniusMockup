@@ -44,13 +44,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.team5.grocerygeniusmockup.Model.Item;
-import com.team5.grocerygeniusmockup.Model.Section;
-import com.team5.grocerygeniusmockup.Model.Shop;
 import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
-import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
@@ -134,7 +130,11 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
                 //notifyDataSetChanged();
 
-                generateItems();
+                if (type == EventType.Added) {
+                    generateItems(true);
+                } else {
+                    generateItems(false);
+                }
 
                 for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
                     thisMom.expandGroup(i);
@@ -143,7 +143,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         });
     }
 
-    public void generateItems() {
+    public void generateItems(boolean added) {
         Log.e("GenItems", "SecSnaps size: " + mSectionSnapshots.getCount());
 
         for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
@@ -199,6 +199,14 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                         }
                     }
             );
+        }
+
+        /* Open the sections in this shop if items are added. */
+
+        if (added) {
+            for (int i = 0; i < mSectionSnapshots.getCount(); i++) {
+                parent.expandGroup(i);
+            }
         }
     }
 
@@ -373,7 +381,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                                 Log.e("RemoveItemBtnClicked", "Closing group " + childPosition);
                                 thisMom.collapseGroup(groupPosition);
                             }
-                            generateItems();
+                            generateItems(false);
                         }
                     } catch (IndexOutOfBoundsException e) {
 
@@ -440,6 +448,8 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
         final Button secMenuBtn = (Button) convertView.findViewById(R.id.section_options_button);
 
+        final boolean[] removed = {false};
+
         secMenuBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -455,12 +465,15 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                         int id = item.getItemId();
                         switch (id) {
                             case R.id.option_delete_section:
-                                String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
-                                mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
-                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
-                                itemRef.removeValue();
-                                mItemSnapshots.remove(groupPosition);
-                                generateItems();
+                                if (!removed[0]) {
+                                    String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
+                                    mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
+                                    Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
+                                    itemRef.removeValue();
+                                    mItemSnapshots.remove(groupPosition);
+                                    removed[0] = true;
+                                }
+                                generateItems(false);
                                 break;
                             default:
                                 Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
