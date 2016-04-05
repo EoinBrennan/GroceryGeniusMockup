@@ -1,4 +1,4 @@
-package com.team5.grocerygeniusmockup.Model;
+package com.team5.grocerygeniusmockup.Model.PantryModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.ServerValue;
@@ -15,30 +15,33 @@ import java.util.HashMap;
  * that becomes a long timestamp of the moment it reaches the Firebase database when it gets there.
  */
 
-public class Section {
+public class PantryItem {
     private String name;
-    private String shop;
-    private int order;
+    private String shelf;
+    private int quantity;
+    private long expiryDate;
     private HashMap<String, Object> timestampCreated;
     private HashMap<String, Object> timestampLastChanged;
 
     /* Empty constructor required for Firebase serialisation. */
 
-    public Section() {
+    public PantryItem() {
     }
 
     /**
      * Use this constructor to create Shop objects
      *
      * @param name     The name of item, e.g. Milk
-     * @param shop     The name of the shop the user wants to buy the item in.
-     * @param order    Where does this section appear in the shop.
+     * @param shelf     The name of the shelf the item is on.
+     * @param quantity The amount of the item the user wants.
+     * @param expiryDate The long value date the item expires.
      */
 
-    public Section(String name, String shop, int order) {
+    public PantryItem(String name, String shelf, int quantity, long expiryDate) {
         this.name = name;
-        this.shop = shop;
-        this.order = order;
+        this.shelf = shelf;
+        this.quantity = quantity;
+        this.expiryDate = expiryDate;
         this.timestampCreated = timestampCreated;
 
         HashMap<String, Object> timestampLastChangedObj = new HashMap<String, Object>();
@@ -50,12 +53,16 @@ public class Section {
         return name;
     }
 
-    public String getShop() {
-        return shop;
+    public String getShelf() {
+        return shelf;
     }
 
-    public int getOrder() {
-        return order;
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public long getExpiryDate() {
+        return expiryDate;
     }
 
     public HashMap<String, Object> getTimestampCreated() {

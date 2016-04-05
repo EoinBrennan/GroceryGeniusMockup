@@ -15,6 +15,11 @@
     <string name="positive_button_create">Create</string>
     <string name="positive_button_add_item">Add Item</string>
 
+    <!-- Pantry -->
+    <string name="hint_add_shelf">Create a shelf (e.g. Fridge)</string>
+    <string name="shelf_order">Where in the order of your shelves is this?</string>
+    <string name="action_new_shelf">Add New Shelf</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -106,4 +111,8 @@
     <string name="option_visit_later">I visit this section later.</string>
     <string name="option_delete_section">Remove this Section</string>
     <string name="option_rename_section">Change Section Name</string>
+
+    <!-- Shelf Menu -->
+    <string name="option_delete_shelf">Remove this Shelf</string>
+    <string name="option_rename_shelf">Change Shelf Name</string>
 </resources>

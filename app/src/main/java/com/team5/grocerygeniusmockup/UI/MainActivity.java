@@ -1,6 +1,5 @@
 package com.team5.grocerygeniusmockup.UI;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.app.DialogFragment;
@@ -21,10 +20,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.team5.grocerygeniusmockup.R;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShelfDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.PantryFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
-import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
 
 /**
  * Represents the home screen of the app which has a {@link ViewPager} with
@@ -64,8 +63,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.settings_new_shop) {
-            showAddShopDialog();
+        switch (id) {
+            case R.id.settings_new_shop: showAddShopDialog();
+                break;
+            case R.id.settings_new_shelf: showAddShelfDialog();
+                break;
         }
         
         return super.onOptionsItemSelected(item);
@@ -98,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
     public void showAddShopDialog() {
         DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
         dialog.show(MainActivity.this.getFragmentManager(), "AddShopDialogFragment");
+    }
+
+    public void showAddShelfDialog() {
+        DialogFragment dialog = (DialogFragment) AddShelfDialogFragment.newInstance();
+        dialog.show(MainActivity.this.getFragmentManager(), "AddShelfDialogFragment");
     }
 
     /**

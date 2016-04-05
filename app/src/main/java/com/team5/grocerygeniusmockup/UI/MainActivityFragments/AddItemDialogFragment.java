@@ -18,7 +18,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
-import com.team5.grocerygeniusmockup.Model.Item;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Item;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 

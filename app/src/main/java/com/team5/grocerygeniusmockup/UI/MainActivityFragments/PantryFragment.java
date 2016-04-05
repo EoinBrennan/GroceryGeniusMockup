@@ -10,20 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.team5.grocerygeniusmockup.Model.FirebaseTwoLayerExpandableAdapter;
-import com.team5.grocerygeniusmockup.Model.Item;
-import com.team5.grocerygeniusmockup.Model.Shelf;
-import com.team5.grocerygeniusmockup.Model.ShoppingListModel.FirebaseThreeLayerExpandableAdapter;
+import com.team5.grocerygeniusmockup.Model.PantryModel.FirebaseTwoLayerExpandableAdapter;
+import com.team5.grocerygeniusmockup.Model.PantryModel.PantryItem;
+import com.team5.grocerygeniusmockup.Model.PantryModel.Shelf;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
-import java.util.ArrayList;
+import java.util.Date;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,8 +80,12 @@ public class PantryFragment extends Fragment {
             String cupBKey = cupBRef.getKey();
             cupBRef.setValue(cupboard);
 
-            Item milk = new Item("Milk", "", "", 1);
-            Item cheese = new Item("Cheese", "", "", 1);
+            Date now = new Date();
+            long foreverLong = now.getTime() + (1000*365*24*60*60*1000);
+            long weekLong = now.getTime() + (7*24*60*60*1000);
+
+            PantryItem milk = new PantryItem("Milk", fridge.getName(), 1, weekLong);
+            PantryItem cheese = new PantryItem("Cheese", fridge.getName(), 1, weekLong);
             String fridgeItems = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + fridgeKey;
             Firebase fridgeitemsRef = new Firebase(fridgeItems);
             Firebase milkRef = fridgeitemsRef.push();
@@ -93,7 +93,7 @@ public class PantryFragment extends Fragment {
             Firebase cheeseRef = fridgeitemsRef.push();
             cheeseRef.setValue(cheese);
 
-            Item biscuits = new Item("Biscuits", "", "", 1);
+            PantryItem biscuits = new PantryItem("Biscuits", cupboard.getName(), 1, foreverLong);
             String cupBItems = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + cupBKey;
             Firebase cupBItemsRef = new Firebase(cupBItems);
             Firebase biscRef = cupBItemsRef.push();
