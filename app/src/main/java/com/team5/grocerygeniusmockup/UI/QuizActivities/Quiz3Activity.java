@@ -1,104 +1,66 @@
 package com.team5.grocerygeniusmockup.UI.QuizActivities;
 
-import android.app.DialogFragment;
-import android.app.ListActivity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import com.team5.grocerygeniusmockup.R;
-import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Quiz3Activity extends ListActivity {
+public class Quiz3Activity extends Activity {
 
-    String sections[] = {"Dairy","Meat","Bread"};
-
-    ArrayAdapter<String> myAdapter;
+    private ListView listView1;
     EditText et;
-    ListView myList;
-
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop_sections);
-        et = (EditText)findViewById(R.id.enterShopName);
+        setContentView(R.layout.activity_quiz3);
 
-        List values = new ArrayList();
-        for (int i = 0; i < sections.length; i++) {
-            values.add(sections[i]);
-        }
+        String[] myValues = {
+                "Dairy",
+                "Meat",
+                "Bread"
+        };
 
-        //*fix this!!!
-        myAdapter = new ArrayAdapter<String>(
-                this,
-                R.layout.list_item_shop_order,
-                R.id.text_view_item_name,
-                values
-        );
-        //*/
+        final ArrayList<String> myList = new ArrayList<String>(Arrays.asList(myValues));
 
-        myList = (ListView)findViewById(android.R.id.list);
-        myList.setAdapter(myAdapter);
-
-        //spinner setup
-        Spinner mySpinner = (Spinner) findViewById(R.id.spinner_shop_order);
+        final ListViewCustomAdapter adapter = new ListViewCustomAdapter(this,
+                R.layout.listview_item_row, myList);
 
 
-        /* Spinner Drop down elements
-        List<String> how_often = new ArrayList<String>();
-        mySpinner.add("Automobile");
-        mySpinner.add("Business Services");
-        categories.add("Computers");
-        categories.add("Education");
-        categories.add("Personal");
-        categories.add("Travel");
-        //*/
+        listView1 = (ListView) findViewById(R.id.quizlistView);
 
-        //*
-        Button addShop = (Button) findViewById(R.id.button_add_new_shop);
+        View header = (View) getLayoutInflater().inflate(R.layout.listview_header_row, null);
+        listView1.addHeaderView(header);
 
-        addShop.setOnClickListener(
+        listView1.setAdapter(adapter);
+
+        Button addSection = (Button) findViewById(R.id.submit_section);
+        et = (EditText) findViewById(R.id.prompt_section);
+//*
+        addSection.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        ArrayAdapter<String> adapter = myAdapter;
-                        String device;
+                        String input;
+                        input = et.getText().toString();
+                        myList.add(input);
 
-                        List myArrayList = new ArrayList();
-                        device = et.getText().toString();
-                        myArrayList.add(device);
-                        adapter.add(device);
                         et.setText("");
                         et.setHint("Enter another section");
-
                         adapter.notifyDataSetChanged();
                     }
                 });
+//*/
+
     }
-
-    @Override
-    protected void onListItemClick( ListView l, View v, int position, long id)
-    {
-        CheckedTextView textView = (CheckedTextView)v;
-        textView.setChecked(!textView.isChecked());
-    }
-
-
-
-
-
-
 }
