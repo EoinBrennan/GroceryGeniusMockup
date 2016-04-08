@@ -34,6 +34,34 @@ public class Quiz2Activity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz2);
+
+        String emailInput;
+        String passwordInput;
+        String passwordConfirmed;
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                emailInput= null;
+                passwordInput = null;
+                passwordConfirmed = null;
+            } else {
+                emailInput = extras.getString("emailInput");
+                passwordInput = extras.getString("passwordInput");
+                passwordConfirmed = extras.getString("passwordConfirmed");
+            }
+        } else {
+            emailInput= (String) savedInstanceState.getSerializable("emailInput");
+            passwordInput= (String) savedInstanceState.getSerializable("passwordInput");
+            passwordConfirmed= (String) savedInstanceState.getSerializable("passwordConfirmed");
+        }
+
+
+        /////////////////Add firebase code here/////////////////
+
+
+        ///////////////////////////////////////////////////////
+
+
         et = (EditText)findViewById(R.id.enterShopName);
 
         List values = new ArrayList();
@@ -81,8 +109,6 @@ public class Quiz2Activity extends ListActivity {
         next.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-
-
                         Intent logInIntent = new Intent(Quiz2Activity.this, Quiz3Activity.class);
                         startActivity(logInIntent);
                     }
