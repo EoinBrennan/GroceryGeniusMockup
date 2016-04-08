@@ -30,11 +30,20 @@ public class Quiz1Activity extends AppCompatActivity {
         next_button.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        String passwordConfirm = confirm_password.getText().toString();
+                        //get all the values
                         String emailInput = email_box.getText().toString();
                         String passwordInput = password_box.getText().toString();
+                        String passwordConfirm = confirm_password.getText().toString();
 
+                        //create intent
                         Intent logInIntent = new Intent(Quiz1Activity.this, Quiz2Activity.class);
+
+                        //pass values through intent
+                        logInIntent.putExtra("emailInput", emailInput);
+                        logInIntent.putExtra("passwordInput", passwordInput);
+                        logInIntent.putExtra("passwordConfirmed", passwordConfirm);
+
+                        //start activity
                         startActivity(logInIntent);
                     }
                 }
