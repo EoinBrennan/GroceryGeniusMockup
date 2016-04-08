@@ -26,6 +26,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/add_new_shop"
         android:id="@+id/button_add_new_shop"
@@ -40,6 +42,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
         android:text="@string/next"
         android:id="@+id/next_button"
         android:layout_gravity="center_horizontal" />

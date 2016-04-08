@@ -3,17 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    android:background="@android:color/black"
+    android:background="@android:color/white"
     android:clickable="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
     android:foreground="?selectableItemBackground"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/padding_List"
-    android:paddingStart="@dimen/padding_List">
+    android:paddingLeft="16dp"
+    android:paddingStart="80dp">
 
     <RelativeLayout
         android:id="@+id/section_header"
+        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -28,20 +28,22 @@
             android:textColor="@android:color/white"
             android:layout_margin="@dimen/fab_margin" />
 
-        <Button
+        <ImageButton
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+"
             android:id="@+id/button_add_item_to_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/add_icon_transparent"
+            android:background="@android:color/transparent"
             android:layout_marginRight="12dp"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true" />
 
-        <Button
+        <ImageButton
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/options"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_options_transparent"
             android:id="@+id/section_options_button"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/button_add_item_to_section"

@@ -345,7 +345,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
             }
         });
 
-        final Button shopMenuBtn = (Button) convertView.findViewById(R.id.shop_options_button);
+        final ImageButton shopMenuBtn = (ImageButton) convertView.findViewById(R.id.shop_options_button);
 
         shopMenuBtn.setOnClickListener(new View.OnClickListener() {
 

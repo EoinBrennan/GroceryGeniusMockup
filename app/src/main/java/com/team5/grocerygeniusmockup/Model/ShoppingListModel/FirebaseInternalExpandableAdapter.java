@@ -446,7 +446,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_section_name);
         itemNameView.setText(model.getName());
 
-        final Button secMenuBtn = (Button) convertView.findViewById(R.id.section_options_button);
+        final ImageButton secMenuBtn = (ImageButton) convertView.findViewById(R.id.section_options_button);
 
         final boolean[] removed = {false};
 
@@ -487,7 +487,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
             }
         });//closing the setOnClickListener method
 
-        Button addItemBtn = (Button) convertView.findViewById(R.id.button_add_item_to_section);
+        ImageButton addItemBtn = (ImageButton) convertView.findViewById(R.id.button_add_item_to_section);
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

@@ -9,8 +9,8 @@
     android:focusable="false"
     android:foreground="?selectableItemBackground"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/padding_List"
-    android:paddingStart="@dimen/padding_List">
+    android:paddingLeft="16dp"
+    android:paddingStart="80dp">
 
     <TextView
         android:id="@+id/text_view_item_name"
@@ -22,7 +22,7 @@
     <ImageButton
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/trash_icon"
+        android:src="@drawable/ic_remove_icon"
         android:background="@android:color/transparent"
         android:id="@+id/remove_item_button"
         android:layout_alignParentRight="true"
