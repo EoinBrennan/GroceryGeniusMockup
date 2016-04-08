@@ -11,7 +11,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/question_add_sections1"
         android:inputType="text"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:textSize="20dp"
         android:gravity="center"
         android:textColor="#ffffff" />
@@ -23,7 +23,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/question_add_section2"
         android:inputType="text"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:textSize="20dp"
         android:gravity="center"
         android:textColor="#ffffff" />
@@ -39,6 +39,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/button_add_section"
         android:id="@+id/button_add_new_shop"
@@ -54,6 +56,8 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:text="@string/next"
+        android:background="@color/colorPrimary"
+        android:textColor="@android:color/white"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal" />
 

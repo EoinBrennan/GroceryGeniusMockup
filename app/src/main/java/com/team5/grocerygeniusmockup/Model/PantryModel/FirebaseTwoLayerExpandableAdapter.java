@@ -420,7 +420,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
         TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_shelf_name);
         itemNameView.setText(model.getName());
 
-        final Button shelfMenuBtn = (Button) convertView.findViewById(R.id.shelf_options_button);
+        final ImageButton shelfMenuBtn = (ImageButton) convertView.findViewById(R.id.shelf_options_button);
 
         shelfMenuBtn.setOnClickListener(new View.OnClickListener() {
 
