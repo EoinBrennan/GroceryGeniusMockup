@@ -10,7 +10,7 @@
     android:foreground="?selectableItemBackground"
     android:gravity="center_vertical"
     android:paddingLeft="16dp"
-    android:paddingStart="80dp">
+    android:paddingStart="40dp">
 
     <TextView
         android:id="@+id/text_view_item_name"

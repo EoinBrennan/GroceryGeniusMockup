@@ -45,6 +45,7 @@ import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddSectionDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
+import com.team5.grocerygeniusmockup.UI.OptionDialogs.RenameShopDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
@@ -359,8 +360,23 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
+                        Shop thisShop = mSnapshots.getItem(groupPosition).getValue(Shop.class);
+                        Firebase thisShopRef = mSnapshots.getItem(groupPosition).getRef();
+
                         int id = item.getItemId();
                         switch (id) {
+                            case R.id.visit_more_often:
+                                if (thisShop.getFrequency() > 0) {
+                                    Shop newShop = new Shop(thisShop.getName(), thisShop.getFrequency() - 1);
+                                    thisShopRef.setValue(newShop);
+                                }
+                                break;
+                            case R.id.visit_less_shop:
+                                if (thisShop.getFrequency() < 6) {
+                                    Shop newShop = new Shop(thisShop.getName(), thisShop.getFrequency() + 1);
+                                    thisShopRef.setValue(newShop);
+                                }
+                                break;
                             case R.id.option_delete_shop:
                                 String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
                                 mSnapshots.getItem(groupPosition).getRef().removeValue();
@@ -369,9 +385,13 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                                 Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
                                 itemRef.removeValue();
                                 break;
+                            case R.id.rename_shop:
+                                DialogFragment rename_dialog = (DialogFragment) RenameShopDialogFragment.newInstance(thisShopRef.toString(), thisShop.getFrequency());
+                                rename_dialog.show(mActivity.getFragmentManager(), "RenameShopDialogFragment");
+                                break;
                             case R.id.add_different_shop:
-                                DialogFragment dialog = (DialogFragment) AddShopDialogFragment.newInstance();
-                                dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
+                                DialogFragment add_dialog = (DialogFragment) AddShopDialogFragment.newInstance();
+                                add_dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
                                 break;
                             default:
                                 Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
