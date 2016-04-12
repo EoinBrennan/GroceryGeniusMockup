@@ -20,11 +20,15 @@ public class Quiz3Activity extends Activity {
 
     private ListView listView1;
     EditText et;
+    ArrayList<String> myList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz3);
+
+
+
 
         String[] myValues = {
                 "Dairy",
@@ -32,7 +36,7 @@ public class Quiz3Activity extends Activity {
                 "Bread"
         };
 
-        final ArrayList<String> myList = new ArrayList<String>(Arrays.asList(myValues));
+        myList = new ArrayList<String>(Arrays.asList(myValues));
 
         final ListViewCustomAdapter adapter = new ListViewCustomAdapter(this,
                 R.layout.listview_item_row, myList);
