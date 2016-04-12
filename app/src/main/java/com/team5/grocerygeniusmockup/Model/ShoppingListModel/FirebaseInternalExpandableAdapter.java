@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
+import com.team5.grocerygeniusmockup.UI.OptionDialogs.RenameSectionDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
@@ -128,7 +129,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                     Log.e("SecSnapsChangeListerner", i + "th element in mSSnaps is: " + mSectionSnapshots.getItem(i).getValue(Section.class).getName() + " & key is: " + mSectionSnapshots.getItem(i).getKey());
                 }
 
-                //notifyDataSetChanged();
+                notifyDataSetChanged();
 
                 if (type == EventType.Added) {
                     generateItems(true);
@@ -463,17 +464,42 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
+
+                        Section thisSection = mSectionSnapshots.getItem(groupPosition).getValue(Section.class);
+                        Firebase thisSecRef = mSectionSnapshots.getItem(groupPosition).getRef();
+                        int order = thisSection.getOrder();
+
                         switch (id) {
+                            case R.id.visit_earlier:
+                                if (order > 1) {
+                                    Section newSec = new Section(thisSection.getName(), thisSection.getShop(), order - 1);
+                                    thisSecRef.setValue(newSec);
+                                    generateItems(false);
+                                }
+                                break;
+                            case R.id.visit_later:
+                                if (order > 0) {
+                                    Section newSec = new Section(thisSection.getName(), thisSection.getShop(), order + 1);
+                                    thisSecRef.setValue(newSec);
+                                    generateItems(false);
+                                }
+                                break;
                             case R.id.option_delete_section:
-                                if (!removed[0]) {
+                                if (!removed[0] && order != 0) {
                                     String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
                                     mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
                                     Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
                                     itemRef.removeValue();
                                     mItemSnapshots.remove(groupPosition);
                                     removed[0] = true;
+                                } else if (order == 0) {
+                                    Toast.makeText(mActivity, "You cannot delete the default Section.", Toast.LENGTH_SHORT).show();
                                 }
                                 generateItems(false);
+                                break;
+                            case R.id.rename_section:
+                                DialogFragment rename_sec_dialog = (DialogFragment) RenameSectionDialogFragment.newInstance(thisSecRef.toString(), thisSection.getShop(), order);
+                                rename_sec_dialog.show(mActivity.getFragmentManager(), "RenameSectionDialogFragment");
                                 break;
                             default:
                                 Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();

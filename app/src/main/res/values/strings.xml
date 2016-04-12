@@ -10,6 +10,7 @@
     <string name="hint_add_shop">Create a shop (e.g. Aldi)</string>
     <string name="rename_shop">New Shop Name: </string>
     <string name="hint_add_section">Create a section in the shop (e.g. Dairy, Produce)</string>
+    <string name="rename_section">New Section Name: </string>
     <string name="hint_add_item">What do you need? (e.g. Milk)</string>
     <string name="quantity">How many do you want?</string>
     <string name="section_order">Where in the order of sections you visit in the shop is this?</string>
