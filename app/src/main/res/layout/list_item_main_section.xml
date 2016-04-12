@@ -9,7 +9,7 @@
     android:focusable="false"
     android:foreground="?selectableItemBackground"
     android:paddingLeft="16dp"
-    android:paddingStart="80dp">
+    android:paddingStart="40dp">
 
     <RelativeLayout
         android:id="@+id/section_header"
