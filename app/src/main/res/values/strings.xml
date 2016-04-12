@@ -110,4 +110,6 @@
     <!-- Shelf Menu -->
     <string name="option_delete_shelf">Remove this Shelf</string>
     <string name="option_rename_shelf">Change Shelf Name</string>
+    <string name="prompt_new_username">Enter new username</string>
+    <string name="hint_username">Username</string>
 </resources>

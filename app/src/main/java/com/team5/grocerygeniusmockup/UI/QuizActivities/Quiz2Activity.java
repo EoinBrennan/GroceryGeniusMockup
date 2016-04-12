@@ -28,6 +28,10 @@ public class Quiz2Activity extends ListActivity {
     ArrayAdapter<String> myAdapter;
     EditText et;
     ListView myList;
+    String username;
+    String passwordInput;
+    String passwordConfirmed;
+    ArrayList<String> values;
 
 
     @Override
@@ -35,22 +39,21 @@ public class Quiz2Activity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz2);
 
-        String emailInput;
-        String passwordInput;
-        String passwordConfirmed;
+
+        //get all values from quiz1activity
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
-                emailInput= null;
+                username= null;
                 passwordInput = null;
                 passwordConfirmed = null;
             } else {
-                emailInput = extras.getString("emailInput");
+                username = extras.getString("username");
                 passwordInput = extras.getString("passwordInput");
                 passwordConfirmed = extras.getString("passwordConfirmed");
             }
         } else {
-            emailInput= (String) savedInstanceState.getSerializable("emailInput");
+            username= (String) savedInstanceState.getSerializable("username");
             passwordInput= (String) savedInstanceState.getSerializable("passwordInput");
             passwordConfirmed= (String) savedInstanceState.getSerializable("passwordConfirmed");
         }
@@ -64,7 +67,7 @@ public class Quiz2Activity extends ListActivity {
 
         et = (EditText)findViewById(R.id.enterShopName);
 
-        List values = new ArrayList();
+        values = new ArrayList();
         for (int i = 0; i < listItem.length; i++) {
             values.add(listItem[i]);
         }
@@ -110,6 +113,15 @@ public class Quiz2Activity extends ListActivity {
                 new View.OnClickListener() {
                     public void onClick(View view) {
                         Intent logInIntent = new Intent(Quiz2Activity.this, Quiz3Activity.class);
+
+                        //pass values through intent from quiz1activity
+                        logInIntent.putExtra("emailInput", username);
+                        logInIntent.putExtra("passwordInput", passwordInput);
+                        logInIntent.putExtra("passwordConfirmed", passwordConfirmed);
+
+                        //pass arraylist values through intent from quiz2activity
+                        logInIntent.putStringArrayListExtra("arrayListSections", values);
+
                         startActivity(logInIntent);
                     }
                 }
