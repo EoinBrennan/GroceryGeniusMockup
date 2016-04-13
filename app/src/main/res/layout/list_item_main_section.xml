@@ -7,9 +7,7 @@
     android:clickable="false"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
-    android:foreground="?selectableItemBackground"
-    android:paddingLeft="16dp"
-    android:paddingStart="40dp">
+    android:foreground="?selectableItemBackground">
 
     <RelativeLayout
         android:id="@+id/section_header"
@@ -35,7 +33,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/add_icon_transparent"
             android:background="@android:color/transparent"
-            android:layout_marginRight="12dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentRight="true" />
 
         <ImageButton
@@ -48,7 +46,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/button_add_item_to_section"
             android:layout_toStartOf="@+id/button_add_item_to_section"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="10dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

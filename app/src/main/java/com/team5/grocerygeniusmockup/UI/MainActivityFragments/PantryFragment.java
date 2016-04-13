@@ -61,7 +61,7 @@ public class PantryFragment extends Fragment {
 
         /** Test
          */
-
+        /*
         Boolean alreadyActivated = mPrefs.getBoolean("First", false);
 
         final String FIREBASE_MY_PANTRY_SHELVES = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES;
@@ -103,7 +103,7 @@ public class PantryFragment extends Fragment {
             editor.putBoolean("First", true);
             editor.commit();
         }
-
+        */
         /**
          * Initialize UI elements
          */
