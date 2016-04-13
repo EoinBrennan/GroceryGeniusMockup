@@ -35,7 +35,7 @@
             android:src="@drawable/add_icon_transparent"
             android:background="@android:color/transparent"
             android:id="@+id/button_add_section_to_shop"
-            android:layout_marginRight="12dp"
+            android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"/>
 
         <ImageButton
@@ -48,7 +48,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/button_add_section_to_shop"
             android:layout_toStartOf="@+id/button_add_section_to_shop"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="10dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

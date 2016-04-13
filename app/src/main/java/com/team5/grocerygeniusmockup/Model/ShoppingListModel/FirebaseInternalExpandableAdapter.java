@@ -44,12 +44,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
 import com.team5.grocerygeniusmockup.UI.OptionDialogs.RenameSectionDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -366,6 +369,57 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
 
             TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
             itemNameView.setText(model.getName());
+
+            TextView itemQuantityView = (TextView) convertView.findViewById(R.id.text_view_item_quantity);
+            itemQuantityView.setText("" + model.getQuantity());
+
+            ImageButton increaseQBtn = (ImageButton) convertView.findViewById(R.id.shop_quantity_up_button);
+            increaseQBtn.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Called when the imagebutton for increasing quantity has been clicked.
+                 *
+                 * @param v The view that was clicked.
+                 */
+                @Override
+                public void onClick(View v) {
+                    try {
+                        DataSnapshot thisGuy = mItemSnapshots.get(groupPosition).getItem(childPosition);
+                        Firebase thisItemRef = thisGuy.getRef();
+                        Item currentItem = thisGuy.getValue(Item.class);
+                        Item newItem = new Item(currentItem.getName(), currentItem.getShop(), currentItem.getSection(), currentItem.getQuantity() + 1);
+                        thisItemRef.setValue(newItem);
+                        Log.i("IncQuantityBtnClicked", currentItem.getName() + " had its quantity increased by one");
+                        generateItems(false);
+                    } catch (IndexOutOfBoundsException e) {
+
+                    }
+                }
+            });
+
+            ImageButton decreaseQBtn = (ImageButton) convertView.findViewById(R.id.shop_quantity_down_button);
+            increaseQBtn.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Called when the imagebutton for increasing quantity has been clicked.
+                 *
+                 * @param v The view that was clicked.
+                 */
+                @Override
+                public void onClick(View v) {
+                    try {
+                        DataSnapshot thisGuy = mItemSnapshots.get(groupPosition).getItem(childPosition);
+                        Firebase thisItemRef = thisGuy.getRef();
+                        Item currentItem = thisGuy.getValue(Item.class);
+                        if (currentItem.getQuantity() > 0) {
+                            Item newItem = new Item(currentItem.getName(), currentItem.getShop(), currentItem.getSection(), currentItem.getQuantity() - 1);
+                            thisItemRef.setValue(newItem);
+                            Log.i("DecQuantityBtnClicked", currentItem.getName() + " had its quantity decreased by one");
+                            generateItems(false);
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+
+                    }
+                }
+            });
 
             ImageButton rmvItemBtn = (ImageButton) convertView.findViewById(R.id.remove_item_button);
             final InternalExpandableListView thisMom = this.parent;
