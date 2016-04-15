@@ -1,6 +1,8 @@
 package com.team5.grocerygeniusmockup.UI;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +53,17 @@ public class MainActivity extends AppCompatActivity {
 
         /* Set up tabs, toolbar. */
         setUpScreen();
+
+        /* Initialise preferences. */
+
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        if (!mPrefs.getBoolean("prefs_initialisted", false)) {
+            SharedPreferences.Editor editor = mPrefs.edit();
+            editor.putBoolean("prefs_initialised", true);
+            editor.putBoolean("delete_checked", true);
+            editor.putBoolean("move_to_pantry_checked", false);
+            editor.commit();
+        }
     }
 
 
@@ -68,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.settings_new_shelf: showAddShelfDialog();
                 break;
+            case R.id.action_settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
         }
         
         return super.onOptionsItemSelected(item);

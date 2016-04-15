@@ -32,6 +32,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.firebase.client.DataSnapshot;
 import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddItemDialogFragment;
+import com.team5.grocerygeniusmockup.UI.MainActivityFragments.MoveToPantryDialogFragment;
 import com.team5.grocerygeniusmockup.UI.OptionDialogs.RenameSectionDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
@@ -108,6 +110,8 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
         this.shopName = shopName;
         mActivity = activity;
         mSectionSnapshots = new SortedFirebaseArray(new Firebase(MY_FIREBASE_SECTIONS));
+
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
 
         /**
          * Attaches a listener that is triggered by FirebaseArray whenever elements are
@@ -370,7 +374,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
             TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_item_name);
             itemNameView.setText(model.getName());
 
-            TextView itemQuantityView = (TextView) convertView.findViewById(R.id.text_view_item_quantity);
+            final TextView itemQuantityView = (TextView) convertView.findViewById(R.id.text_view_item_quantity);
             itemQuantityView.setText("" + model.getQuantity());
 
             ImageButton increaseQBtn = (ImageButton) convertView.findViewById(R.id.shop_quantity_up_button);
@@ -388,6 +392,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                         Item currentItem = thisGuy.getValue(Item.class);
                         Item newItem = new Item(currentItem.getName(), currentItem.getShop(), currentItem.getSection(), currentItem.getQuantity() + 1);
                         thisItemRef.setValue(newItem);
+                        itemQuantityView.setText("" + newItem.getQuantity());
                         Log.i("IncQuantityBtnClicked", currentItem.getName() + " had its quantity increased by one");
                         generateItems(false);
                     } catch (IndexOutOfBoundsException e) {
@@ -397,7 +402,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
             });
 
             ImageButton decreaseQBtn = (ImageButton) convertView.findViewById(R.id.shop_quantity_down_button);
-            increaseQBtn.setOnClickListener(new View.OnClickListener() {
+            decreaseQBtn.setOnClickListener(new View.OnClickListener() {
                 /**
                  * Called when the imagebutton for increasing quantity has been clicked.
                  *
@@ -409,9 +414,10 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                         DataSnapshot thisGuy = mItemSnapshots.get(groupPosition).getItem(childPosition);
                         Firebase thisItemRef = thisGuy.getRef();
                         Item currentItem = thisGuy.getValue(Item.class);
-                        if (currentItem.getQuantity() > 0) {
+                        if (currentItem.getQuantity() > 1 && Integer.parseInt(itemQuantityView.getText().toString()) == currentItem.getQuantity()) {
                             Item newItem = new Item(currentItem.getName(), currentItem.getShop(), currentItem.getSection(), currentItem.getQuantity() - 1);
                             thisItemRef.setValue(newItem);
+                            itemQuantityView.setText("" + newItem.getQuantity());
                             Log.i("DecQuantityBtnClicked", currentItem.getName() + " had its quantity decreased by one");
                             generateItems(false);
                         }
@@ -426,20 +432,49 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
             final boolean[] pressed = {false};
             rmvItemBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Log.e("RemoveItemBtnClicked","Button pressed before?: " + pressed[0]);
-                    try {
-                        if (!pressed[0]) {
-                            Log.e("RemoveItemBtnClicked","Removing item " + childPosition + " from group " + groupPosition);
-                            mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
-                            pressed[0] = true;
-                            if (getChildrenCount(groupPosition) < 2) {
-                                Log.e("RemoveItemBtnClicked", "Closing group " + childPosition);
-                                thisMom.collapseGroup(groupPosition);
-                            }
-                            generateItems(false);
-                        }
-                    } catch (IndexOutOfBoundsException e) {
+                    Boolean deleteItemCheck = mPrefs.getBoolean("delete_checked", false);
+                    Boolean pantryItemCheck = mPrefs.getBoolean("move_to_pantry_checked", false);
 
+                    if (deleteItemCheck == true || (deleteItemCheck == false && pantryItemCheck == false)) {
+                        Log.e("RemoveItemBtnClicked", "Button pressed before?: " + pressed[0]);
+                        try {
+                            if (!pressed[0]) {
+                                Log.e("RemoveItemBtnClicked", "Removing item " + childPosition + " from group " + groupPosition);
+                                mItemSnapshots.get(groupPosition).getItem(childPosition).getRef().removeValue();
+
+                                pressed[0] = true;
+                                if (getChildrenCount(groupPosition) < 2) {
+                                    Log.e("RemoveItemBtnClicked", "Closing group " + childPosition);
+                                    thisMom.collapseGroup(groupPosition);
+                                }
+                                generateItems(false);
+                            }
+                        } catch (IndexOutOfBoundsException e) {
+
+                        }
+                    } else if (pantryItemCheck == true) {
+                        Log.e("MoveItemBtnClicked", "Button pressed before?: " + pressed[0]);
+                        try {
+                            if (!pressed[0]) {
+                                Log.e("MoveItemBtnClicked", "Moving item " + childPosition + " from group " + groupPosition + " to pantry.");
+                                DataSnapshot thisItemSS = mItemSnapshots.get(groupPosition).getItem(childPosition);
+                                Item thisItem = thisItemSS.getValue(Item.class);
+
+                                Log.e("The Item Ref", thisItemSS.getRef().toString());
+
+                                DialogFragment move_to_pantry_dialog = (DialogFragment) MoveToPantryDialogFragment.newInstance(thisItem.getName(), thisItem.getShop(), thisItem.getSection(), thisItem.getQuantity(), thisItemSS.getRef().toString());
+                                move_to_pantry_dialog.show(mActivity.getFragmentManager(), "MoveToPantryDialogFragment");
+
+                                pressed[0] = true;
+                                if (getChildrenCount(groupPosition) < 2) {
+                                    Log.e("MoveItemBtnClicked", "Closing group " + childPosition);
+                                    thisMom.collapseGroup(groupPosition);
+                                }
+                                generateItems(false);
+                            }
+                        } catch (IndexOutOfBoundsException e) {
+
+                        }
                     }
                 }
             });

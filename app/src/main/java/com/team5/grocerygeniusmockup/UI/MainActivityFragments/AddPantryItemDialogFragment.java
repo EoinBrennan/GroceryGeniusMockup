@@ -128,7 +128,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
             Date forever = new Date();
             long foreverLong = forever.getTime() + (1000*365*24*60*60*1000);
 
-            PantryItem newItem = new PantryItem(userEnteredName, shelfName, 1, foreverLong);
+            PantryItem newItem = new PantryItem(userEnteredName, shelfName, "na", "na", "na", "na", 1, foreverLong);
 
             /* Fetch User ID and set up Firebase address. */
 

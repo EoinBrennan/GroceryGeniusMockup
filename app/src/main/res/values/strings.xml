@@ -113,4 +113,14 @@
     <string name="option_rename_shelf">Change Shelf Name</string>
     <string name="prompt_new_username">Enter new username</string>
     <string name="hint_username">Username</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Settings -->
+    <string name="settings_delete_item_header">Delete Items</string>
+    <string name="settings_delete_item_explanation">When you purchase items, if you would simply like them removed from your shopping list, and not added to your pantry click here!</string>
+
+    <string name="settings_move_item_header">Move Items to Pantry</string>
+    <string name="settings_move_item_explanation">When you purchase items, if you would like to select a pantry shelf, set an expiry date, then have the item moved to your pantry, click here!</string>
+
+    <string name="positive_button_move_to_pantry">Buy</string>
 </resources>
