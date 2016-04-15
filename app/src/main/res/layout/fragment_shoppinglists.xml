@@ -14,34 +14,19 @@
         android:orientation="vertical">
 
         <ExpandableListView
-            android:id="@+id/parent_level"
+            android:id="@+id/shoppinglistview_outer_level"
             android:layout_height="0dp"
             android:layout_width="fill_parent"
             android:layout_weight="1"
             android:groupIndicator="@null">
         </ExpandableListView>
 
-        <!-- This accounts for the lost spcae due th the header bar. -->
+        <!-- This accounts for the lost space due th the header bar. -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
-
-    <!--
-    <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="70dp"
-        android:layout_marginRight="@dimen/fab_margin"
-        android:src="@drawable/add_to_cart_dark"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_anchor="@id/fragment_shoppinglists"
-        app:layout_anchorGravity="bottom|right" />
-    -->
 
 </android.support.design.widget.CoordinatorLayout>

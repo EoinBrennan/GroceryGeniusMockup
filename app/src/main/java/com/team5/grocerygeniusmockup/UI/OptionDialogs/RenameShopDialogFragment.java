@@ -5,31 +5,31 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.firebase.client.Firebase;
-import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Section;
 import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Shop;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
-public class RenameShopDialogFragment extends DialogFragment {
+// This fragment handles adding a new shop to the user's Firebase.
 
+public class RenameShopDialogFragment extends DialogFragment {
+    private static final String LOG_TAG = RenameShopDialogFragment.class.getSimpleName();
+
+    // Declare UI element
     EditText mEditTextShopRename;
 
+    // Declare global variables
     Firebase thisShopRef;
     int frequency;
-    SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
 
     public RenameShopDialogFragment() {
         // Required empty public constructor
@@ -38,6 +38,9 @@ public class RenameShopDialogFragment extends DialogFragment {
     /**
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created
+     *
+     * @param thisShopRef A string containing the firebase address of the shop being renamed.
+     * @param frequency The shop's frequency of visitation.
      */
     public static RenameShopDialogFragment newInstance(String thisShopRef, int frequency) {
         RenameShopDialogFragment addRenameShopDialogFragment = new RenameShopDialogFragment();
@@ -50,7 +53,9 @@ public class RenameShopDialogFragment extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
+        // Initialise variables.
         thisShopRef = new Firebase( getArguments().getString("refcode", "") );
         frequency = getArguments().getInt("freq", 3);
     }
@@ -58,20 +63,22 @@ public class RenameShopDialogFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d(LOG_TAG, "onActivityCreated");
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreateDialog");
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
+        // Get the layout inflater and initialise UI element
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_rename_shop, null);
         mEditTextShopRename = (EditText) rootView.findViewById(R.id.edit_text_shop_rename);
 
         /**
-         * Call addShoppingList() when user taps "Done" keyboard action
+         * Call renameShop() when user taps "Done" keyboard action
          */
         mEditTextShopRename.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -97,21 +104,16 @@ public class RenameShopDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    /**
-     * Add new active list
-     */
     public void renameShop() {
 
-        // Get the string that the user entered into the EditText and make an object with it
-        // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
+        // Fetch user input
         String userEnteredName = mEditTextShopRename.getText().toString();
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
+            // Replace current shop with new Shop object with only name being different.
             Shop newShop = new Shop(userEnteredName, frequency);
-
             thisShopRef.setValue(newShop);
         }
-
     }
 }
