@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Section"
-            android:textColor="@android:color/white"
+            style="@style/HeadStyleWhite"
             android:layout_margin="@dimen/fab_margin" />
 
         <ImageButton
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/add_icon_transparent"
             android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:layout_alignParentRight="true" />
 

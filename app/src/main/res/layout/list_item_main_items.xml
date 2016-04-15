@@ -12,6 +12,7 @@
 
     <TextView
         android:id="@+id/text_view_item_name"
+        style="@style/itemStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
@@ -33,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/shop_quantity_up_button"
+        android:src="@drawable/ic_arrow_up"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
         android:layout_toLeftOf="@id/remove_item_button"
@@ -40,6 +42,7 @@
 
     <TextView
         android:id="@+id/text_view_item_quantity"
+        style="@style/itemStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
@@ -51,6 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/shop_quantity_down_button"
+        android:src="@drawable/ic_arrow_down"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/text_view_item_quantity"
         android:layout_toStartOf="@+id/text_view_item_quantity" />
