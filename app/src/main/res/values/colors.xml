@@ -4,7 +4,15 @@
     <color name="colorPrimaryDark">#5ab831</color>
     <color name="colorAccent">#df4a32</color>
     <color name="primary">#83CF1C</color>
-    <color name="yellowC">#E9FF2E</color>
-
+    <color name="yellow">#E9FF2E</color>
+    <color name="gold">#CFC21C</color>
+    <color name="goldLight">#e1ff34</color>
+    <color name="greenC">#7cff34</color>
+    <color name="yellowW">#FFE500</color>
+    <color name="yellowD">#FFD500</color>
+    <color name="yellowE">#e2ff34</color>
+    <color name="yellowR">#f0fc47</color>
+    <color name="yellowT">#FFFA00</color>
     <color name="backgroundGrey">#EDEEEF</color>
+    <color name="darkGrey">#696969</color>
 </resources>
