@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.team5.grocerygeniusmockup" >
+    package="com.team5.grocerygeniusmockup">
 
     <!-- To allow internet access for Firebase functionality. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,11 +19,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".UI.LoginActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team5.grocerygeniusmockup.UI.LoginActivity" />
@@ -39,7 +39,7 @@
             android:label="@string/title_activity_main"
             android:parentActivityName=".UI.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UI.LoginActivity" />
@@ -48,7 +48,7 @@
             android:name=".UI.QuizActivities.Quiz1Activity"
             android:label="@string/title_activity_quiz1"
             android:parentActivityName=".UI.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UI.LoginActivity" />
@@ -57,7 +57,7 @@
             android:name=".UI.QuizActivities.Quiz2Activity"
             android:label="@string/title_activity_quiz_2"
             android:parentActivityName=".UI.QuizActivities.Quiz1Activity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".UI.QuizActivities.Quiz1Activity" />
@@ -66,14 +66,21 @@
             android:name=".UI.QuizActivities.Quiz3Activity"
             android:label="@string/title_activity_quiz3"
             android:parentActivityName=".UI.QuizActivities.Quiz2Activity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity" />
         </activity>
+
+        <activity
+            android:name=".UI.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="896a41c1c4d47780ecb869a4e9c725a4d693b6b2" />
+
     </application>
 
 </manifest>

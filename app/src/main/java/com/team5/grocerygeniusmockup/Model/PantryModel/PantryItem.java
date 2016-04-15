@@ -18,6 +18,10 @@ import java.util.HashMap;
 public class PantryItem {
     private String name;
     private String shelf;
+    private String shopFrom;
+    private String shopFromKey;
+    private String secFrom;
+    private String secFromKey;
     private int quantity;
     private long expiryDate;
     private HashMap<String, Object> timestampCreated;
@@ -33,13 +37,21 @@ public class PantryItem {
      *
      * @param name     The name of item, e.g. Milk
      * @param shelf     The name of the shelf the item is on.
+     * @param shopFrom The shop this item came from.
+     * @param shopFromKey That shop's key.
+     * @param secFrom The section this item came from.
+     * @param secFromKey That section's key.
      * @param quantity The amount of the item the user wants.
      * @param expiryDate The long value date the item expires.
      */
 
-    public PantryItem(String name, String shelf, int quantity, long expiryDate) {
+    public PantryItem(String name, String shelf, String shopFrom, String shopFromKey, String secFrom, String secFromKey, int quantity, long expiryDate) {
         this.name = name;
         this.shelf = shelf;
+        this.shopFrom = shopFrom;
+        this.shopFromKey = shopFromKey;
+        this.secFrom = secFrom;
+        this.secFromKey = secFromKey;
         this.quantity = quantity;
         this.expiryDate = expiryDate;
         this.timestampCreated = timestampCreated;
@@ -55,6 +67,22 @@ public class PantryItem {
 
     public String getShelf() {
         return shelf;
+    }
+
+    public String getShopFrom() {
+        return shopFrom;
+    }
+
+    public String getShopFromKey() {
+        return shopFromKey;
+    }
+
+    public String getSecFrom() {
+        return secFrom;
+    }
+
+    public String getSecFromKey() {
+        return secFromKey;
     }
 
     public int getQuantity() {

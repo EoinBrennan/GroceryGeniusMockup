@@ -1,49 +1,45 @@
 package com.team5.grocerygeniusmockup.UI.MainActivityFragments;
 
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-
 import com.team5.grocerygeniusmockup.Model.ShoppingListModel.FirebaseThreeLayerExpandableAdapter;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
-
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A ShoppingList fragment which displays the user's shopping list as an expandable list view
+ * within a larger expandable list view.
  */
+
 public class ShoppingListFragment extends Fragment {
-    ListView mListView;
+
+    private static final String LOG_TAG = ShoppingListFragment.class.getSimpleName();
+
+    /* Declare UI elements. */
     ExpandableListView mExListView;
 
-    /* Fetch the User's ID. */
-
+    /* Used to fetch the User's ID. */
     SharedPreferences mPrefs;
 
-    /* Firebase address for this user's node. */
-
+    /* Will be set to the Firebase address for this user's node. */
     String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
-
-    /* Section stuff */
-
-    ArrayList<String> sectionKeys;
-    ArrayList<String> sectionNames;
 
     public ShoppingListFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Create fragment and pass bundle with data as it's arguments
-     * Right now there are not arguments...but eventually there will be.
+     * Create fragment and pass bundle with data as it's arguments.
+     * Right now there are no arguments but this allows us to alter the fragment easily in future.
      */
     public static ShoppingListFragment newInstance() {
         ShoppingListFragment fragment = new ShoppingListFragment();
@@ -55,6 +51,7 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate");
 
         /* Fetch User ID and set up Firebase address. */
 
@@ -72,12 +69,15 @@ public class ShoppingListFragment extends Fragment {
     }
 
     public View initialiseScreen(LayoutInflater inflater, ViewGroup container) {
-        String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
-
-        /* The list of shops. */
         View rootView = inflater.inflate(R.layout.fragment_shoppinglists, container, false);
 
-        mExListView = (ExpandableListView) rootView.findViewById(R.id.parent_level);
+        /* The vast majority of the work and UI interactions are contained with the customised
+         * expandable list views and adapters. Here we initialise the outer list view, and pass it
+         * the context for this fragment, a reference to itself so it can open and close elements
+         * of the list, and the url for the user's GroceryGenius information on Firebase.
+         */
+
+        mExListView = (ExpandableListView) rootView.findViewById(R.id.shoppinglistview_outer_level);
         mExListView.setAdapter(new FirebaseThreeLayerExpandableAdapter(getActivity(), mExListView, FIREBASE_MY_NODE_URL));
 
         return rootView;

@@ -1,28 +1,62 @@
 <resources>
     <string name="app_name">GroceryGenius</string>
+    <string name="title_activity_main">Your GroceryGenius</string>
+
+    <!-- General Use & arrays -->
+    <string name="frequency_shop_visit_prompt">How often do you go...</string>
+    <string-array name="frequency_shop_visit">
+        <item>Several times every day</item>
+        <item>Every day</item>
+        <item>A few times every week</item>
+        <item>Once a week</item>
+        <item>A few times every month</item>
+        <item>Every month</item>
+        <item>Very infrequently</item>
+    </string-array>
+
+    <string-array name="numerical_order">
+        <item>1st</item>
+        <item>2nd</item>
+        <item>3rd</item>
+        <item>4th</item>
+        <item>5th</item>
+        <item>6th</item>
+        <item>7th</item>
+        <item>8th</item>
+        <item>9th</item>
+        <item>10th</item>
+    </string-array>
+
+    <string name="positive_button_create">Create</string>
+    <string name="positive_button_add_item">Add Item</string>
+    <string name="positive_button_rename">Rename</string>
 
     <!-- Shopping list strings-->
+    <string name="shopping_list_frag_title">SHOPPING</string>
 
-    <string name="title_activity_main">Your GroceryGenius</string>
     <string name="action_settings">Settings</string>
-    <string name="action_new_shop">Add New Shop</string>
     <string name="section_format">The Pantry is very empty...</string>
-    <string name="hint_add_shop">Create a shop (e.g. Aldi)</string>
+
     <string name="rename_shop">New Shop Name: </string>
-    <string name="hint_add_section">Create a section in the shop (e.g. Dairy, Produce)</string>
     <string name="rename_section">New Section Name: </string>
     <string name="hint_add_item">What do you need? (e.g. Milk)</string>
     <string name="quantity">How many do you want?</string>
-    <string name="section_order">Where in the order of sections you visit in the shop is this?</string>
-    <string name="positive_button_create">Create</string>
-    <string name="positive_button_add_item">Add Item</string>
 
-    <string name="positive_button_rename">Rename</string>
+    <!-- Add shop Dialog -->
+    <string name="action_new_shop">Add New Shop</string>
+    <string name="hint_add_shop">Create a shop (e.g. Aldi)</string>
+
+    <!-- Add shelf Dialog -->
+    <string name="action_new_shelf">Add New Shelf</string>
+    <string name="hint_add_shelf">Create a shelf (e.g. Fridge)</string>
+    <string name="dialog_add_shelf_order_instructions">Where in the order of your shelves is this?</string>
+
+    <!-- Add section Dialog -->
+    <string name="hint_add_section">Create a section in the shop (e.g. Dairy, Produce)</string>
+    <string name="section_order">Where in the order of sections you visit in the shop is this?</string>
 
     <!-- Pantry -->
-    <string name="hint_add_shelf">Create a shelf (e.g. Fridge)</string>
-    <string name="shelf_order">Where in the order of your shelves is this?</string>
-    <string name="action_new_shelf">Add New Shelf</string>
+    <string name="pantry_frag_title">PANTRY</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -41,7 +75,6 @@
 
     <!-- Frequencies of Shop Visits -->
 
-    <string name="frequency_shop_visit_prompt">How often do you go...</string>
     <string name="question1">What shop(s) will you visit?</string>
     <string name="aldi">Aldi</string>
     <string name="lidl">Lidl</string>
@@ -50,16 +83,6 @@
     <string name="enter_number">Enter a number</string>
     <string name="action_new_list">Create new list</string>
 
-
-    <string-array name="frequency_shop_visit">
-        <item>Several times every day</item>
-        <item>Every day</item>
-        <item>A few times every week</item>
-        <item>Once a week</item>
-        <item>A few times every month</item>
-        <item>Every month</item>
-        <item>Very infrequently</item>
-    </string-array>
     <string name="title_activity_quiz1">QuizActivity</string>
     <string name="title_activity_quiz_2">Quiz2Activity</string>
     <string name="title_activity_quiz3">Quiz3Activity</string>
@@ -75,18 +98,7 @@
     <string name="hint_enter_shop_section">Enter shop section</string>
     <string name="button_add_section">Add section</string>
 
-    <string-array name="section_order">
-        <item>1st</item>
-        <item>2nd</item>
-        <item>3rd</item>
-        <item>4th</item>
-        <item>5th</item>
-        <item>6th</item>
-        <item>7th</item>
-        <item>8th</item>
-        <item>9th</item>
-        <item>10th</item>
-    </string-array>
+
 
     <string name="title_activity_quiz">QuizActivity</string>
     <string name="hint_enter_your_email">Enter your email</string>
@@ -113,4 +125,14 @@
     <string name="option_rename_shelf">Change Shelf Name</string>
     <string name="prompt_new_username">Enter new username</string>
     <string name="hint_username">Username</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Settings -->
+    <string name="settings_delete_item_header">Delete Items</string>
+    <string name="settings_delete_item_explanation">When you purchase items, if you would simply like them removed from your shopping list, and not added to your pantry click here!</string>
+
+    <string name="settings_move_item_header">Move Items to Pantry</string>
+    <string name="settings_move_item_explanation">When you purchase items, if you would like to select a pantry shelf, set an expiry date, then have the item moved to your pantry, click here!</string>
+
+    <string name="positive_button_move_to_pantry">Buy</string>
 </resources>

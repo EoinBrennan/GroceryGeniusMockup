@@ -26,21 +26,25 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* The following is a major adaptation of the FirebaseArrayAdapter from the Firebase UI Bindings
+ * Android Library as mentioned in the copyright above.
+ */
+
 package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddSectionDialogFragment;
@@ -50,47 +54,45 @@ import com.team5.grocerygeniusmockup.Utilities.Constants;
 import com.firebase.client.Firebase;
 
 /**
- * This class is a generic way of backing an Android ListView with a Firebase location.
- * It handles all of the child events at the given Firebase location. It marshals received data into the given
- * class type. Extend this class and provide an implementation of <code>populateView</code>, which will be given an
- * instance of your list item mLayout and an instance your class that holds your data. Simply populate the view however
- * you like and this class will handle updating the list as the data changes.
- * <p/>
- * <blockquote><pre>
- * {@code
- *     Firebase ref = new Firebase("https://<yourapp>.firebaseio.com");
- *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, mRef)
- *     {
- *         protected void populateView(View view, ChatMessage chatMessage)
- *         {
- *             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
- *             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
- *         }
- *     };
- *     listView.setListAdapter(adapter);
- * }
- * </pre></blockquote>
+ * This class is a specific way of backing an Android ExpandableListView with a GroceryGenius
+ * Firebase location containing Shop items.
+ *
+ * It handles all of the child events at the given Firebase location. It marshals received data into
+ * the Shop class type.
  */
-public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapter {
 
-    protected int mLayout;
+public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapter {
+    private static final String LOG_TAG = FirebaseThreeLayerExpandableAdapter.class.getSimpleName();
+
+    // Declare reused variables.
+    protected int mLayout = R.layout.list_item_main_shop;
     protected Activity mActivity;
+
+    // Declare FirebaseArrays.
     public SortedFirebaseArray mSnapshots;
+
+    // The String for the address of the user's root node in Firebase.
     String FIREBASE_MY_NODE_URL;
 
-    /**
-     * @param activity The activity containing the ListView
+    /** Constructor for outer layer of three layer ExListView.
+     * @param activity The activity containing the ExpandableListView
+     * @param parent A reference to the ExListView itself, to allow opening/closing of list.
+     * @param FIREBASE_MY_NODE_URL the address of the user's root node in Firebase.
      */
     public FirebaseThreeLayerExpandableAdapter(Activity activity, ExpandableListView parent, String FIREBASE_MY_NODE_URL) {
-
-        mLayout = R.layout.list_item_main_shop;
+        Log.d(LOG_TAG, "FirebaseThreeLayerExpandableAdapter Constructor");
+        // Initialise activity, ExListView, and firebase address string.
         mActivity = activity;
         final ExpandableListView thisDad = parent;
-
         this.FIREBASE_MY_NODE_URL = FIREBASE_MY_NODE_URL;
-        String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
 
+        /* Firebase address for user's shops node is created, and a SortedFirebaseArray of the
+         * information at that node is set up.
+         */
+
+        String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
         mSnapshots = new SortedFirebaseArray(new Firebase(FIREBASE_MY_URL_SHOPS));
+
         /**
          * Attaches a listener that is triggered by FirebaseArray whenever elements are
          * added, removed, moved or changed in the FirebaseArray.
@@ -102,19 +104,185 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                  * This listener triggers the BaseAdapter method notifyDataSetChanged.
                  * This notifies views reflecting the data set that they should refresh themselves.
                  */
+                Log.d(LOG_TAG, "mSnapshots onChanged");
                 notifyDataSetChanged();
 
-                /*for (int i = 0; i < mSnapshots.getCount(); i++) {
-                    thisDad.expandGroup(i);
-                }*/
+                // We set the first shop, i.e. the most visited shop to be open automatically.
                 thisDad.expandGroup(0);
             }
         });
     }
 
     public void cleanup() {
-        // We're being destroyed, let go of our mListener and forget about all of the mModels
+        // We're being destroyed, let go of our listener and models.
+        Log.d(LOG_TAG, "cleanup");
         mSnapshots.cleanup();
+    }
+
+    /**
+     * Gets a View that displays the data for the given child within the given
+     * group. This is just the expandable list view, there will only ever be one child per group.
+     *
+     * @param groupPosition the position of the group that contains the child
+     * @param childPosition the position of the child (for which the View is
+     *                      returned) within the group
+     * @param isLastChild   Whether the child is the last child within the group
+     * @param convertView   the old view to reuse, if possible. You should check
+     *                      that this view is non-null and of an appropriate type before
+     *                      using. If it is not possible to convert this view to display
+     *                      the correct data, this method can create a new view. It is not
+     *                      guaranteed that the convertView will have been previously
+     *                      created by
+     *                      {@link #getChildView(int, int, boolean, View, ViewGroup)}.
+     * @param parent        the parent that this view will eventually be attached to
+     * @return the View corresponding to the child at the specified position
+     */
+
+
+    @Override
+    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        Log.d(LOG_TAG, "getChildView");
+        // Fetch the shop at groupPosition, get it's key and name.
+        String shopKey = getItemKey(groupPosition);
+        String shopName = mSnapshots.getItem(groupPosition).getValue(Shop.class).getName();
+
+        // Create an custom ExListView and set it equal to the sole child view of this group.
+        InternalExpandableListView SecondLevelExLV = (InternalExpandableListView) convertView;
+        if (SecondLevelExLV == null) {
+            SecondLevelExLV = new InternalExpandableListView(mActivity);
+        }
+
+        /* Set the custom internal adapter for the ExListView by passing it relevant information
+         * about it's context and the shop it's expanding on.
+         */
+        SecondLevelExLV.setAdapter(new FirebaseInternalExpandableAdapter(mActivity, SecondLevelExLV, shopName, shopKey, FIREBASE_MY_NODE_URL));
+        SecondLevelExLV.setGroupIndicator(null);
+        return SecondLevelExLV;
+    }
+
+    /**
+     * Gets a View that displays the given group. This View is only for the
+     * group--the Views for the group's children will be fetched using
+     * {@link #getChildView(int, int, boolean, View, ViewGroup)}. This
+     * view inflates a custom-layout file containing buttons and a
+     * menu controlling the relevant shop object.
+     *
+     * @param groupPosition the position of the group for which the View is
+     *                      returned
+     * @param isExpanded    whether the group is expanded or collapsed
+     * @param convertView   the old view to reuse, if possible. You should check
+     *                      that this view is non-null and of an appropriate type before
+     *                      using. If it is not possible to convert this view to display
+     *                      the correct data, this method can create a new view. It is not
+     *                      guaranteed that the convertView will have been previously
+     *                      created by
+     *                      {@link #getGroupView(int, boolean, View, ViewGroup)}.
+     * @param parent        the parent that this view will eventually be attached to
+     * @return the View corresponding to the group at the specified position
+     */
+
+    @Override
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        Log.d(LOG_TAG, "getGroupView");
+        // Fetch the relevant shop object for this groupPosition.
+        DataSnapshot shopSS = mSnapshots.getItem(groupPosition);
+        final Firebase shopRef = shopSS.getRef();
+        final Shop model = shopSS.getValue(Shop.class);
+        final String thisShopKey = shopSS.getKey();
+
+        // Call out to subclass to marshall this model into the provided view
+        if (convertView == null) {
+            convertView = mActivity.getLayoutInflater().inflate(mLayout, parent, false);
+        }
+
+        /* Initialise the groupView's layout UI */
+        TextView shopNameView = (TextView) convertView.findViewById(R.id.text_view_shop_name);
+        shopNameView.setText(model.getName());
+
+        /* An image button that creates a dialog fragment that lets the user add a shop to this
+         * dialog.
+         */
+        ImageButton addSecBtn = (ImageButton) convertView.findViewById(R.id.button_add_section_to_shop);
+        addSecBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(LOG_TAG, "addSecBtn (" + model.getName() + ") onClick");
+                DialogFragment dialog = (DialogFragment) AddSectionDialogFragment.newInstance(model.getName(), thisShopKey);
+                dialog.show(mActivity.getFragmentManager(), "AddSectionDialogFragment");
+            }
+        });
+
+        // Custom menu button for the shop.
+        final ImageButton shopMenuBtn = (ImageButton) convertView.findViewById(R.id.shop_options_button);
+        shopMenuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(LOG_TAG, "shopMenuBtn (" + model.getName() + ") onClick");
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(mActivity, shopMenuBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater().inflate(R.menu.menu_shop_options, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        switch (id) {
+                            case R.id.visit_more_often:
+                                /* If the shop isn't the most frequently visited option,
+                                 * replace the shop with a new shop one step more frequently
+                                 * visited.
+                                 */
+                                Log.d(LOG_TAG, "visit_more_often (" + model.getName() + ") onClick");
+                                if (model.getFrequency() > 0) {
+                                    Shop newShop = new Shop(model.getName(), model.getFrequency() - 1);
+                                    shopRef.setValue(newShop);
+                                }
+                                break;
+                            case R.id.visit_less_shop:
+                                /* If the shop isn't the least frequently visited option,
+                                 * replace the shop with a new shop one step less frequently
+                                 * visited.
+                                 */
+                                Log.d(LOG_TAG, "visit_less_often (" + model.getName() + ") onClick");
+                                if (model.getFrequency() < 6) {
+                                    Shop newShop = new Shop(model.getName(), model.getFrequency() + 1);
+                                    shopRef.setValue(newShop);
+                                }
+                                break;
+                            case R.id.option_delete_shop:
+                                /* If the user wishes to delete the shop, it and all of it's related
+                                 * sections and items are removed from Firebase.
+                                 */
+                                Log.d(LOG_TAG, "delete_shop (" + model.getName() + ") onClick");
+                                shopRef.removeValue();
+                                Firebase secRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + thisShopKey);
+                                secRef.removeValue();
+                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
+                                itemRef.removeValue();
+                                break;
+                            case R.id.rename_shop:
+                                /* Create a dialog to collect a new name for the shop, which then
+                                 * replaces the current shop at this location in Firebase.
+                                 */
+                                Log.d(LOG_TAG, "rename_shop (" + model.getName() + ") onClick");
+                                DialogFragment rename_dialog = (DialogFragment) RenameShopDialogFragment.newInstance(shopRef.toString(), model.getFrequency());
+                                rename_dialog.show(mActivity.getFragmentManager(), "RenameShopDialogFragment");
+                                break;
+                            case R.id.add_different_shop:
+                                Log.d(LOG_TAG, "add_shop (" + model.getName() + ") onClick");
+                                DialogFragment add_dialog = (DialogFragment) AddShopDialogFragment.newInstance();
+                                add_dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show();//showing popup menu
+            }
+        });//closing the setOnClickListener method
+        return convertView;
     }
 
     /**
@@ -127,6 +295,8 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public int getChildrenCount(int groupPosition) {
+        // This returns 1 because each child is in fact an expandable list view of it's own.
+        Log.d(LOG_TAG, "getChildrenCount");
         return 1;
     }
 
@@ -138,11 +308,13 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public int getGroupCount() {
+        Log.d(LOG_TAG, "getGroupCount");
         return mSnapshots.getCount();
     }
 
     /**
      * Gets the data associated with the given child within the given group.
+     * This is not currently implemented.
      *
      * @param groupPosition the position of the group that the child resides in
      * @param childPosition the position of the child with respect to other
@@ -152,26 +324,6 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        /*String shopKey = getItemKey(groupPosition);
-
-        String MY_FIREBASE_SHOP_SECTIONS = Constants.FIREBASE_URL_MINE + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
-
-        SortedFirebaseArray mSectionSnapshots = new SortedFirebaseArray(new Firebase(MY_FIREBASE_SHOP_SECTIONS));
-
-        mSectionSnapshots.setOnChangedListener(new SortedFirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                /**
-                 * This listener triggers the BaseAdapter method notifyDataSetChanged.
-                 * This notifies views reflecting the data set that they should refresh themselves.
-
-
-                notifyDataSetChanged();
-            }
-        });
-
-        return mSectionSnapshots.getItem(childPosition).getValue(Section.class); */
-
         return null;
     }
 
@@ -191,7 +343,15 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
         }
     }
 
+    /**
+     * Gets the key associated with the Firebase represenatation of the group item (shop).
+     *
+     * @param groupPosition the position of the group
+     * @return the Firebase key for the specified group
+     */
+
     public String getItemKey(int groupPosition) {
+        Log.d(LOG_TAG, "getItemKey");
         if (groupPosition < mSnapshots.getCount()) {
             return mSnapshots.getItem(groupPosition).getKey();
         } else {
@@ -199,13 +359,27 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
         }
     }
 
+    /**
+     * Gets the Firebase reference associated with the group item (shop).
+     *
+     * @param groupPosition the position of the group
+     * @return the Firebase reference for the specified group
+     */
+
     public Firebase getRef(int groupPosition) {
+        Log.d(LOG_TAG, "getRef");
         if (groupPosition < mSnapshots.getCount()) {
             return mSnapshots.getItem(groupPosition).getRef();
         } else {
             return null;
         }
     }
+
+    /* The relevance of group and child IDs is explained here/
+     * http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
+     * However given the key value nature of this data, they are more or less unique in their
+     * positions, and these methods have not been expanded on.
+     */
 
     /**
      * Gets the ID for the given child within the given group. This ID must be
@@ -236,205 +410,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public long getGroupId(int groupPosition) {
-        // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
         return mSnapshots.getItem(groupPosition).getKey().hashCode();
-    }
-
-    /*
-    @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = mActivity.getLayoutInflater().inflate(mLayout, viewGroup, false);
-        }
-
-        T model = mSnapshots.getItem(position).getValue(mModelClass);
-        // Call out to subclass to marshall this model into the provided view
-
-        populateView(view, model, position);
-
-        return view;
-    } */
-
-    /**
-     * Gets a View that displays the data for the given child within the given
-     * group.
-     *
-     * @param groupPosition the position of the group that contains the child
-     * @param childPosition the position of the child (for which the View is
-     *                      returned) within the group
-     * @param isLastChild   Whether the child is the last child within the group
-     * @param convertView   the old view to reuse, if possible. You should check
-     *                      that this view is non-null and of an appropriate type before
-     *                      using. If it is not possible to convert this view to display
-     *                      the correct data, this method can create a new view. It is not
-     *                      guaranteed that the convertView will have been previously
-     *                      created by
-     *                      {@link #getChildView(int, int, boolean, View, ViewGroup)}.
-     * @param parent        the parent that this view will eventually be attached to
-     * @return the View corresponding to the child at the specified position
-     */
-
-
-    @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String shopKey = getItemKey(groupPosition);
-        String shopName = mSnapshots.getItem(groupPosition).getValue(Shop.class).getName();
-
-        InternalExpandableListView SecondLevelExLV = (InternalExpandableListView) convertView;
-
-        if (SecondLevelExLV == null) {
-            SecondLevelExLV = new InternalExpandableListView(mActivity);
-        }
-
-        SecondLevelExLV.setAdapter(new FirebaseInternalExpandableAdapter(mActivity, SecondLevelExLV, shopName, shopKey, FIREBASE_MY_NODE_URL));
-
-        /* Expands all inner items.
-        for (int i = 0; i < sections; i++) {
-            SecondLevelExLV.expandGroup(i);
-        } */
-
-        SecondLevelExLV.setGroupIndicator(null);
-        return SecondLevelExLV;
-
-    }
-
-    /**
-     * Gets a View that displays the given group. This View is only for the
-     * group--the Views for the group's children will be fetched using
-     * {@link #getChildView(int, int, boolean, View, ViewGroup)}.
-     *
-     * @param groupPosition the position of the group for which the View is
-     *                      returned
-     * @param isExpanded    whether the group is expanded or collapsed
-     * @param convertView   the old view to reuse, if possible. You should check
-     *                      that this view is non-null and of an appropriate type before
-     *                      using. If it is not possible to convert this view to display
-     *                      the correct data, this method can create a new view. It is not
-     *                      guaranteed that the convertView will have been previously
-     *                      created by
-     *                      {@link #getGroupView(int, boolean, View, ViewGroup)}.
-     * @param parent        the parent that this view will eventually be attached to
-     * @return the View corresponding to the group at the specified position
-     */
-
-    @Override
-    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        /* if (convertView == null) {
-            convertView = mActivity.getLayoutInflater().inflate(mLayout, parent, false);
-        } */
-
-        Shop model = mSnapshots.getItem(groupPosition).getValue(Shop.class);
-
-        // Call out to subclass to marshall this model into the provided view
-
-        if (convertView == null) {
-            convertView = mActivity.getLayoutInflater().inflate(mLayout, parent, false);
-        }
-
-        TextView shopNameView = (TextView) convertView.findViewById(R.id.text_view_shop_name);
-        shopNameView.setText(model.getName());
-
-        ImageButton addSecBtn = (ImageButton) convertView.findViewById(R.id.button_add_section_to_shop);
-
-        final Shop thisShop = model;
-        final String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
-
-        addSecBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                DialogFragment dialog = (DialogFragment) AddSectionDialogFragment.newInstance(thisShop.getName(), thisShopKey);
-                dialog.show(mActivity.getFragmentManager(), "AddSectionDialogFragment");
-            }
-        });
-
-        final ImageButton shopMenuBtn = (ImageButton) convertView.findViewById(R.id.shop_options_button);
-
-        shopMenuBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //Creating the instance of PopupMenu
-                PopupMenu popup = new PopupMenu(mActivity, shopMenuBtn);
-                //Inflating the Popup using xml file
-                popup.getMenuInflater().inflate(R.menu.menu_shop_options, popup.getMenu());
-
-                //registering popup with OnMenuItemClickListener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Shop thisShop = mSnapshots.getItem(groupPosition).getValue(Shop.class);
-                        Firebase thisShopRef = mSnapshots.getItem(groupPosition).getRef();
-
-                        int id = item.getItemId();
-                        switch (id) {
-                            case R.id.visit_more_often:
-                                if (thisShop.getFrequency() > 0) {
-                                    Shop newShop = new Shop(thisShop.getName(), thisShop.getFrequency() - 1);
-                                    thisShopRef.setValue(newShop);
-                                }
-                                break;
-                            case R.id.visit_less_shop:
-                                if (thisShop.getFrequency() < 6) {
-                                    Shop newShop = new Shop(thisShop.getName(), thisShop.getFrequency() + 1);
-                                    thisShopRef.setValue(newShop);
-                                }
-                                break;
-                            case R.id.option_delete_shop:
-                                String thisShopKey = mSnapshots.getItem(groupPosition).getKey();
-                                mSnapshots.getItem(groupPosition).getRef().removeValue();
-                                Firebase secRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + thisShopKey);
-                                secRef.removeValue();
-                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
-                                itemRef.removeValue();
-                                break;
-                            case R.id.rename_shop:
-                                DialogFragment rename_dialog = (DialogFragment) RenameShopDialogFragment.newInstance(thisShopRef.toString(), thisShop.getFrequency());
-                                rename_dialog.show(mActivity.getFragmentManager(), "RenameShopDialogFragment");
-                                break;
-                            case R.id.add_different_shop:
-                                DialogFragment add_dialog = (DialogFragment) AddShopDialogFragment.newInstance();
-                                add_dialog.show(mActivity.getFragmentManager(), "AddShopDialogFragment");
-                                break;
-                            default:
-                                Toast.makeText(mActivity, "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-                        return true;
-                    }
-                });
-
-                popup.show();//showing popup menu
-            }
-        });//closing the setOnClickListener method
-        return convertView;
-    }
-
-    /**
-     * Each time the data at the given Firebase location changes, this method will be called for each item that needs
-     * to be displayed. The first two arguments correspond to the mLayout and mModelClass given to the constructor of
-     * this class. The third argument is the item's position in the list.
-     * <p/>
-     * Your implementation should populate the view using the data contained in the model.
-     * You should implement either this method or the other populateView(View, Object)} method
-     * but not both.
-     *
-     * @param v        The view to populate
-     * @param model    The object containing the data used to populate the view
-     * @param position The position of the object populating the view
-     */
-    protected void populateView(View v, Shop model, int position) {
-        populateView(v, model);
-    }
-
-    /**
-     * This is a backwards compatible version of populateView.
-     * <p/>
-     * You should implement either this method or the other  populateView(View, Object, int)} method
-     * but not both.
-     *
-     * @param v     The view to populate
-     * @param model The object containing the data used to populate the view
-     */
-    protected void populateView(View v, Shop model) {
-
     }
 
     /**

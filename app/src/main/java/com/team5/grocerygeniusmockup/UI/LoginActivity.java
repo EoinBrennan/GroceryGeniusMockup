@@ -14,12 +14,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -34,26 +32,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz1Activity;
-import com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via email/password, or allows new users to sign up to the service.
  */
+
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private boolean EoinTestMode = false;
+    // A boolean which when true allows user Eoin to skip the login page.
+    private boolean EoinTestMode = true;
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
@@ -76,7 +72,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d(LOG_TAG, "onCreate");
 
+        // Bypasses sign in for user Eoin when EoinTestMode is true. Beta for "stay logged in".
         if (EoinTestMode) {
             final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL_ROOT);
 
@@ -156,6 +154,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        /* If the user doesn't have an account with GroceryGenius they can click new user to be
+         * directed to a series of activities that gathers their information and creates an
+         * account for them.
+         */
+
         Button mCreateNewAccount = (Button) findViewById(R.id.create_new_account);
         mCreateNewAccount.setOnClickListener(new OnClickListener() {
             @Override
@@ -164,6 +167,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(logInIntent);
             }
         });
+
+        // Initialising remaining UI elements.
 
         mErrorMessage = (TextView) findViewById(R.id.error_text_view_login);
         mLoginFormView = findViewById(R.id.login_form);
@@ -175,6 +180,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /* Calling permissions and setting up Loader for auto-complete list. */
 
     private void populateAutoComplete() {
+
+        /* If the user cannot request contacts return and end the loading process. Otherwise call
+         * the loader.
+         */
         if (!mayRequestContacts()) {
             return;
         }
@@ -182,13 +191,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         getLoaderManager().initLoader(0, null, this);
     }
 
+    // Determines whether the user can request contacts from the devices by determining...
+
     private boolean mayRequestContacts() {
+
+        // ... If the version is appropriate.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
+
+        // ... If the app has permission to read contacts.
         if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
+
+        /* ... if the user doesn't have access this prompts the user and allows them to manually
+         * allow the search for contacts.
+         */
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
@@ -217,32 +236,38 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    /* This method manages Firebase authentication. */
+    // This method manages Firebase authentication.
 
     public void LogIn() {
-        /* Reset error bar to empty on new log in attempt */
+        // Reset error bar to empty on new log in attempt
         mErrorMessage.setText("");
 
-        /* Overlays the layout with a loading spinner. */
+        // Overlays the layout with a loading spinner.
         showProgress(true);
 
+        // Fetches input and sets up a Firebase Ref.
         final String mEmail = mEmailView.getText().toString();
         final String mPassword = mPasswordView.getText().toString();
 
         final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL_ROOT);
 
+        // Attempt to authenticate user's email/password combination.
         myFirebaseRef.authWithPassword(mEmail, mPassword, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
+                Log.d(LOG_TAG, "LogIn: onAuthenticated");
+
+                // On authentication, save the user's Firebase ID to the preferences for later use.
                 SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 SharedPreferences.Editor editor = mPrefs.edit();
-
                 editor.putString("UserID", authData.getUid());
                 editor.commit();
 
+                // Once saved start the MainActivity.
                 Intent logInIntent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(logInIntent);
 
+                // Remove the loading animation for back-button navigation friendliness.
                 showProgress(false);
             }
 
@@ -263,9 +288,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Toast.makeText(getApplicationContext(), "Please connect to internet and try again", Toast.LENGTH_LONG).show();
                 }
 
-                /* If login fails, and the user isn't sent to the main activity, the  */
+                /* If login fails, and the user isn't sent to the Main Activity, then remove the
+                 * loading animation.
+                 */
+
                 showProgress(false);
 
+                // Display the error message to the Login Activity error TextView.
                 String errMess = "Error!";
 
                 if (!firebaseError.getDetails().equals("")) {
@@ -283,9 +312,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+        /* On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+         * for very easy animations. If available, use these APIs to fade-in
+         * the progress spinner.
+         */
+
+        Log.d(LOG_TAG, "showProgress");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -307,8 +340,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
+            /* The ViewPropertyAnimator APIs are not available, so simply show
+             * and hide the relevant UI components.
+             */
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
@@ -320,6 +354,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Log.d(LOG_TAG, "onCreateLodaer");
         return new CursorLoader(this,
                 // Retrieve data rows for the device user's 'profile' contact.
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
@@ -337,6 +372,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        Log.d(LOG_TAG, "onLoadFinished");
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -349,18 +385,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        Log.d(LOG_TAG, "onLoaderReset");
 
     }
 
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+        Log.d(LOG_TAG, "addEmailsToAutoComplete");
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
     }
-
 
     private interface ProfileQuery {
         String[] PROJECTION = {
