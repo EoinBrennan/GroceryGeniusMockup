@@ -24,8 +24,7 @@
         style="@style/itemStyle"
         android:layout_centerVertical="true"
         android:text="Item"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@id/move_to_shop_button"/>
+        android:layout_toRightOf="@id/move_to_shop_button" />
 
     <ImageButton
         android:layout_width="60dp"
@@ -44,7 +43,7 @@
         android:src="@drawable/ic_arrow_up"
         android:id="@+id/pantry_quantity_up_button"
         android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/remove_p_item_button"
         android:layout_toStartOf="@id/remove_p_item_button" />
 
