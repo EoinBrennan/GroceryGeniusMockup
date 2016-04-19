@@ -135,4 +135,5 @@
     <string name="settings_move_item_explanation">When you purchase items, if you would like to select a pantry shelf, set an expiry date, then have the item moved to your pantry, click here!</string>
 
     <string name="positive_button_move_to_pantry">Buy</string>
+    <string name="button_add_shop">Add Shop</string>
 </resources>

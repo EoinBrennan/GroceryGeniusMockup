@@ -18,12 +18,14 @@ import java.util.Map;
 /**
  * Created by User on 30/03/2016.
  */
+
+//quiz1activity now goes to quiz3activity instead of quiz2activity
+//So the order is Quiz1Acitivty => Quiz3Activity => Quiz2Activity
 public class Quiz1Activity extends AppCompatActivity {
 
     EditText email_box;
     EditText password_box;
     EditText confirm_password;
-    String username;
     String passwordInput;
     String passwordConfirm;
     String email;
@@ -47,8 +49,7 @@ public class Quiz1Activity extends AppCompatActivity {
                 new View.OnClickListener() {
                     public void onClick(View view) {
 
-                        username = email_box.getText().toString();
-                        email = username+"@firebase.com";
+                        email = email_box.getText().toString();
                         passwordInput = password_box.getText().toString();
                         passwordConfirm = confirm_password.getText().toString();
 
@@ -60,7 +61,7 @@ public class Quiz1Activity extends AppCompatActivity {
                             password_box.setText("");
                             confirm_password.setText("");
                         }else{
-                            //use data to create new account
+                           /////////////use data to create new account///////
                             ref = new Firebase("https://logintestcs353.firebaseio.com");
                             ref.createUser(email, passwordInput, new Firebase.ValueResultHandler<Map<String, Object>>() {
                                 @Override
@@ -70,6 +71,10 @@ public class Quiz1Activity extends AppCompatActivity {
 
                                     //create intent
                                     Intent logInIntent = new Intent(Quiz1Activity.this, Quiz2Activity.class);
+
+                                    //send data
+                                    logInIntent.putExtra("email", email);
+                                    logInIntent.putExtra("password", passwordInput);
 
                                     //start activity
                                     startActivity(logInIntent);
