@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Enter new username"
+        android:text="Enter your email address"
         android:id="@+id/textView"
         android:layout_marginLeft="20dp"
         android:textSize="15dp"
@@ -16,7 +16,7 @@
         android:id="@+id/promptEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_username"
+        android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:maxLines="1"
         android:singleLine="true"

@@ -49,7 +49,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     // A boolean which when true allows user Eoin to skip the login page.
-    private boolean EoinTestMode = true;
+    private boolean EoinTestMode = false;
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
@@ -68,17 +68,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // Preference manager
     SharedPreferences mPrefs;
 
+    //User's email and password if they have just created a new account
+    //send email and password
+    String email;
+    String password;
+    Boolean newUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.d(LOG_TAG, "onCreate");
 
+        //Bypass sign in for user if they have just created a new account. Use their new credentials
+        //get email and passwrod sent from Quiz3Activity if exists
+        newUser = false;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email = extras.getString("email");
+            password = extras.getString("password");
+            newUser = true;
+        }
+
         // Bypasses sign in for user Eoin when EoinTestMode is true. Beta for "stay logged in".
-        if (EoinTestMode) {
+        if (EoinTestMode||newUser) {
+            String myEmail = "black.leonhart@gmail.com";
+            String myPassword = "password";
+
+            if(newUser){
+                myEmail = email;
+                myPassword = password;
+            }
+
             final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL_ROOT);
 
-            myFirebaseRef.authWithPassword("black.leonhart@gmail.com", "password", new Firebase.AuthResultHandler() {
+            myFirebaseRef.authWithPassword(myEmail, myPassword, new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
