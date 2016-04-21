@@ -4,13 +4,34 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter your Name"
+        android:id="@+id/textView_Name"
+        android:layout_marginLeft="20dp"
+        android:textSize="15dp"
+        android:layout_marginTop="30dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView_NewUserName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Your Name"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <TextView
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Enter your email address"
         android:id="@+id/textView"
         android:layout_marginLeft="20dp"
         android:textSize="15dp"
-        android:layout_marginTop="70dp" />
+        android:layout_marginTop="30dp" />
 
     <AutoCompleteTextView
         android:id="@+id/promptEmail"
