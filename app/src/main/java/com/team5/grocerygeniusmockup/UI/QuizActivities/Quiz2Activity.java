@@ -12,7 +12,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.firebase.client.Firebase;
+import com.team5.grocerygeniusmockup.Model.PantryModel.Shelf;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Section;
+import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Shop;
 import com.team5.grocerygeniusmockup.R;
+import com.team5.grocerygeniusmockup.Utilities.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +26,7 @@ import java.util.List;
 public class Quiz2Activity extends Activity {
 
     String email;
+    String listkey;
     String password;
     Firebase ref;
 
@@ -44,6 +49,7 @@ public class Quiz2Activity extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email = extras.getString("email");
+            listkey = extras.getString(Constants.KEY_LIST_ID);
             password = extras.getString("password");
         }
 
@@ -82,14 +88,64 @@ public class Quiz2Activity extends Activity {
             public void onClick(View view) {
 
                 ////////Firebase uploads go here///////////
-                ref = new Firebase("https://logintestcs353.firebaseio.com");
+                int mostFrequent = 7;
+                String mfShop ="";
+                String mfKey ="";
 
+                // Set up a ref in the shops section of the user's Firebase.
+                String FIREBASE_MY_URL_SHOPS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS + "/" + listkey;
+
+                // Initialise a Firebase object at the shops node.
+                Firebase shopRef = new Firebase(FIREBASE_MY_URL_SHOPS);
+
+                for (int i = 0; i < myList.size(); i++) {
+                    int thisFreq = adapter.getFrequency(i);
+                    Shop newShop = new Shop(myList.get(i), thisFreq);
+
+                    // Create a unique key for a new child and fetch it's key.
+                    Firebase newShopRef = shopRef.push();
+                    String newShopKey = newShopRef.getKey();
+
+                    // Store the Shop object at the new child node.
+                    newShopRef.setValue(newShop);
+
+                    if (thisFreq < mostFrequent) {
+                        mostFrequent = thisFreq;
+                        mfShop = myList.get(i);
+                        mfKey = newShopKey;
+                    }
+
+                    // Add a default section to the newly created shop by following the same process.
+                    Section defaultSection = new Section("Other", myList.get(i), 0);
+                    String FIREBASE_MY_URL_SHOPSECTION = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + listkey + "/" + newShopKey;
+                    Firebase sectionRef = new Firebase(FIREBASE_MY_URL_SHOPSECTION);
+                    Firebase defaultSecRef = sectionRef.push();
+                    defaultSecRef.setValue(defaultSection);
+                }
                 ////////////////////////////////////////////
+
+                Shelf fridge = new Shelf("Fridge", 1);
+                Shelf cupboard = new Shelf("Cupboard", 2);
+
+                // Set up a Firebase address and node reference for the user's shelves.
+                String FIREBASE_MY_URL_SHELVES = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES + "/" + listkey;
+                Firebase shelfRef = new Firebase(FIREBASE_MY_URL_SHELVES);
+
+                // Create a unique key for a new node and place the shelf item at that node.
+                Firebase fridgeRef = shelfRef.push();
+                fridgeRef.setValue(fridge);
+
+                Firebase cupBRef = shelfRef.push();
+                cupBRef.setValue(cupboard);
+
                 Intent myIntent = new Intent(Quiz2Activity.this, Quiz3Activity.class);
 
                 //send email and password
                 myIntent.putExtra("email", email);
                 myIntent.putExtra("password", password);
+                myIntent.putExtra(Constants.KEY_LIST_ID, listkey);
+                myIntent.putExtra("shopname", mfShop);
+                myIntent.putExtra("shopkey", mfKey);
 
                 startActivity(myIntent);
             }

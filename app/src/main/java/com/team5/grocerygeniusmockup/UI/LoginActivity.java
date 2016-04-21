@@ -87,7 +87,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (extras != null) {
             email = extras.getString("email");
             password = extras.getString("password");
-            newUser = true;
+            if (email != null && password != null) {
+                newUser = true;
+            }
         }
 
         // Bypasses sign in for user Eoin when EoinTestMode is true. Beta for "stay logged in".

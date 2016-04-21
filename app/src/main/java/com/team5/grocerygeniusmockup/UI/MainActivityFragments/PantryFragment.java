@@ -59,51 +59,7 @@ public class PantryFragment extends Fragment {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
 
-        /** Test
-         */
-        /*
-        Boolean alreadyActivated = mPrefs.getBoolean("First", false);
 
-        final String FIREBASE_MY_PANTRY_SHELVES = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES;
-        final Firebase shelfRef = new Firebase(FIREBASE_MY_PANTRY_SHELVES);
-
-        if (!alreadyActivated) {
-            Log.e("Pantry", "First!");
-            Shelf fridge = new Shelf("Fridge", 1);
-            Shelf cupboard = new Shelf("Cupboard", 2);
-
-            Firebase fridgeRef = shelfRef.push();
-            String fridgeKey = fridgeRef.getKey();
-            fridgeRef.setValue(fridge);
-
-            Firebase cupBRef = shelfRef.push();
-            String cupBKey = cupBRef.getKey();
-            cupBRef.setValue(cupboard);
-
-            Date now = new Date();
-            long foreverLong = now.getTime() + (1000*365*24*60*60*1000);
-            long weekLong = now.getTime() + (7*24*60*60*1000);
-
-            PantryItem milk = new PantryItem("Milk", fridge.getName(), 1, weekLong);
-            PantryItem cheese = new PantryItem("Cheese", fridge.getName(), 1, weekLong);
-            String fridgeItems = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + fridgeKey;
-            Firebase fridgeitemsRef = new Firebase(fridgeItems);
-            Firebase milkRef = fridgeitemsRef.push();
-            milkRef.setValue(milk);
-            Firebase cheeseRef = fridgeitemsRef.push();
-            cheeseRef.setValue(cheese);
-
-            PantryItem biscuits = new PantryItem("Biscuits", cupboard.getName(), 1, foreverLong);
-            String cupBItems = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + cupBKey;
-            Firebase cupBItemsRef = new Firebase(cupBItems);
-            Firebase biscRef = cupBItemsRef.push();
-            biscRef.setValue(biscuits);
-
-            SharedPreferences.Editor editor = mPrefs.edit();
-            editor.putBoolean("First", true);
-            editor.commit();
-        }
-        */
         /**
          * Initialize UI elements
          */
