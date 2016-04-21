@@ -103,6 +103,7 @@
     <string name="button_add_section">Add section</string>
 
 
+
     <string name="title_activity_quiz">QuizActivity</string>
     <string name="hint_enter_your_email">Enter your email</string>
     <string name="hint_enter_your_password">Enter your password</string>
@@ -143,4 +144,5 @@
     <string name="action_share_list">Share List</string>
     <string name="action_logout">Logout</string>
     <string name="hint_share_list">Enter the email of the user you wish to share this list with.</string>
+    <string name="button_add_shop">Add Shop</string>
 </resources>

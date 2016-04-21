@@ -1,70 +1,120 @@
+
+
 package com.team5.grocerygeniusmockup.UI.QuizActivities;
 
-import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
+import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.firebase.client.Firebase;
 import com.team5.grocerygeniusmockup.R;
+import com.team5.grocerygeniusmockup.UI.LoginActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class Quiz3Activity extends Activity {
+public class Quiz3Activity extends ListActivity {
 
-    private ListView listView1;
+    String listItem[] = {"First shop","Second shop","third shop"};
+
+    ArrayAdapter<String> myAdapter;
     EditText et;
-    ArrayList<String> myList;
+    ListView myList;
+    String email;
+    String password;
+    ArrayList<String> values;
+    Firebase ref;
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz3);
+        setContentView(R.layout.quiz2);
+
+        //get email and password sent from Quiz1Activity
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email = extras.getString("email");
+            password = extras.getString("password");
+        }
+
+        et = (EditText)findViewById(R.id.enterShopName);
+
+        values = new ArrayList();
+        for (int i = 0; i < listItem.length; i++) {
+            values.add(listItem[i]);
+        }
+
+        //*
+        myAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                values
+        );
+        //*/
+
+        myList = (ListView)findViewById(android.R.id.list);
+        myList.setAdapter(myAdapter);
 
 
+        //*
+        Button addShop = (Button) findViewById(R.id.button_add_new_shop);
 
-
-        String[] myValues = {
-                "Dairy",
-                "Meat",
-                "Bread"
-        };
-
-        myList = new ArrayList<String>(Arrays.asList(myValues));
-
-        final ListViewCustomAdapter adapter = new ListViewCustomAdapter(this,
-                R.layout.listview_item_row, myList);
-
-
-        listView1 = (ListView) findViewById(R.id.quizlistView);
-
-        View header = (View) getLayoutInflater().inflate(R.layout.listview_header_row, null);
-        listView1.addHeaderView(header);
-
-        listView1.setAdapter(adapter);
-
-        Button addSection = (Button) findViewById(R.id.submit_section);
-        et = (EditText) findViewById(R.id.prompt_section);
-//*
-        addSection.setOnClickListener(
+        addShop.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        String input;
-                        input = et.getText().toString();
-                        myList.add(input);
+                        ArrayAdapter<String> adapter = myAdapter;
+                        String device;
 
+                        List myArrayList = new ArrayList();
+                        device = et.getText().toString();
+                        myArrayList.add(device);
+                        adapter.add(device);
                         et.setText("");
-                        et.setHint("Enter another section");
+                        et.setHint("Enter another section name");
+
                         adapter.notifyDataSetChanged();
                     }
-                });
-//*/
+                }
+        );
 
+        Button next = (Button) findViewById(R.id.next_button);
+
+        next.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View view) {
+
+                        ////////Firebase uploads go here///////////
+                        ref = new Firebase("https://logintestcs353.firebaseio.com");
+
+                        ////////////////////////////////////////////
+
+                        //*
+                        Intent myIntent = new Intent(Quiz3Activity.this, LoginActivity.class);
+
+                        //send email and password
+                        myIntent.putExtra("email", email);
+                        myIntent.putExtra("password", password);
+
+                        //logInIntent.putExtra("isTrue", someData);
+                        startActivity(myIntent);
+                        //*/
+                    }
+                }
+        );
     }
+
+    @Override
+    protected void onListItemClick( ListView l, View v, int position, long id)
+    {
+        CheckedTextView textView = (CheckedTextView)v;
+        textView.setChecked(!textView.isChecked());
+    }
+
 }

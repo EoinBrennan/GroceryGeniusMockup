@@ -68,23 +68,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // Preference manager
     SharedPreferences mPrefs;
 
+    //User's email and password if they have just created a new account
+    //send email and password
+    String email;
+    String password;
+    Boolean newUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.d(LOG_TAG, "onCreate");
 
+        //Bypass sign in for user if they have just created a new account. Use their new credentials
+        //get email and passwrod sent from Quiz3Activity if exists
+        newUser = false;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            email = extras.getString("email");
+            password = extras.getString("password");
+            newUser = true;
+        }
+
         // Bypasses sign in for user Eoin when EoinTestMode is true. Beta for "stay logged in".
-        if (EoinTestMode) {
+        if (EoinTestMode||newUser) {
+            final String[] myEmail = {"black.leonhart@gmail.com"};
+            String myPassword = "password";
+
+            if(newUser){
+                myEmail[0] = email;
+                myPassword = password;
+            }
+
             final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL);
 
-            myFirebaseRef.authWithPassword("black.leonhart@gmail.com", "password", new Firebase.AuthResultHandler() {
+            myFirebaseRef.authWithPassword(myEmail[0], myPassword, new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
                     mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                     SharedPreferences.Editor editor = mPrefs.edit();
                     Intent logInIntent = new Intent(LoginActivity.this, ListActivity.class);
-                    String alteredEmail = "black()leonhart@gmail()com";
+                    String alteredEmail = myEmail[0].replace(".","()");
                     editor.putString(Constants.USER_EMAIL, alteredEmail);
                     editor.putString(Constants.USER_ID, authData.getUid());
                     editor.commit();
