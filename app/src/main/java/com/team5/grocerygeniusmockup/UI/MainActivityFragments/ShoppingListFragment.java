@@ -30,8 +30,7 @@ public class ShoppingListFragment extends Fragment {
     /* Used to fetch the User's ID. */
     SharedPreferences mPrefs;
 
-    /* Will be set to the Firebase address for this user's node. */
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
 
     public ShoppingListFragment() {
         // Required empty public constructor
@@ -56,7 +55,8 @@ public class ShoppingListFragment extends Fragment {
         /* Fetch User ID and set up Firebase address. */
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
+
 
         /**
          * Initialize UI elements
@@ -78,7 +78,7 @@ public class ShoppingListFragment extends Fragment {
          */
 
         mExListView = (ExpandableListView) rootView.findViewById(R.id.shoppinglistview_outer_level);
-        mExListView.setAdapter(new FirebaseThreeLayerExpandableAdapter(getActivity(), mExListView, FIREBASE_MY_NODE_URL));
+        mExListView.setAdapter(new FirebaseThreeLayerExpandableAdapter(getActivity(), mExListView, listKey));
 
         return rootView;
     }

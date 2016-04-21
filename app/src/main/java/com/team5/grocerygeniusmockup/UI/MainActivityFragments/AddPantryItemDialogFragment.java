@@ -35,7 +35,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
     String shelfKey;
 
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
 
     public AddPantryItemDialogFragment() {
     }
@@ -61,7 +61,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
         shelfKey = getArguments().getString("shelfKey", "Default");
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
     }
 
     @Override
@@ -132,7 +132,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
 
             /* Fetch User ID and set up Firebase address. */
 
-            String FIREBASE_MY_PANTRY_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + shelfKey;
+            String FIREBASE_MY_PANTRY_ITEMS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + listKey +"/" + shelfKey;
 
             // Get the reference to the root node in Firebase
             Firebase itemRef = new Firebase(FIREBASE_MY_PANTRY_ITEMS);

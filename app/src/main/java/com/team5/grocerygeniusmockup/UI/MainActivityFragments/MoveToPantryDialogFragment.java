@@ -40,7 +40,7 @@ public class MoveToPantryDialogFragment extends DialogFragment {
     Spinner mSpinnerShelf;
 
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
     String FIREBASE_MY_SHELVES_URL;
 
     Firebase itemRef;
@@ -88,8 +88,8 @@ public class MoveToPantryDialogFragment extends DialogFragment {
         itemRef = new Firebase(itemKeyRef);
 
         String[] addressParts = itemKeyRef.split("/");
-        shopKey = addressParts[6];
-        secKey = addressParts[7];
+        shopKey = addressParts[5];
+        secKey = addressParts[6];
 
 
         Log.e("CreatingMoveFrag", "ItemName: " + itemName + ", ItemQuan: " + itemQuantity + ", ItemRef: " + itemRef.toString());
@@ -97,8 +97,8 @@ public class MoveToPantryDialogFragment extends DialogFragment {
         Log.e("CreatingMoveFrag", "ShopKey: " + shopKey + ", SecKey: " + secKey);
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", "");
-        FIREBASE_MY_SHELVES_URL = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES;
+        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
+        FIREBASE_MY_SHELVES_URL = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES + "/" + listKey;
         shelfRef = new Firebase(FIREBASE_MY_SHELVES_URL);
 
         Log.e("CreatingMoveFrag", "ShelfRef: " + shelfRef.toString());
@@ -195,7 +195,7 @@ public class MoveToPantryDialogFragment extends DialogFragment {
 
             /* Fetch User ID and set up Firebase address. */
 
-            String FIREBASE_MY_PANTRY_URL = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + shelfSnap.getKey();
+            String FIREBASE_MY_PANTRY_URL = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + listKey + "/" + shelfSnap.getKey();
 
             // Get the reference to the root node in Firebase
             Firebase pItemRef = new Firebase(FIREBASE_MY_PANTRY_URL);

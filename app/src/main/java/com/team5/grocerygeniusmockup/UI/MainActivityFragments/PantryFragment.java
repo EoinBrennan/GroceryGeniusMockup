@@ -33,7 +33,7 @@ public class PantryFragment extends Fragment {
 
     /* Firebase address for this user's node. */
 
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
 
     public PantryFragment() {
         // Required empty public constructor
@@ -57,7 +57,7 @@ public class PantryFragment extends Fragment {
         /* Fetch User ID and set up Firebase address. */
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
 
         /** Test
          */
@@ -119,7 +119,7 @@ public class PantryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_pantry, container, false);
 
         mExListView = (ExpandableListView) rootView.findViewById(R.id.pantry_shelves);
-        mExListView.setAdapter(new FirebaseTwoLayerExpandableAdapter(getActivity(), mExListView, FIREBASE_MY_NODE_URL));
+        mExListView.setAdapter(new FirebaseTwoLayerExpandableAdapter(getActivity(), mExListView, listKey));
 
         return rootView;
     }

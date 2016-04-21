@@ -15,4 +15,12 @@
         android:orderInCategory="2"
         android:title="@string/action_new_shelf"
         app:showAsAction="never" />
+    <item android:id="@+id/settings_share_list"
+        android:orderInCategory="3"
+        android:title="@string/action_share_list"
+        app:showAsAction="never" />
+    <item android:id="@+id/action_logout"
+        android:orderInCategory="2"
+        android:title="@string/action_logout"
+        app:showAsAction="never" />
 </menu>

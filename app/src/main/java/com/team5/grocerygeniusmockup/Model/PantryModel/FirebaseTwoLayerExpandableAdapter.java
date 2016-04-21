@@ -95,7 +95,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
     public String shopKey;
     public String shopName;
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL;
+    String listKey;
     InternalExpandableListView parent;
 
     protected int shelfLayout;
@@ -103,15 +103,15 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
     /**
      * @param activity The activity containing the ListView
      */
-    public FirebaseTwoLayerExpandableAdapter(Activity activity, ExpandableListView parent, String FIREBASE_MY_NODE_URL) {
+    public FirebaseTwoLayerExpandableAdapter(Activity activity, ExpandableListView parent, String listKey) {
 
         shelfLayout = R.layout.pantry_shelf;
         itemLayout = R.layout.pantry_item;
         mActivity = activity;
         final ExpandableListView thisDad = parent;
 
-        this.FIREBASE_MY_NODE_URL = FIREBASE_MY_NODE_URL;
-        String MY_FIREBASE_SHELVES = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES;
+        this.listKey = listKey;
+        String MY_FIREBASE_SHELVES = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES + "/" + listKey;
 
         mActivity = activity;
         mShelfSnapshots = new SortedFirebaseArray(new Firebase(MY_FIREBASE_SHELVES));
@@ -157,8 +157,8 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
             String shelfKey = mShelfSnapshots.getItem(i).getKey();
             Log.e("GenItems", "Current shelf Key: " + shelfKey);
 
-            String FIREBASE_THIS_SHELVES_ITEMS = FIREBASE_MY_NODE_URL + "/" +
-                    Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + shelfKey;
+            String FIREBASE_THIS_SHELVES_ITEMS = Constants.FIREBASE_URL + "/" +
+                    Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + listKey + "/" + shelfKey;
             Log.e("GenItems", "URL for items in this shelf: " + FIREBASE_THIS_SHELVES_ITEMS);
 
             final SortedFirebaseArray thisItem = new SortedFirebaseArray(new Firebase(FIREBASE_THIS_SHELVES_ITEMS));
@@ -350,7 +350,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
             moveToShopBtn.setVisibility(View.INVISIBLE);
 
-            String FIREBASE_CHECK = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + model.getShopFromKey();
+            String FIREBASE_CHECK = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + listKey + "/" + model.getShopFromKey();
             Firebase checkLocRef = new Firebase(FIREBASE_CHECK);
             checkLocRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -369,7 +369,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
                 @Override
                 public void onClick(View v) {
-                    String FIREBASE_MY_ITEMS_URL = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + model.getShopFromKey() + "/" + model.getSecFromKey();
+                    String FIREBASE_MY_ITEMS_URL = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + listKey + "/" + model.getShopFromKey() + "/" + model.getSecFromKey();
 
                     final Firebase itemsRef = new Firebase(FIREBASE_MY_ITEMS_URL);
 
@@ -596,7 +596,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
                             case R.id.option_delete_shelf:
                                 String thisShelfKey = thisShelfSnap.getKey();
                                 thisShelfSnap.getRef().removeValue();
-                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + thisShelfKey);
+                                Firebase itemRef = new Firebase(Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_PANTRY_ITEMS + "/" + listKey + "/" + thisShelfKey);
                                 itemRef.removeValue();
                                 mItemSnapshots.remove(groupPosition);
                                 generateItems();

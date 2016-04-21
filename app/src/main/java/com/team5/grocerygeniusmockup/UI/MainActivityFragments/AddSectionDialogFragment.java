@@ -38,7 +38,7 @@ public class AddSectionDialogFragment extends DialogFragment {
 
     // Used to fetch UID and set user's firebase root.
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
 
     public AddSectionDialogFragment() {
     }
@@ -86,7 +86,7 @@ public class AddSectionDialogFragment extends DialogFragment {
 
         // Fetch UID and set user's root node address.
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
 
         // Get the layout inflater and initialise UI elements.
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -144,7 +144,7 @@ public class AddSectionDialogFragment extends DialogFragment {
             Section newSec = new Section(userEnteredName, shopName, OrderInShop);
 
             // Set up Firebase for this shop's sections.
-            String FIREBASE_MY_URL_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
+            String FIREBASE_MY_URL_SECTIONS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + listKey + "/" + shopKey;
             Firebase secRef = new Firebase(FIREBASE_MY_URL_SECTIONS);
 
             // Create a unique key for a new node and put the newly created section there.

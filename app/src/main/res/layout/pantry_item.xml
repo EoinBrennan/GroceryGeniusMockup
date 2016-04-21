@@ -24,7 +24,8 @@
         style="@style/itemStyle"
         android:layout_centerVertical="true"
         android:text="Item"
-        android:layout_toRightOf="@id/move_to_shop_button" />
+        android:layout_toRightOf="@id/move_to_shop_button"
+        android:scrollHorizontally="false"/>
 
     <ImageButton
         android:layout_width="60dp"

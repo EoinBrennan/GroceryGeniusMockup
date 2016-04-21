@@ -19,7 +19,8 @@
         android:layout_marginRight="20dp"
         android:layout_margin="@dimen/fab_margin"
         android:layout_centerVertical="true"
-        android:text="Item" />
+        android:text="Item"
+        android:scrollHorizontally="false"/>
 
     <ImageButton
         android:layout_width="60dp"

@@ -34,7 +34,7 @@ public class AddShelfDialogFragment extends DialogFragment {
 
     // Used to fetch the User's ID and set this user's Firebase root.
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
 
     public AddShelfDialogFragment() {
         // Required empty public constructor
@@ -73,7 +73,7 @@ public class AddShelfDialogFragment extends DialogFragment {
 
         // Fetch User ID and set up Firebase address.
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        listKey =  mPrefs.getString(Constants.KEY_LIST_ID, "");
 
 
         // Get the layout inflater inflate the appropriate layout and initialise the UI.
@@ -132,7 +132,7 @@ public class AddShelfDialogFragment extends DialogFragment {
             Shelf newShelf = new Shelf(userEnteredName, OrderInShelf);
 
             // Set up a Firebase address and node reference for the user's shelves.
-            String FIREBASE_MY_URL_SHELVES = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES;
+            String FIREBASE_MY_URL_SHELVES = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES + "/" + listKey;
             Firebase shelfRef = new Firebase(FIREBASE_MY_URL_SHELVES);
 
             // Create a unique key for a new node and place the shelf item at that node.

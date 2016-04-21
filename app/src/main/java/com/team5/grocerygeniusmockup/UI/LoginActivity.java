@@ -49,7 +49,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     // A boolean which when true allows user Eoin to skip the login page.
-    private boolean EoinTestMode = true;
+    private boolean EoinTestMode = false;
 
     private static final String LOG_TAG = LoginActivity.class.getSimpleName();
 
@@ -76,18 +76,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Bypasses sign in for user Eoin when EoinTestMode is true. Beta for "stay logged in".
         if (EoinTestMode) {
-            final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL_ROOT);
+            final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL);
 
             myFirebaseRef.authWithPassword("black.leonhart@gmail.com", "password", new Firebase.AuthResultHandler() {
                 @Override
                 public void onAuthenticated(AuthData authData) {
-                    SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                     SharedPreferences.Editor editor = mPrefs.edit();
-
-                    editor.putString("UserID", authData.getUid());
+                    Intent logInIntent = new Intent(LoginActivity.this, ListActivity.class);
+                    String alteredEmail = "black()leonhart@gmail()com";
+                    editor.putString(Constants.USER_EMAIL, alteredEmail);
+                    editor.putString(Constants.USER_ID, authData.getUid());
                     editor.commit();
-
-                    Intent logInIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    logInIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(logInIntent);
 
                     showProgress(false);
@@ -249,7 +251,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final String mEmail = mEmailView.getText().toString();
         final String mPassword = mPasswordView.getText().toString();
 
-        final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL_ROOT);
+        final Firebase myFirebaseRef = new Firebase(Constants.FIREBASE_URL);
 
         // Attempt to authenticate user's email/password combination.
         myFirebaseRef.authWithPassword(mEmail, mPassword, new Firebase.AuthResultHandler() {
@@ -260,11 +262,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // On authentication, save the user's Firebase ID to the preferences for later use.
                 SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 SharedPreferences.Editor editor = mPrefs.edit();
-                editor.putString("UserID", authData.getUid());
-                editor.commit();
 
                 // Once saved start the MainActivity.
-                Intent logInIntent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent logInIntent = new Intent(LoginActivity.this, ListActivity.class);
+                String alteredEmail = mEmail.replace(".", "()");
+                editor.putString(Constants.USER_EMAIL, alteredEmail);
+                editor.putString(Constants.USER_ID, authData.getUid());
+                editor.commit();
+                logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                logInIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(logInIntent);
 
                 // Remove the loading animation for back-button navigation friendliness.
