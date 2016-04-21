@@ -1,6 +1,8 @@
 package com.team5.grocerygeniusmockup.Model.ShoppingListModel;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.view.Display;
 import android.widget.ExpandableListView;
 
 /**
@@ -9,8 +11,10 @@ import android.widget.ExpandableListView;
 public class InternalExpandableListView extends ExpandableListView {
     int intGroupPosition, intChildPosition, intGroupID;
 
+    Context context;
     public InternalExpandableListView(Context context) {
         super(context);
+        this.context = context;
     }
 
     /* http://developer.android.com/reference/android/view/View.MeasureSpec.html
@@ -26,7 +30,7 @@ public class InternalExpandableListView extends ExpandableListView {
      */
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        widthMeasureSpec = MeasureSpec.makeMeasureSpec(960, MeasureSpec.AT_MOST);
+        //widthMeasureSpec = MeasureSpec.makeMeasureSpec(960, MeasureSpec.AT_MOST);
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(10000, MeasureSpec.AT_MOST);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

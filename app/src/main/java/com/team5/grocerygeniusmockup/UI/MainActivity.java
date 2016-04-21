@@ -16,10 +16,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.team5.grocerygeniusmockup.R;
+import com.team5.grocerygeniusmockup.UI.ListActivityFragments.ShareListDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShelfDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.AddShopDialogFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.PantryFragment;
 import com.team5.grocerygeniusmockup.UI.MainActivityFragments.ShoppingListFragment;
+import com.team5.grocerygeniusmockup.Utilities.Constants;
 
 /**
  * Represents the home screen of the app which has a {@link ViewPager} with a
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         if (!mPrefs.getBoolean("prefs_initialisted", false)) {
+            Log.d(LOG_TAG, "initiliasing prefs");
             SharedPreferences.Editor editor = mPrefs.edit();
             editor.putBoolean("prefs_initialised", true);
             editor.putBoolean("delete_checked", true);
@@ -80,6 +83,22 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity(settingsIntent);
+                break;
+            case R.id.settings_share_list:
+                DialogFragment dialog = (DialogFragment) ShareListDialogFragment.newInstance();
+                dialog.show(MainActivity.this.getFragmentManager(), "ShareListDialogFragment");
+                break;
+            case R.id.action_logout:
+                SharedPreferences.Editor editor = mPrefs.edit();
+                editor.remove(Constants.KEY_LIST_ID);
+                editor.remove(Constants.USER_ID);
+                editor.remove(Constants.USER_EMAIL);
+                editor.commit();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                break;
         }
         
         return super.onOptionsItemSelected(item);

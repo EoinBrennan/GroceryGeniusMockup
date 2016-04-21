@@ -31,6 +31,10 @@
     <string name="positive_button_add_item">Add Item</string>
     <string name="positive_button_rename">Rename</string>
 
+    <!-- List -->
+    <string name="settings_new_list">Add New List</string>
+    <string name="hint_add_list">What is the name of your List?</string>
+
     <!-- Shopping list strings-->
     <string name="shopping_list_frag_title">SHOPPING</string>
 
@@ -135,5 +139,10 @@
     <string name="settings_move_item_explanation">When you purchase items, if you would like to select a pantry shelf, set an expiry date, then have the item moved to your pantry, click here!</string>
 
     <string name="positive_button_move_to_pantry">Buy</string>
+    <string name="title_activity_list">ListActivity</string>
+
+    <string name="action_share_list">Share List</string>
+    <string name="action_logout">Logout</string>
+    <string name="hint_share_list">Enter the email of the user you wish to share this list with.</string>
     <string name="button_add_shop">Add Shop</string>
 </resources>

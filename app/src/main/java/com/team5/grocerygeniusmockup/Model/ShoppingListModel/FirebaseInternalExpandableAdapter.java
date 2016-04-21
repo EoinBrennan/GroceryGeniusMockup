@@ -90,16 +90,16 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     public String shopKey;
     public String shopName;
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL;
+    String listKey;
     InternalExpandableListView parent;
 
     /**
      * @param activity The activity containing the ListView
      */
-    public FirebaseInternalExpandableAdapter(Activity activity, InternalExpandableListView parent, String shopName, String shopKey, String FIREBASE_MY_NODE_URL) {
+    public FirebaseInternalExpandableAdapter(Activity activity, InternalExpandableListView parent, String shopName, String shopKey, String listKey) {
 
-        this.FIREBASE_MY_NODE_URL = FIREBASE_MY_NODE_URL;
-        String MY_FIREBASE_SECTIONS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + shopKey;
+        this.listKey = listKey;
+        String MY_FIREBASE_SECTIONS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + listKey  + "/" + shopKey;
 
         Log.e("ShopKey", shopKey);
 
@@ -158,8 +158,8 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
             String sectionKey = mSectionSnapshots.getItem(i).getKey();
             Log.e("GenItems", "Current section Key: " + sectionKey);
 
-            String FIREBASE_THIS_SECTIONS_ITEMS = FIREBASE_MY_NODE_URL + "/" +
-                    Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + sectionKey;
+            String FIREBASE_THIS_SECTIONS_ITEMS = Constants.FIREBASE_URL + "/" +
+                    Constants.FIREBASE_NODENAME_ITEMS + "/" + listKey + "/" + shopKey + "/" + sectionKey;
             Log.e("GenItems", "URL for items in this section: " + FIREBASE_THIS_SECTIONS_ITEMS);
 
             final SortedFirebaseArray thisItem = new SortedFirebaseArray(new Firebase(FIREBASE_THIS_SECTIONS_ITEMS));
@@ -321,7 +321,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
     @Override
     public long getGroupId(int groupPosition) {
         // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
-        return mSectionSnapshots.getItem(groupPosition).getKey().hashCode();
+        return groupPosition;
     }
 
     /*
@@ -577,7 +577,7 @@ public class FirebaseInternalExpandableAdapter extends BaseExpandableListAdapter
                                 if (!removed[0] && order != 0) {
                                     String thisSecKey = mSectionSnapshots.getItem(groupPosition).getKey();
                                     mSectionSnapshots.getItem(groupPosition).getRef().removeValue();
-                                    Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + thisSecKey);
+                                    Firebase itemRef = new Firebase(Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + listKey + "/" + shopKey + "/" + thisSecKey);
                                     itemRef.removeValue();
                                     mItemSnapshots.remove(groupPosition);
                                     removed[0] = true;

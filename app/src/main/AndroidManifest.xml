@@ -37,12 +37,12 @@
         <activity
             android:name=".UI.MainActivity"
             android:label="@string/title_activity_main"
-            android:parentActivityName=".UI.LoginActivity"
+            android:parentActivityName=".UI.ListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".UI.LoginActivity" />
+                android:value=".UI.ListActivity" />
         </activity>
         <activity
             android:name=".UI.QuizActivities.Quiz1Activity"
@@ -71,16 +71,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team5.grocerygeniusmockup.UI.QuizActivities.Quiz2Activity" />
         </activity>
-
         <activity
             android:name=".UI.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="896a41c1c4d47780ecb869a4e9c725a4d693b6b2" />
 
+        <activity
+            android:name=".UI.ListActivity"
+            android:label="@string/title_activity_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".UI.ListActivityFragments.DeleteListService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

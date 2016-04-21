@@ -1,11 +1,9 @@
-package com.team5.grocerygeniusmockup.UI.MainActivityFragments;
+package com.team5.grocerygeniusmockup.UI.ListActivityFragments;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,28 +12,28 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
+
 import com.firebase.client.Firebase;
-import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Section;
-import com.team5.grocerygeniusmockup.Model.ShoppingListModel.Shop;
+import com.team5.grocerygeniusmockup.Model.ListModel.List;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // This fragment handles adding a new shop to the user's Firebase.
 
-public class AddShopDialogFragment extends DialogFragment {
-    private static final String LOG_TAG = AddShopDialogFragment.class.getSimpleName();
+public class AddListDialogFragment extends DialogFragment {
+    private static final String LOG_TAG = AddListDialogFragment.class.getSimpleName();
 
     // Declaring UI elements.
-    EditText mEditTextShopName;
-    Spinner mSpinnerFrequency;
+    EditText mEditTextListName;
 
-    // Used to fetch the User's ID and set this user's Firebase root.
-    SharedPreferences mPrefs;
-    String listKey;
+    String userID;
+    String userEmail;
 
-    public AddShopDialogFragment() {
+    public AddListDialogFragment() {
         // Required empty public constructor
     }
 
@@ -43,16 +41,20 @@ public class AddShopDialogFragment extends DialogFragment {
      * Public static constructor that creates fragment and
      * passes a bundle with data into it when adapter is created.
      */
-    public static AddShopDialogFragment newInstance() {
-        AddShopDialogFragment addShopDialogFragment = new AddShopDialogFragment();
+    public static AddListDialogFragment newInstance(String userEmail, String userID) {
+        AddListDialogFragment addListDialogFragment = new AddListDialogFragment();
         Bundle bundle = new Bundle();
-        addShopDialogFragment.setArguments(bundle);
-        return addShopDialogFragment;
+        bundle.putString(Constants.USER_ID, userID);
+        bundle.putString(Constants.USER_EMAIL, userEmail);
+        addListDialogFragment.setArguments(bundle);
+        return addListDialogFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userID = getArguments().getString(Constants.USER_ID);
+        userEmail = getArguments().getString(Constants.USER_EMAIL);
         Log.d(LOG_TAG, "onCreate");
     }
 
@@ -70,28 +72,19 @@ public class AddShopDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-       // Fetch User ID and set up Firebase address.
-
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
-
         // Get the layout inflater inflate the appropriate layout and initialise the UI.
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View rootView = inflater.inflate(R.layout.dialog_add_shop, null);
-        mEditTextShopName = (EditText) rootView.findViewById(R.id.dialog_add_shop_et_shop_name);
-        mSpinnerFrequency = (Spinner) rootView.findViewById(R.id.dialog_add_shop_sp_frequency);
-
-        // 3 here corresponds to the third option in the frequency shop visit array in res/strings.
-        mSpinnerFrequency.setSelection(3);
+        View rootView = inflater.inflate(R.layout.dialog_add_list, null);
+        mEditTextListName = (EditText) rootView.findViewById(R.id.dialog_add_list_et_list_name);
 
         /**
          * Call addShoppingList() when user taps "Done" keyboard action
          */
-        mEditTextShopName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEditTextListName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    addShop();
+                    addList();
                 }
                 return true;
             }
@@ -104,7 +97,7 @@ public class AddShopDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.positive_button_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        addShop();
+                        addList();
                     }
                 });
 
@@ -114,39 +107,34 @@ public class AddShopDialogFragment extends DialogFragment {
     /**
      * Add new active list
      */
-    public void addShop() {
-        Log.d(LOG_TAG, "addShop");
+    public void addList() {
+        Log.d(LOG_TAG, "addList");
         // Fetch the user entered shop name.
-        String userEnteredName = mEditTextShopName.getText().toString();
-
-        // Fetch the frequency option selected by the user.
-        int frequencySelected = mSpinnerFrequency.getSelectedItemPosition();
+        String userEnteredName = mEditTextListName.getText().toString();
 
         /* If and only if the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
             // Create a new shop object using user data.
-            Shop newShop = new Shop(userEnteredName, frequencySelected);
+
+            List newList = new List(userEnteredName, "user", userEmail, userID);
 
             // Set up a ref in the shops section of the user's Firebase.
-            String FIREBASE_MY_URL_SHOPS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS + "/" + listKey;
+            String FIREBASE_MY_LISTS_URL = Constants.FIREBASE_URL_LISTS + "/" + userEmail;
 
             // Initialise a Firebase object at the shops node.
-            Firebase shopRef = new Firebase(FIREBASE_MY_URL_SHOPS);
+            Firebase myListsRef = new Firebase(FIREBASE_MY_LISTS_URL);
 
             // Create a unique key for a new child and fetch it's key.
-            Firebase newShopRef = shopRef.push();
-            String newShopKey = newShopRef.getKey();
+            Firebase newListRef = myListsRef.push();
+            String newListKey = newListRef.getKey();
 
             // Store the Shop object at the new child node.
-            newShopRef.setValue(newShop);
+            newListRef.setValue(newList);
 
-            // Add a default section to the newly created shop by following the same process.
-            Section defaultSection = new Section("Other", userEnteredName, 0);
-            String FIREBASE_MY_URL_SHOPSECTION = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + listKey + "/" + newShopKey;
-            Firebase sectionRef = new Firebase(FIREBASE_MY_URL_SHOPSECTION);
-            Firebase defaultSecRef = sectionRef.push();
-            defaultSecRef.setValue(defaultSection);
+            Firebase mySharedRef = new Firebase(Constants.FIREBASE_URL_SHARED).child(newListKey);
+            Map<String, Object> sharing = new HashMap<String, Object>();
+            sharing.put(userEmail, true);
+            mySharedRef.updateChildren(sharing);
         }
-
     }
 }

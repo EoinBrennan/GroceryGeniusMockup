@@ -35,7 +35,7 @@ public class AddItemDialogFragment extends DialogFragment {
     String secKey;
 
     SharedPreferences mPrefs;
-    String FIREBASE_MY_NODE_URL = Constants.FIREBASE_URL_NODE;
+    String listKey;
 
     public AddItemDialogFragment() {
     }
@@ -65,7 +65,7 @@ public class AddItemDialogFragment extends DialogFragment {
         secKey = getArguments().getString("secKey", "Default");
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        FIREBASE_MY_NODE_URL += "/" + mPrefs.getString("UserID", null);
+        listKey = mPrefs.getString(Constants.KEY_LIST_ID, "");
     }
 
     @Override
@@ -133,7 +133,7 @@ public class AddItemDialogFragment extends DialogFragment {
 
             /* Fetch User ID and set up Firebase address. */
 
-            String FIREBASE_MY_URL_ITEMS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + shopKey + "/" + secKey;
+            String FIREBASE_MY_URL_ITEMS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + listKey + "/" + shopKey + "/" + secKey;
 
             // Get the reference to the root node in Firebase
             Firebase itemRef = new Firebase(FIREBASE_MY_URL_ITEMS);

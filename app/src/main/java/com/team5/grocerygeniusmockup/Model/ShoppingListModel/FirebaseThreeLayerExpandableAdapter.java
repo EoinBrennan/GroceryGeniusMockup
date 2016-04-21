@@ -72,25 +72,25 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
     public SortedFirebaseArray mSnapshots;
 
     // The String for the address of the user's root node in Firebase.
-    String FIREBASE_MY_NODE_URL;
+    String listKey;
 
     /** Constructor for outer layer of three layer ExListView.
      * @param activity The activity containing the ExpandableListView
      * @param parent A reference to the ExListView itself, to allow opening/closing of list.
-     * @param FIREBASE_MY_NODE_URL the address of the user's root node in Firebase.
+     * @param listKey the address of the user's root node in Firebase.
      */
-    public FirebaseThreeLayerExpandableAdapter(Activity activity, ExpandableListView parent, String FIREBASE_MY_NODE_URL) {
+    public FirebaseThreeLayerExpandableAdapter(Activity activity, ExpandableListView parent, String listKey) {
         Log.d(LOG_TAG, "FirebaseThreeLayerExpandableAdapter Constructor");
         // Initialise activity, ExListView, and firebase address string.
         mActivity = activity;
         final ExpandableListView thisDad = parent;
-        this.FIREBASE_MY_NODE_URL = FIREBASE_MY_NODE_URL;
+        this.listKey = listKey;
 
         /* Firebase address for user's shops node is created, and a SortedFirebaseArray of the
          * information at that node is set up.
          */
 
-        String FIREBASE_MY_URL_SHOPS = FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS;
+        String FIREBASE_MY_URL_SHOPS = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHOPS + "/" + listKey;
         mSnapshots = new SortedFirebaseArray(new Firebase(FIREBASE_MY_URL_SHOPS));
 
         /**
@@ -155,7 +155,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
         /* Set the custom internal adapter for the ExListView by passing it relevant information
          * about it's context and the shop it's expanding on.
          */
-        SecondLevelExLV.setAdapter(new FirebaseInternalExpandableAdapter(mActivity, SecondLevelExLV, shopName, shopKey, FIREBASE_MY_NODE_URL));
+        SecondLevelExLV.setAdapter(new FirebaseInternalExpandableAdapter(mActivity, SecondLevelExLV, shopName, shopKey, listKey));
         SecondLevelExLV.setGroupIndicator(null);
         return SecondLevelExLV;
     }
@@ -254,11 +254,14 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
                                 /* If the user wishes to delete the shop, it and all of it's related
                                  * sections and items are removed from Firebase.
                                  */
+
+                                // USE UPDATE CHILDREN
+
                                 Log.d(LOG_TAG, "delete_shop (" + model.getName() + ") onClick");
                                 shopRef.removeValue();
-                                Firebase secRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + thisShopKey);
+                                Firebase secRef = new Firebase(Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SECTIONS + "/" + listKey + "/" + thisShopKey);
                                 secRef.removeValue();
-                                Firebase itemRef = new Firebase(FIREBASE_MY_NODE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + thisShopKey);
+                                Firebase itemRef = new Firebase(Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_ITEMS + "/" + listKey + "/" + thisShopKey);
                                 itemRef.removeValue();
                                 break;
                             case R.id.rename_shop:
@@ -410,7 +413,7 @@ public class FirebaseThreeLayerExpandableAdapter extends BaseExpandableListAdapt
 
     @Override
     public long getGroupId(int groupPosition) {
-        return mSnapshots.getItem(groupPosition).getKey().hashCode();
+        return groupPosition;
     }
 
     /**
