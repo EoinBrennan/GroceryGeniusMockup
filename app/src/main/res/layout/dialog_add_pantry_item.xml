@@ -56,12 +56,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <CalendarView
+    <DatePicker
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/add_pitem_exp_calendarView"
+        android:id="@+id/datePicker2"
+        android:datePickerMode="spinner"
         android:layout_below="@+id/add_p_item_exp_checkbox"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
