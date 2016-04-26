@@ -445,6 +445,8 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
             Date today = new Date();
             if (model.getExpiryDate() <= today.getTime()) {
                 itemNameView.setTextColor(Color.RED);
+            } else {
+                itemNameView.setTextColor(Color.BLACK);
             }
 
             ImageButton increaseQBtn = (ImageButton) convertView.findViewById(R.id.pantry_quantity_up_button);

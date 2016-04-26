@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ import com.team5.grocerygeniusmockup.Model.PantryModel.PantryItem;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -35,7 +38,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
     EditText mEditTextItemName;
     NumberPicker mNumberPickerQuantity;
     CheckBox mCheckbox;
-    CalendarView mCalendar;
+    DatePicker mCalendar;
     String shelfName;
     String shelfKey;
 
@@ -91,7 +94,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
         mNumberPickerQuantity.setValue(1);
 
         mCheckbox = (CheckBox) rootView.findViewById(R.id.add_p_item_exp_checkbox);
-        mCalendar = (CalendarView) rootView.findViewById(R.id.add_pitem_exp_calendarView);
+        mCalendar = (DatePicker) rootView.findViewById(R.id.datePicker2);
         mCalendar.setVisibility(View.GONE);
         mCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,7 +145,34 @@ public class AddPantryItemDialogFragment extends DialogFragment {
 
         int quantitySelected = mNumberPickerQuantity.getValue();
 
-        long dateSet = mCalendar.getDate();
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+
+        String month;
+        int monthnum = mCalendar.getMonth() + 1;
+        if (monthnum < 10) {
+            month = "0" + monthnum;
+        } else {
+            month = "" + monthnum;
+        }
+
+        String day;
+        int daynum = mCalendar.getDayOfMonth();
+        if (daynum < 10) {
+            day = "0" + daynum;
+        } else {
+            day = "" + daynum;
+        }
+
+        String strDate = mCalendar.getYear() + "-" + month + "-" + day;
+        Toast.makeText(getActivity(), strDate, Toast.LENGTH_LONG).show();
+        Date date;
+        try {
+            date = ft.parse(strDate);
+        } catch (ParseException e) {
+            date = new Date();
+        }
+
+        long dateSet = date.getTime();
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {

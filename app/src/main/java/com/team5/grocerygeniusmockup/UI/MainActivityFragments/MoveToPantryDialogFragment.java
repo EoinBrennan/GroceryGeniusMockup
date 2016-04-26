@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -31,7 +32,10 @@ import com.team5.grocerygeniusmockup.Model.SortedFirebaseArray;
 import com.team5.grocerygeniusmockup.R;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -41,7 +45,7 @@ public class MoveToPantryDialogFragment extends DialogFragment {
     Spinner mSpinnerQuantity;
     Spinner mSpinnerShelf;
     CheckBox mCheckbox;
-    CalendarView mCalendar;
+    DatePicker mCalendar;
 
     SharedPreferences mPrefs;
     String listKey;
@@ -161,8 +165,9 @@ public class MoveToPantryDialogFragment extends DialogFragment {
         mSpinnerShelf = (Spinner) rootView.findViewById(R.id.which_shelf_spinner);
         mSpinnerShelf.setAdapter(shelvesAdapter);
 
-        mCheckbox = (CheckBox) rootView.findViewById(R.id.add_p_item_exp_checkbox);
-        mCalendar = (CalendarView) rootView.findViewById(R.id.add_pitem_exp_calendarView);
+        mCheckbox = (CheckBox) rootView.findViewById(R.id.move_p_item_exp_checkbox);
+        mCalendar = (DatePicker) rootView.findViewById(R.id.datePicker);
+
         mCalendar.setVisibility(View.GONE);
         mCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,7 +207,32 @@ public class MoveToPantryDialogFragment extends DialogFragment {
 
         Log.e("moveToPantry", "QuanSel: " + quantitySelected + ", QuanRem: " + quantityRemaining + ", shelf: " + shelfSelected);
 
-        long dateSet = mCalendar.getDate();
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        String month;
+        int monthnum = mCalendar.getMonth() + 1;
+        if (monthnum < 10) {
+            month = "0" + monthnum;
+        } else {
+            month = "" + monthnum;
+        }
+
+        String day;
+        int daynum = mCalendar.getDayOfMonth();
+        if (daynum < 10) {
+            day = "0" + daynum;
+        } else {
+            day = "" + daynum;
+        }
+
+        String strDate = mCalendar.getYear() + "-" + month + "-" + day;
+        Date date;
+        try {
+            date = ft.parse(strDate);
+        } catch (ParseException e) {
+            date = new Date();
+        }
+
+        long dateSet = date.getTime();
 
         /* If the user actually enters a list name. */
         if (shelfSelected != 0) {
