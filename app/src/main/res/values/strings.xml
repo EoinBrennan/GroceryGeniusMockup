@@ -61,6 +61,7 @@
 
     <!-- Pantry -->
     <string name="pantry_frag_title">PANTRY</string>
+    <string name="expiry_check">Does this item expire?</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
