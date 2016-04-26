@@ -13,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CalendarView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.team5.grocerygeniusmockup.Model.PantryModel.PantryItem;
@@ -31,6 +34,8 @@ public class AddPantryItemDialogFragment extends DialogFragment {
 
     EditText mEditTextItemName;
     NumberPicker mNumberPickerQuantity;
+    CheckBox mCheckbox;
+    CalendarView mCalendar;
     String shelfName;
     String shelfKey;
 
@@ -80,10 +85,24 @@ public class AddPantryItemDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_add_pantry_item, null);
         mEditTextItemName = (EditText) rootView.findViewById(R.id.edit_text_p_item_name);
-        /*mNumberPickerQuantity = (NumberPicker) rootView.findViewById(R.id.itemQuantityNumberPicker);
+        mNumberPickerQuantity = (NumberPicker) rootView.findViewById(R.id.pItemQuantityNumberPicker);
         mNumberPickerQuantity.setMinValue(1);
         mNumberPickerQuantity.setMaxValue(100);
-        mNumberPickerQuantity.setValue(1);*/
+        mNumberPickerQuantity.setValue(1);
+
+        mCheckbox = (CheckBox) rootView.findViewById(R.id.add_p_item_exp_checkbox);
+        mCalendar = (CalendarView) rootView.findViewById(R.id.add_pitem_exp_calendarView);
+        mCalendar.setVisibility(View.GONE);
+        mCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCheckbox.isChecked()) {
+                    mCalendar.setVisibility(View.VISIBLE);
+                } else {
+                    mCalendar.setVisibility(View.GONE);
+                }
+            }
+        });
 
         /**
          * Call addShoppingList() when user taps "Done" keyboard action
@@ -121,14 +140,23 @@ public class AddPantryItemDialogFragment extends DialogFragment {
         // We'll use "Anonymous Owner" for the owner because we don't have user accounts yet
         String userEnteredName = mEditTextItemName.getText().toString();
 
-        //int frequencySelected = mNumberPickerQuantity.getValue();
+        int quantitySelected = mNumberPickerQuantity.getValue();
+
+        long dateSet = mCalendar.getDate();
 
         /* If the user actually enters a list name. */
         if (!userEnteredName.equals("") && userEnteredName != null) {
-            Date forever = new Date();
-            long foreverLong = forever.getTime() + (1000*365*24*60*60*1000);
+            Date today = new Date();
+            long now = today.getTime();
+            if (!(mCheckbox.isChecked())) {
+                dateSet = now + (1000*365*24*60*60*1000);
+            }
 
-            PantryItem newItem = new PantryItem(userEnteredName, shelfName, "na", "na", "na", "na", 1, foreverLong);
+            if (dateSet < now) {
+                dateSet = now;
+            }
+
+            PantryItem newItem = new PantryItem(userEnteredName, shelfName, "na", "na", "na", "na", quantitySelected, dateSet);
 
             /* Fetch User ID and set up Firebase address. */
 

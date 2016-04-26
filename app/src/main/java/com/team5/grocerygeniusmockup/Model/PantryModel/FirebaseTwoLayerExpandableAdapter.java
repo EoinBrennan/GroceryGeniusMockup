@@ -62,6 +62,7 @@ import com.team5.grocerygeniusmockup.UI.OptionDialogs.RenameShelfDialogFragment;
 import com.team5.grocerygeniusmockup.Utilities.Constants;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This class is a generic way of backing an Android ListView with a Firebase location.
@@ -441,6 +442,10 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
 
             TextView itemNameView = (TextView) convertView.findViewById(R.id.text_view_p_item_name);
             itemNameView.setText(model.getName());
+            Date today = new Date();
+            if (model.getExpiryDate() <= today.getTime()) {
+                itemNameView.setTextColor(Color.RED);
+            }
 
             ImageButton increaseQBtn = (ImageButton) convertView.findViewById(R.id.pantry_quantity_up_button);
             increaseQBtn.setOnClickListener(new View.OnClickListener() {

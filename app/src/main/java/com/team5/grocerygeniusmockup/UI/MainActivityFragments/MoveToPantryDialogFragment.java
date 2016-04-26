@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.CalendarView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,6 +40,8 @@ public class MoveToPantryDialogFragment extends DialogFragment {
     TextView mItemName;
     Spinner mSpinnerQuantity;
     Spinner mSpinnerShelf;
+    CheckBox mCheckbox;
+    CalendarView mCalendar;
 
     SharedPreferences mPrefs;
     String listKey;
@@ -157,6 +161,20 @@ public class MoveToPantryDialogFragment extends DialogFragment {
         mSpinnerShelf = (Spinner) rootView.findViewById(R.id.which_shelf_spinner);
         mSpinnerShelf.setAdapter(shelvesAdapter);
 
+        mCheckbox = (CheckBox) rootView.findViewById(R.id.add_p_item_exp_checkbox);
+        mCalendar = (CalendarView) rootView.findViewById(R.id.add_pitem_exp_calendarView);
+        mCalendar.setVisibility(View.GONE);
+        mCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCheckbox.isChecked()) {
+                    mCalendar.setVisibility(View.VISIBLE);
+                } else {
+                    mCalendar.setVisibility(View.GONE);
+                }
+            }
+        });
+
         /* Inflate and set the layout for the dialog */
         /* Pass null as the parent view because its going in the dialog layout*/
         builder.setView(rootView)
@@ -184,14 +202,23 @@ public class MoveToPantryDialogFragment extends DialogFragment {
 
         Log.e("moveToPantry", "QuanSel: " + quantitySelected + ", QuanRem: " + quantityRemaining + ", shelf: " + shelfSelected);
 
+        long dateSet = mCalendar.getDate();
+
         /* If the user actually enters a list name. */
         if (shelfSelected != 0) {
-            Date now = new Date();
-            long foreverLong = now.getTime() + (1000*365*24*60*60*1000);
+            Date today = new Date();
+            long now = today.getTime();
+            if (!(mCheckbox.isChecked())) {
+                dateSet = now + (1000*365*24*60*60*1000);
+            }
+
+            if (dateSet < now) {
+                dateSet = now;
+            }
 
             DataSnapshot shelfSnap = shelfSnapShots.getItem(shelfSelected - 1);
 
-            PantryItem newPItem = new PantryItem(itemName, shelfSnap.getValue(Shelf.class).getName(), shopName, shopKey, secName, secKey, quantitySelected, foreverLong);
+            PantryItem newPItem = new PantryItem(itemName, shelfSnap.getValue(Shelf.class).getName(), shopName, shopKey, secName, secKey, quantitySelected, dateSet);
 
             /* Fetch User ID and set up Firebase address. */
 
