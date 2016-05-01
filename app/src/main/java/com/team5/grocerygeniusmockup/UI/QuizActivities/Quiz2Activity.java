@@ -39,12 +39,6 @@ public class Quiz2Activity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz3);
 
-        String[] myValues = {
-                "Tesco",
-                "Aldi",
-                "Lidl"
-        };
-
         //get email and passwrod sent from Quiz1Activity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -53,7 +47,10 @@ public class Quiz2Activity extends Activity {
             password = extras.getString("password");
         }
 
-        myList = new ArrayList<String>(Arrays.asList(myValues));
+        myList = new ArrayList<>();
+        myList.add("Tesco");
+        myList.add("Aldi");
+        myList.add("Lidl");
 
         final ListViewCustomAdapter adapter = new ListViewCustomAdapter(this,
                 R.layout.listview_item_row, myList);

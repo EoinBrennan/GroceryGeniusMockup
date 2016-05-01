@@ -52,6 +52,11 @@ public class ListViewCustomAdapter extends ArrayAdapter<String> {
             holder = new SectionHolder();
             holder.mySpinner = (Spinner)row.findViewById(R.id.spinner);
             holder.txtTitle = (TextView)row.findViewById(R.id.txtTitle);
+            if (!(position < choices.size())) {
+                for (int i = choices.size(); i == position; i++) {
+                    choices.add(3);
+                }
+            }
             holder.mySpinner.setSelection(choices.get(position));
             holder.mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -64,7 +69,6 @@ public class ListViewCustomAdapter extends ArrayAdapter<String> {
 
                 }
             });
-
             row.setTag(holder);
         }
         else
