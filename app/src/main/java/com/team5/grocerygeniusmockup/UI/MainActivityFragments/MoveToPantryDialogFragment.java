@@ -239,10 +239,8 @@ public class MoveToPantryDialogFragment extends DialogFragment {
             Date today = new Date();
             long now = today.getTime();
             if (!(mCheckbox.isChecked())) {
-                dateSet = now + (1000*365*24*60*60*1000);
-            }
-
-            if (dateSet < now) {
+                dateSet = now + (5*365*24*60*60*1000);
+            } else if (dateSet < now) {
                 dateSet = now;
             }
 

@@ -164,7 +164,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
         }
 
         String strDate = mCalendar.getYear() + "-" + month + "-" + day;
-        Toast.makeText(getActivity(), strDate, Toast.LENGTH_LONG).show();
+
         Date date;
         try {
             date = ft.parse(strDate);
@@ -179,10 +179,8 @@ public class AddPantryItemDialogFragment extends DialogFragment {
             Date today = new Date();
             long now = today.getTime();
             if (!(mCheckbox.isChecked())) {
-                dateSet = now + (1000*365*24*60*60*1000);
-            }
-
-            if (dateSet < now) {
+                dateSet = now + (5*365*24*60*60*1000);
+            } else if (dateSet < now) {
                 dateSet = now;
             }
 
