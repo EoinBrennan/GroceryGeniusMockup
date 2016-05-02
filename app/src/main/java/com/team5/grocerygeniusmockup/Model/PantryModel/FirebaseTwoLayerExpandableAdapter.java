@@ -97,7 +97,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
     public String shopName;
     SharedPreferences mPrefs;
     String listKey;
-    InternalExpandableListView parent;
+    ExpandableListView parent;
 
     protected int shelfLayout;
 
@@ -110,6 +110,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
         itemLayout = R.layout.pantry_item;
         mActivity = activity;
         final ExpandableListView thisDad = parent;
+        this.parent = parent;
 
         this.listKey = listKey;
         String MY_FIREBASE_SHELVES = Constants.FIREBASE_URL + "/" + Constants.FIREBASE_NODENAME_SHELVES + "/" + listKey;
@@ -345,7 +346,7 @@ public class FirebaseTwoLayerExpandableAdapter extends BaseExpandableListAdapter
             final TextView itemQuantityView = (TextView) convertView.findViewById(R.id.text_view_p_item_quantity);
             itemQuantityView.setText("" + model.getQuantity());
 
-            final InternalExpandableListView thisMom = this.parent;
+            final ExpandableListView thisMom = this.parent;
 
             final ImageButton moveToShopBtn = (ImageButton) convertView.findViewById(R.id.move_to_shop_button);
 
