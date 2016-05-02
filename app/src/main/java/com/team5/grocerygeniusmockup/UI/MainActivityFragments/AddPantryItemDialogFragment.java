@@ -179,7 +179,7 @@ public class AddPantryItemDialogFragment extends DialogFragment {
             Date today = new Date();
             long now = today.getTime();
             if (!(mCheckbox.isChecked())) {
-                dateSet = now + (5*365*24*60*60*1000);
+                dateSet = now + (365*24*60*60*1000);
             } else if (dateSet < now) {
                 dateSet = now;
             }
